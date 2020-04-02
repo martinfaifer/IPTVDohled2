@@ -1,0 +1,162 @@
+html,
+body {
+    background-color: #111111;
+    color: #636b6f;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 200;
+    height: 100vh;
+    margin: 0;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+
+/* barvy */
+
+.body-bg-color {
+
+    background: #00467F;
+    background: -webkit-linear-gradient(to right, #A5CC82, #00467F);
+    background: linear-gradient(to right, #A5CC82, #00467F);
+}
+
+/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UPRAVA FONTU
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+a {
+    text-decoration: none;
+}
+
+/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+MOZAIKA MODAL WINDOW
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* channel detail */
+.channelDetailImg {
+    margin-top: 100px;
+}
+
+.channelDetailNav {
+    margin-top: -19%;
+    margin-left: 50%;
+    width: 100%;
+    position: fixed;
+}
+
+.channelDetailName {
+    margin-left: -15%;
+}
+
+.channelDetailContent {
+    margin-left: 35%;
+    margin-top: -15%;
+
+}
+
+/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALERTING
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+#alertDivMozaika {
+    width: 20%;
+    left: 79%;
+    position: fixed;
+    z-index: 1;
+}
+
+
+
+#alertDiv {
+    padding-top: 0%;
+    width: 20%;
+    left: 75%;
+    /* width: 10px; */
+    position: fixed;
+    z-index: 1;
+}
+
+/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SETTINGS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* .settingsMineNav {
+    margin-top: 5%;
+    width: 100%;
+    position: fixed;
+} */
+
+/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ANIMACE
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* Animace */
+.fade-enter-active,
+.fade-leave-active {
+    transition-duration: 0.2s;
+    transition-property: opacity;
+    transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+    opacity: 0
+}
+
+.custom-loader {
+    animation: loader 1s infinite;
+    display: flex;
+}
+
+@-moz-keyframes loader {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes loader {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes loader {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loader {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Konec animaci */
