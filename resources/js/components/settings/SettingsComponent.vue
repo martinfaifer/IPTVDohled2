@@ -78,22 +78,24 @@
                   <span>Nastavení Alertingu</span>
                 </v-tooltip>
 
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      link
-                      to="/settings/logs"
-                      @click="contextMenu = 'log'"
-                      :color="colorLog"
-                      class="white--text"
-                      v-on="on"
-                      icon
-                    >
-                      <v-icon>mdi-git</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Log</span>
-                </v-tooltip>
+                <div v-if="userData.user_role == 'admin'">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        link
+                        to="/settings/logs"
+                        @click="contextMenu = 'log'"
+                        :color="colorLog"
+                        class="white--text"
+                        v-on="on"
+                        icon
+                      >
+                        <v-icon>mdi-git</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Log</span>
+                  </v-tooltip>
+                </div>
 
                 <v-spacer></v-spacer>
               </v-toolbar>

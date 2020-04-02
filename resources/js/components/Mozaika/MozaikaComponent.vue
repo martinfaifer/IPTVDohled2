@@ -74,7 +74,12 @@
         </div>
       </v-row>
       <br />
-      <v-pagination v-model="pagination.current" :length="pagination.total" @input="onPageChange"></v-pagination>
+      <v-pagination
+        v-model="pagination.current"
+        :length="pagination.total"
+        circle
+        @input="onPageChange"
+      ></v-pagination>
     </v-container>
 
     <!-- modal -->
