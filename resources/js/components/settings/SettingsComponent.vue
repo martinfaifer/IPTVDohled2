@@ -1,16 +1,6 @@
 <template>
   <div>
     <div v-if="userData.user_role != 'náhled'">
-      <div class="ml-8 mt-1">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn link to="/" color="teal" class="white--text" v-on="on" icon>
-              <v-icon>mdi-arrow-left</v-icon>
-            </v-btn>
-          </template>
-          <span>Zpět na Mozaiku</span>
-        </v-tooltip>
-      </div>
       <v-container class="mr-11 ml-11" fluid>
         <div class="mt-1">
           <v-row justify="center">

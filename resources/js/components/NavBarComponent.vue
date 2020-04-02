@@ -1,6 +1,16 @@
 <template>
   <div>
     <v-app-bar color="transparent" fixed dense dark>
+      <div v-if="this.$route.path != '/'">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn link to="/" color="white" class="white--text" v-on="on" icon>
+              <v-icon>mdi-arrow-left</v-icon>
+            </v-btn>
+          </template>
+          <span>Zpět na Mozaiku</span>
+        </v-tooltip>
+      </div>
       <v-spacer></v-spacer>
       <!-- settings -->
 
@@ -102,6 +112,7 @@ export default {
     };
   },
   created() {
+    console.log(this.$route.path);
     this.listenForChanges();
 
     let currentObj = this;
