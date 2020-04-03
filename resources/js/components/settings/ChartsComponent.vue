@@ -91,14 +91,17 @@
             :data="customBitratechartdata"
           ></line-chart>
         </div>
+        <br />
+        <p class="text-center">Posledních 60 záznamů</p>
         <line-chart
           label="bitrate v Mbps"
           width="1150px"
           height="250px"
-          xtitle="posledních 60min"
           ytitle="Bitrate V Mbps"
           :data="bitrates"
         ></line-chart>
+        <br />
+        <p class="text-center">Data za 24h</p>
         <line-chart
           label="bitrate v Mbps"
           width="1150px"
@@ -125,14 +128,15 @@
             <br />
             <p class="text-center">Uživatelem nadefinovaný graf</p>
           </div>
-          <line-chart
-            label="bitrate v Mbps"
+          <column-chart
+            :colors="['#FF0000']"
             width="1150px"
             height="250px"
-            ytitle="Bitrate v Mbps"
             :data="customErrorchartdata"
-          ></line-chart>
+          ></column-chart>
         </div>
+        <br />
+        <p class="text-center">Data za 24h</p>
         <column-chart :colors="['#FF0000']" width="1150px" height="250px" :data="crasheddata"></column-chart>
       </div>
     </v-row>
@@ -284,6 +288,18 @@ export default {
       })
       .then(function(response) {
         currentObj.hourVolumeData = response.data;
+      })
+      .catch(function(error) {
+        console.log("chyba" + error);
+      });
+
+    // graf s daty za jeden den
+    axios
+      .post("/api/channel/volume/dayData", {
+        id: this.$route.params.id
+      })
+      .then(function(response) {
+        currentObj.dayVolumesdata = response.data;
       })
       .catch(function(error) {
         console.log("chyba" + error);

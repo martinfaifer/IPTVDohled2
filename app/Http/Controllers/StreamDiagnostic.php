@@ -23,7 +23,7 @@ class StreamDiagnostic extends Controller
 
 
         // $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 15");
-        $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 15");
+        $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
 
         // Uložení dat pro budoucí zpracování
         // FFprobeData::create([
@@ -54,14 +54,16 @@ class StreamDiagnostic extends Controller
 
             NotFunctionChannelController::store($channelId);
 
-            // $channel = Channel::where('id', $channelId)->first();
-            // event(new SendDesktopAlert($channel));
-
             CrashedChannel::create([
                 'channelId' => $channelId,
             ]);
         } else {
-            Channel::where('id', $channelId)->update(['Alert' => "success"]);
+            $overeniZdaJeNutneProvadetUpdate = Channel::where('id', $channelId)->first();
+            if ($overeniZdaJeNutneProvadetUpdate->Alert == 'success') {
+                // Neni nutne aktualizovat zaznam, jelikoz kanal jiz ma hodnotu success
+            } else {
+                Channel::where('id', $channelId)->update(['Alert' => "success"]);
+            }
             NotFunctionChannelController::remove($channelId);
         }
     }

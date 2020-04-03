@@ -97,7 +97,7 @@ class BitrateController extends Controller
             ->get();
 
         foreach ($datas as $data) {
-            $chart[] = array($data['created_at'], $data['volume']);
+            $chart[] = array($data['created_at'], $data['bitrate']);
         }
 
         if (empty($chart)) {

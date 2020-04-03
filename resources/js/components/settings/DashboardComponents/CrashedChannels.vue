@@ -58,7 +58,7 @@ export default {
             this.crashed = response.data;
           });
       }.bind(this),
-      1000
+      300000
     );
   },
 

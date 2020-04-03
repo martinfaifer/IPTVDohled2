@@ -37,8 +37,8 @@ class Kernel extends ConsoleKernel
          */
         $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping()->runInBackground();
 
-        // Zasílání Volume Alertu
-        $schedule->command('command:sendVolumeMailAlert')->everyFiveMinutes()->withoutOverlapping()->runInBackground();
+        // MAIL ALERT -> zasila se na 4 pokus co byl kanal testován
+        $schedule->command('command:sendVolumeMailAlert')->everyFifteenMinutes()->runInBackground();
         // Sheduler pro smazání dat starších jak 7 týden
         $schedule->call(function () {
             Volume::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
@@ -52,9 +52,10 @@ class Kernel extends ConsoleKernel
             CrashedChannel::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
         })->daily();
 
+        // DESKTOP ALERT -> zasila se alert na 3. pokus co byl kanal testovan
         $schedule->call(function () {
-            if (NotFunctionChannel::where("test_four", "true")->first()) {
-                $allChannelsProblems = NotFunctionChannel::where("test_four", "true")->get();
+            if (NotFunctionChannel::where("test_three", "true")->first()) {
+                $allChannelsProblems = NotFunctionChannel::where("test_three", "true")->get();
                 foreach ($allChannelsProblems as $channelProblem) {
                     $findChannelName = Channel::where('id', $channelProblem->channelId)->get();
                     foreach ($findChannelName as $channel) {
@@ -62,7 +63,7 @@ class Kernel extends ConsoleKernel
                     }
                 }
             }
-        })->everyMinute();
+        })->everyFiveMinutes();
 
         // fn pro kontrolu již nedohledovaných kanalá, aby zbytecne nekde mevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
         $schedule->call(function () {

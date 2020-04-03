@@ -50,8 +50,8 @@ class SendMailAlert extends Command
         $volumeErr = array();
         $channelCrash = array();
 
-        if (VolumeAlert::where("test_five", "true")->first()) {
-            $allVolumeProblems = VolumeAlert::where("test_five", "true")->get();
+        if (VolumeAlert::where("test_four", "true")->first()) {
+            $allVolumeProblems = VolumeAlert::where("test_four", "true")->get();
             foreach ($allVolumeProblems as $volumeProblem) {
                 $findChannelName = Channel::where('id', $volumeProblem->channelId)->get();
                 foreach ($findChannelName as $channel) {
@@ -61,20 +61,26 @@ class SendMailAlert extends Command
         }
 
 
-        // crashnute kanaly po 5 pokusu
+        // crashnute kanaly po 4. pokusu
 
-        if (NotFunctionChannel::where("test_five", "true")->first()) {
-            $allChannelsProblems = NotFunctionChannel::where("test_five", "true")->get();
+        if (NotFunctionChannel::where("test_four", "true")->first()) {
+            $allChannelsProblems = NotFunctionChannel::where("test_four", "true")->get();
             foreach ($allChannelsProblems as $channelProblem) {
-                $findChannelName = Channel::where('id', $channelProblem->channelId)->get();
-                foreach ($findChannelName as $channel) {
-                    $channelCrash[] = $channel->nazev;
+                // vyhledání zda kanál existuje v tabulce VolumeAlert => pokud ano, kanal opravdu nefunguje a vyhledá se nazev + se přidá do pole
+                if (VolumeAlert::where('channelId', $channelProblem->channelId)->first()) {
+                    // Shoda je existuje, pokracujeme dale v plneni pole azvu k odeslani
+                    $findChannelName = Channel::where('id', $channelProblem->channelId)->get();
+                    foreach ($findChannelName as $channel) {
+                        $channelCrash[] = $channel->nazev;
+                    }
                 }
             }
         }
 
+
+        // Odeslani mailu s nefunkním kanaly
         if (MailAlerts::first()) {
-            // neco existuje, bude se zasílat mail
+            // mail k odeslani existuje, bude se zasílat alert
 
             foreach (MailAlerts::all() as $mail) {
 

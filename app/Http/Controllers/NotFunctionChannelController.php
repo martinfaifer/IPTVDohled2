@@ -43,7 +43,13 @@ class NotFunctionChannelController extends Controller
                 // Druhá hodnota nebyla vyplněna => nastavuje se jako true
                 NotFunctionChannel::where('channelId', $channelId)->update(['test_two' => "true"]);
                 // zde se kanál oznacuje jako crashnutý
-                Channel::where('id', $channelId)->update(['Alert' => "error"]);
+                // Overeni zda jiz akanal nema Alert error, pokud ano neprovadi se aktualizace zaznamu
+                $overeniZdaJeNutneAktualizovatZaznam = Channel::where('id', $channelId)->first();
+                if ($overeniZdaJeNutneAktualizovatZaznam->Alert == 'error') {
+                    // neni nutne provadet update
+                } else {
+                    Channel::where('id', $channelId)->update(['Alert' => "error"]);
+                }
             }
         } else {
             // Založení noveho alertu
