@@ -16,75 +16,77 @@
           ></v-text-field>
           <v-spacer></v-spacer>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" persistent max-width="500px">
-            <template v-slot:activator="{ on }">
-              <v-btn color="teal" dark class="mb-2" v-on="on">Nový kanál</v-btn>
-            </template>
+          <div v-if="userData.user_role != 'náhled'">
+            <v-dialog v-model="dialog" persistent max-width="500px">
+              <template v-slot:activator="{ on }">
+                <v-btn color="teal" dark class="mb-2" v-on="on">Nový kanál</v-btn>
+              </template>
 
-            <!-- dialog zalození noveho kanalu-->
-            <v-card>
-              <v-card-title class="headline">Založení nového kanálu</v-card-title>
-              <v-card-text>
-                <v-row>
-                  <v-col cols="12" sm="12" md="12">
-                    <v-text-field
-                      v-model="channelInput"
-                      label="Adresa dohledovaného streamu"
-                      autofocus
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row v-if="ffprobeOutput.stat === 'success'">
-                  <v-col cols="12" sm="12" md="12">
-                    <v-text-field v-model="ffprobeOutput.nazev" label="Popis streamu"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row v-if="ffprobeOutput.stat === 'success'">
-                  <v-col cols="12" sm="3" md="8">
-                    <v-select
-                      v-model="worker"
-                      :items="workers"
-                      item-value="id"
-                      item-text="workerName"
-                      label="Worker, který bude kanál zpracovávat"
-                      required
-                    ></v-select>
-                  </v-col>
-                </v-row>
-                <v-row v-if="ffprobeOutput.stat === 'success'">
-                  <v-checkbox v-model="dohledovatKanal" label="Dohledovat stream?"></v-checkbox>
-                </v-row>
-                <v-row v-if="ffprobeOutput.stat === 'success'">
-                  <v-checkbox v-model="radio" label="Radio?"></v-checkbox>
-                </v-row>
-              </v-card-text>
-              <!-- ffprobe status / zavreni dialogu -->
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  v-if="ffprobeAnalyzedData === 'false' && loading === false"
-                  color="red darken-1"
-                  text
-                  @click="closeDialogAndResetImputs()"
-                >Zavřít</v-btn>
-                <v-btn
-                  v-if="channelInput != '' && ffprobeAnalyzedData === 'false'"
-                  :loading="loading"
-                  color="green darken-1"
-                  text
-                  @click="runFFProbe()"
-                >Analyzovat</v-btn>
-              </v-card-actions>
+              <!-- dialog zalození noveho kanalu-->
+              <v-card>
+                <v-card-title class="headline">Založení nového kanálu</v-card-title>
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field
+                        v-model="channelInput"
+                        label="Adresa dohledovaného streamu"
+                        autofocus
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="ffprobeOutput.stat === 'success'">
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field v-model="ffprobeOutput.nazev" label="Popis streamu"></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="ffprobeOutput.stat === 'success'">
+                    <v-col cols="12" sm="3" md="8">
+                      <v-select
+                        v-model="worker"
+                        :items="workers"
+                        item-value="id"
+                        item-text="workerName"
+                        label="Worker, který bude kanál zpracovávat"
+                        required
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="ffprobeOutput.stat === 'success'">
+                    <v-checkbox v-model="dohledovatKanal" label="Dohledovat stream?"></v-checkbox>
+                  </v-row>
+                  <v-row v-if="ffprobeOutput.stat === 'success'">
+                    <v-checkbox v-model="radio" label="Radio?"></v-checkbox>
+                  </v-row>
+                </v-card-text>
+                <!-- ffprobe status / zavreni dialogu -->
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    v-if="ffprobeAnalyzedData === 'false' && loading === false"
+                    color="red darken-1"
+                    text
+                    @click="closeDialogAndResetImputs()"
+                  >Zavřít</v-btn>
+                  <v-btn
+                    v-if="channelInput != '' && ffprobeAnalyzedData === 'false'"
+                    :loading="loading"
+                    color="green darken-1"
+                    text
+                    @click="runFFProbe()"
+                  >Analyzovat</v-btn>
+                </v-card-actions>
 
-              <!-- Uloženi / zavrení dialogu -->
-              <v-card-actions v-if="ffprobeOutput.stat === 'success'">
-                <v-spacer></v-spacer>
-                <v-btn color="red darken-1" text @click="closeDialogAndResetImputs()">Zavřít</v-btn>
-                <v-btn color="green darken-1" text @click="saveNewImput()">Uložit</v-btn>
-              </v-card-actions>
-            </v-card>
-            <!-- end dialog zalozeni noveho kananlu-->
-          </v-dialog>
+                <!-- Uloženi / zavrení dialogu -->
+                <v-card-actions v-if="ffprobeOutput.stat === 'success'">
+                  <v-spacer></v-spacer>
+                  <v-btn color="red darken-1" text @click="closeDialogAndResetImputs()">Zavřít</v-btn>
+                  <v-btn color="green darken-1" text @click="saveNewImput()">Uložit</v-btn>
+                </v-card-actions>
+              </v-card>
+              <!-- end dialog zalozeni noveho kananlu-->
+            </v-dialog>
+          </div>
         </v-toolbar>
       </template>
       <!-- templaty pro zobtazení informací v tabulce -->
@@ -93,13 +95,23 @@
       </template>
       <template v-slot:item.actions="{ item }">
         <!-- edit -->
-        <v-icon @click="channelId = item.id,openEditDialog()" small class="mr-2">mdi-pencil</v-icon>
+        <v-icon
+          v-if="userData.user_role != 'náhled'"
+          @click="channelId = item.id,openEditDialog()"
+          small
+          class="mr-2"
+        >mdi-pencil</v-icon>
 
         <!-- delete -->
-        <v-icon @click="channelId = item.id, openDeleteDialog() " small color="red">mdi-delete</v-icon>
+        <v-icon
+          v-if="userData.user_role != 'náhled'"
+          @click="channelId = item.id, openDeleteDialog() "
+          small
+          color="red"
+        >mdi-delete</v-icon>
 
         <!-- Alerting -->
-        <v-tooltip bottom>
+        <v-tooltip v-if="userData.user_role != 'náhled'" bottom>
           <template v-slot:activator="{ on }">
             <v-icon
               @click="channelId = item.id, openAlertDialog()"
@@ -265,7 +277,8 @@ export default {
     loading: false,
     workers: [],
     worker: "",
-    editdat: []
+    editdat: [],
+    userData: false
   }),
   components: {
     "alert-component": Alert
@@ -274,6 +287,11 @@ export default {
     // Informace, zda jsou nefunknčí streamy
     window.axios.get("/api/channels").then(response => {
       this.channels = response.data;
+    });
+
+    let currentObj = this;
+    axios.get("/api/user/get").then(function(response) {
+      currentObj.userData = response.data;
     });
   },
   methods: {

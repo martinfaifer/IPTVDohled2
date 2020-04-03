@@ -14,17 +14,15 @@
       <v-spacer></v-spacer>
       <!-- settings -->
 
-      <div v-if="userData.user_role != 'náhled'">
-        <template v-if="$vuetify.breakpoint.smAndUp">
-          <v-menu offset-y>
-            <template v-slot:activator="{ on }">
-              <v-btn link to="/settings" class="white--text" icon v-on="on">
-                <v-icon>mdi-settings</v-icon>
-              </v-btn>
-            </template>
-          </v-menu>
-        </template>
-      </div>
+      <template v-if="$vuetify.breakpoint.smAndUp">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn link to="/settings" class="white--text" icon v-on="on">
+              <v-icon>mdi-settings</v-icon>
+            </v-btn>
+          </template>
+        </v-menu>
+      </template>
 
       <!-- end Settigs -->
       <!-- User cast -->

@@ -1,120 +1,125 @@
 <template>
   <div>
     <br />
-    <div class="body-2 mr-lg-12">
-      <div class="body-2">
-        <transition name="fade" mode="out-in">
-          <alert-component v-if="status != []" :status="status"></alert-component>
-        </transition>
-        <v-data-table :headers="headers" :items="users" :search="search" class="elevation-1">
-          <template v-slot:top>
-            <v-toolbar color="transparent" flat>
-              <v-text-field
-                autofocus
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Hledání..."
-                single-line
-                hide-details
-              ></v-text-field>
-              <v-spacer></v-spacer>
-              <v-spacer></v-spacer>
-              <v-dialog v-model="dialog" persistent max-width="500px">
-                <template v-slot:activator="{ on }">
-                  <v-btn color="teal" dark class="mb-2" v-on="on">Nový uživatel</v-btn>
-                </template>
-
-                <!-- dialog zalození noveho uživatele-->
-                <v-card>
-                  <v-card-title class="headline">Založení nového uživatele</v-card-title>
-                  <v-card-text>
-                    <v-row>
-                      <v-col cols="6" sm="6" md="6">
-                        <v-text-field v-model="name" label="Jméno" required autofocus></v-text-field>
-                      </v-col>
-                      <v-col cols="6" sm="6" md="6">
-                        <v-text-field v-model="surname" label="Příjmení" required></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field v-model="email" label="e-mailova adresa" required></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12" sm="12" md="12">
-                        <v-text-field type="password" v-model="password" label="Heslo" required></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col class="d-flex" cols="8" sm="12">
-                        <v-select :items="userRoles" v-model="value" label="Práva" dense required></v-select>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-
-                  <!-- Uloženi / zavrení dialogu -->
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" @click="closeDialog()" text>Zavřít</v-btn>
-                    <v-btn color="green darken-1" @click="saveNewUser()" text>Uložit</v-btn>
-                  </v-card-actions>
-                </v-card>
-                <!-- end dialog zalozeni noveho kananlu-->
-              </v-dialog>
-            </v-toolbar>
-          </template>
-          <!-- templaty pro zobtazení informací v tabulce -->
-
-          <template v-slot:item.actions="{ item }">
-            <!-- edit -->
-            <v-icon @click="userId = item.id, getUserData()" small class="mr-2">mdi-pencil</v-icon>
-
-            <!-- delete -->
-            <v-icon @click="userId = item.id, remove() " small color="red">mdi-delete</v-icon>
-          </template>
-          <!-- Konec templatu -->
-        </v-data-table>
-
-        <!-- edit dialog -->
-        <v-row justify="center">
-          <v-dialog v-model="editDialog" persistent max-width="500">
-            <v-card>
-              <v-card-text>
-                <v-row>
-                  <v-col cols="6" sm="6" md="6">
-                    <v-text-field v-model="edit.name" label="Jméno" required autofocus></v-text-field>
-                  </v-col>
-                  <v-col cols="6" sm="6" md="6">
-                    <v-text-field v-model="edit.surname" label="Příjmení" required></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" sm="12" md="12">
-                    <v-text-field v-model="edit.email" label="e-mailova adresa" required></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12" sm="12" md="12">
-                    <v-text-field type="password" v-model="password" label="Heslo"></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="d-flex" cols="8" sm="12">
-                    <v-select :items="userRoles" v-model="value" label="Práva" dense required></v-select>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-              <v-card-actions>
+    <div v-if="userData.user_role == 'admin'">
+      <div class="body-2 mr-lg-12">
+        <div class="body-2">
+          <transition name="fade" mode="out-in">
+            <alert-component v-if="status != []" :status="status"></alert-component>
+          </transition>
+          <v-data-table :headers="headers" :items="users" :search="search" class="elevation-1">
+            <template v-slot:top>
+              <v-toolbar color="transparent" flat>
+                <v-text-field
+                  autofocus
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Hledání..."
+                  single-line
+                  hide-details
+                ></v-text-field>
                 <v-spacer></v-spacer>
-                <v-btn color="red darken-1" text @click="closeDialog()">Zavřít</v-btn>
-                <v-btn color="green darken-1" text @click="saveEditDialog()">Editovat</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-row>
-        <!-- end edit dialog -->
+                <v-spacer></v-spacer>
+                <v-dialog v-model="dialog" persistent max-width="500px">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="teal" dark class="mb-2" v-on="on">Nový uživatel</v-btn>
+                  </template>
+
+                  <!-- dialog zalození noveho uživatele-->
+                  <v-card>
+                    <v-card-title class="headline">Založení nového uživatele</v-card-title>
+                    <v-card-text>
+                      <v-row>
+                        <v-col cols="6" sm="6" md="6">
+                          <v-text-field v-model="name" label="Jméno" required autofocus></v-text-field>
+                        </v-col>
+                        <v-col cols="6" sm="6" md="6">
+                          <v-text-field v-model="surname" label="Příjmení" required></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field v-model="email" label="e-mailova adresa" required></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field type="password" v-model="password" label="Heslo" required></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="d-flex" cols="8" sm="12">
+                          <v-select :items="userRoles" v-model="value" label="Práva" dense required></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+
+                    <!-- Uloženi / zavrení dialogu -->
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="red darken-1" @click="closeDialog()" text>Zavřít</v-btn>
+                      <v-btn color="green darken-1" @click="saveNewUser()" text>Uložit</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                  <!-- end dialog zalozeni noveho kananlu-->
+                </v-dialog>
+              </v-toolbar>
+            </template>
+            <!-- templaty pro zobtazení informací v tabulce -->
+
+            <template v-slot:item.actions="{ item }">
+              <!-- edit -->
+              <v-icon @click="userId = item.id, getUserData()" small class="mr-2">mdi-pencil</v-icon>
+
+              <!-- delete -->
+              <v-icon @click="userId = item.id, remove() " small color="red">mdi-delete</v-icon>
+            </template>
+            <!-- Konec templatu -->
+          </v-data-table>
+
+          <!-- edit dialog -->
+          <v-row justify="center">
+            <v-dialog v-model="editDialog" persistent max-width="500">
+              <v-card>
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="6" sm="6" md="6">
+                      <v-text-field v-model="edit.name" label="Jméno" required autofocus></v-text-field>
+                    </v-col>
+                    <v-col cols="6" sm="6" md="6">
+                      <v-text-field v-model="edit.surname" label="Příjmení" required></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field v-model="edit.email" label="e-mailova adresa" required></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field type="password" v-model="password" label="Heslo"></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col class="d-flex" cols="8" sm="12">
+                      <v-select :items="userRoles" v-model="value" label="Práva" dense required></v-select>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="red darken-1" text @click="closeDialog()">Zavřít</v-btn>
+                  <v-btn color="green darken-1" text @click="saveEditDialog()">Editovat</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+          <!-- end edit dialog -->
+        </div>
       </div>
+    </div>
+    <div v-else>
+      <v-alert class="body-2" type="error">Nemáte přístup do této sekce</v-alert>
     </div>
   </div>
 </template>
@@ -148,7 +153,8 @@ export default {
     password: "",
     search: "",
     edit: [],
-    status: ""
+    status: "",
+    userData: false
   }),
   components: {
     "alert-component": Alert
@@ -157,6 +163,11 @@ export default {
     // Informace, zda jsou nefunknčí streamy
     window.axios.get("/api/users/get").then(response => {
       this.users = response.data;
+    });
+
+    let currentObj = this;
+    axios.get("/api/user/get").then(function(response) {
+      currentObj.userData = response.data;
     });
   },
   methods: {
