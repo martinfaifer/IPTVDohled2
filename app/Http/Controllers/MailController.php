@@ -11,20 +11,20 @@ class MailController extends Controller
 {
     /**
      * klasický mail
-     *
+     * nazev, status, prijemce
      * @return void
      */
-    public static function basic_email($volumeErr, $channelCrash, $toUser)
+    public static function basic_email($channelName, $status, $toUser)
     {
         $data = array(
             'name' => "Alert",
-            'volumeErr' => $volumeErr,
-            'crashChannels' => $channelCrash
+            'status' => $status,
+            'channel' => $channelName
         );
 
         Mail::send('mail', $data, function ($message) use ($toUser) {
-            $message->to($toUser, 'IPTV Dohled test ')->subject('IPTV Dohled test ');
-            $message->from('faifermartin2@seznam.cz', 'IPTV Dohled test');
+            $message->to($toUser, 'IPTV Dohled')->subject('IPTV Dohled');
+            $message->from('faifermartin2@seznam.cz', 'IPTV Dohled');
         });
     }
 

@@ -19,8 +19,7 @@ class FFprobeDataController extends Controller
     {
         $allWorkers = Worker::all();
         foreach ($allWorkers as $worker) {
-            $channels = ChannelController::workersChannels($worker->id);
-            foreach ($channels as $channel) {
+            foreach (ChannelController::workersChannels($worker->id) as $channel) {
                 shell_exec('php artisan' . ' command:channelFFprobe ' . $channel->url . '  > /dev/null &');
                 shell_exec('php artisan' . ' command:takeVolume ' . $channel->url . '  > /dev/null &');
                 shell_exec('php artisan' . ' command:img ' . $channel->url . '  > /dev/null &');

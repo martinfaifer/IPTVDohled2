@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\MailAlerts;
 use App\NotFunctionChannel;
+use App\VolumeAlert;
+use App\VolumeException;
 use Illuminate\Http\Request;
 
 class NotFunctionChannelController extends Controller
@@ -34,6 +37,27 @@ class NotFunctionChannelController extends Controller
                     } else {
                         // neni vyplneno
                         NotFunctionChannel::where('channelId', $channelId)->update(['test_four' => "true"]);
+
+                        // zaslat mail alert, overit vsechny podminky, zda kanal má posílat alerty
+                        if (!VolumeException::where('channelId', $channelId)->first()) {
+                            // pokud kanál zde existuje, zasílá se alert
+
+                            //vyhledání názvu kanálu
+                            $channelNameData = Channel::where('id', $channelId)->first();
+                            // nazev kanalu $channelNameData['nazev'];
+
+                            // vyhledání zda kanál je komu poslat
+
+                            if (MailAlerts::first()) {
+                                // existuji minimálne jeden mail na který se poslou alerty
+                                foreach (MailAlerts::get() as  $mail) {
+
+                                    // kanal, status, prijmece
+                                    MailController::basic_email($channelNameData['nazev'], "KO", $mail['mail']);
+                                    MailHistoryController::store($mail['mail'], $channelNameData['nazev'] . " KO");
+                                }
+                            }
+                        }
                     }
                 } else {
                     // neni vyplneno

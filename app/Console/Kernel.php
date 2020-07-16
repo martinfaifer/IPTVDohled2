@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping()->runInBackground();
 
         // MAIL ALERT -> zasila se na 4 pokus co byl kanal testován
-        $schedule->command('command:sendVolumeMailAlert')->everyFifteenMinutes()->runInBackground();
+        // $schedule->command('command:sendVolumeMailAlert')->everyFifteenMinutes()->runInBackground();
         // Sheduler pro smazání dat starších jak 7 týden
         $schedule->call(function () {
             Volume::where('created_at', '<=', Carbon::now()->subdays(7))->delete();

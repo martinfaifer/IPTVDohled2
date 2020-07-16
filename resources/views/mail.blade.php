@@ -28,39 +28,7 @@
     </head>
     <body>
 
-{{--
-@if ($volumeErr == "false")
-
-@else
-Kanály, kde se nepodařilo detekovat zvukovou stopu:
-
-@foreach ($volumeErr as $volume)
-{{ $volume }}
-@endforeach
-@endif
-
-
----------------------------------------------------------------------------------------------------
-@if ($crashChannels == "false")
-
-@else
-Kanály, které nefungují:
-
-@foreach ($crashChannels as $crash)
-{{ $crash }}
-@endforeach
-@endif
- --}}
-
- <h3>Kanály, které nefungují:</h3>
-
- <ol>
-<li @foreach ($crashChannels as $crash)>
-    {{ $crash }}
-</li @endforeach>
- </ol>
-
-
+      {{$channelName}} -> {{$status}}
 
     </body>
 </html>

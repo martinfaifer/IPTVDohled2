@@ -225,7 +225,7 @@ class ChannelController extends Controller
      * fn pro zísná kanálu pro daný Worker
      *
      * @param [type] $id
-     * @return void
+     * @return array
      */
     public static function workersChannels($id)
     {
