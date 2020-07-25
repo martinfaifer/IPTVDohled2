@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bitrate;
 use App\Channel;
+use App\ChannelErrorTime;
 use App\CrashedChannel;
 use App\FFprobeData;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use App\MailAlerts;
 use App\NotFunctionChannel;
 use App\VolumeAlert;
 use App\VolumeException;
+use FFMpeg\FFProbe;
+use FFMpeg\FFMpeg;
 
 class StreamDiagnostic extends Controller
 {
@@ -23,19 +26,13 @@ class StreamDiagnostic extends Controller
      */
     public static function ffprobe($channelUrl)
     {
-        $channel = Channel::where('url', $channelUrl)->first();
-
-
-        // $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 15");
-        $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
-
-        // Uložení dat pro budoucí zpracování
-        // FFprobeData::create([
-        //     'channelId' => $channel->id,
-        //     'export' => $output
-        // ]);
+        $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
+        // dd($output);
+        // die;
+        // $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
 
         // Aktulizace nových dat v Channels
+        $channel = Channel::where('url', $channelUrl)->first();
         Channel::where('id', $channel->id)->update(['FFProbe' => $output]);
 
         // analyzování dat zda je vystup platný
@@ -57,47 +54,34 @@ class StreamDiagnostic extends Controller
         if (!array_key_exists("programs", $data)) {
 
             // ulození, že kanál selhal
-            NotFunctionChannelController::store($channelId);
+            // NotFunctionChannelController::store($channelId);
+
+            // Pokud je kanál uložen ve stavu success , tak zmena na error
+            $channelData = Channel::where('id', $channelId)->first();
+            if ($channelData->Alert != "error") {
+                // Channel::where('id', $channelId)->update(['Alert', "error"]);
+                $update = Channel::find($channelId);
+                $update->Alert = "error";
+                $update->save();
+            }
 
             CrashedChannel::create([
                 'channelId' => $channelId,
             ]);
+
+            ChannelErrorTimeController::store($channelId); // ulození do tabulky, kde bude zaznamenáno od kdy do kdy byl výpadek
         } else {
             $overeniZdaJeNutneProvadetUpdate = Channel::where('id', $channelId)->first();
-            if ($overeniZdaJeNutneProvadetUpdate->Alert == 'success') {
-                // Neni nutne aktualizovat zaznam, jelikoz kanal jiz ma hodnotu success
-            } else {
-                Channel::where('id', $channelId)->update(['Alert' => "success"]);
+            if ($overeniZdaJeNutneProvadetUpdate->Alert != "success") {
+                $update = Channel::find($channelId);
+                $update->Alert = "success";
+                $update->save();
             }
-            if (NotFunctionChannel::where('channelId', $channelId)->first()) {
 
-                $check = NotFunctionChannel::where('channelId', $channelId)->first();
-                if ($check['test_four'] == "true") {
-                    // odeslat mail, ze je kanal již v poradku -> pokud kanal má posílat alerty
-
-                    // overeni, zda se na kanalu dohleduje i hlasitost
-                    if (VolumeException::where('channelId', $channelId)->first()) {
-                        // pokud kanál zde existuje, zasílá se alert
-
-                        //vyhledání názvu kanálu
-                        $channelNameData = Channel::where('id', $channelId)->first();
-                        // nazev kanalu $channelNameData['nazev'];
-
-                        // vyhledání zda kanál je komu poslat
-                        if (MailAlerts::first()) {
-                            // existuji minimálne jeden mail na který se poslou alerty
-                            foreach (MailAlerts::get() as  $mail) {
-
-                                // kanal, status, prijmece
-                                MailController::basic_email($channelNameData['nazev'], "OK", $mail['mail']);
-                                MailHistoryController::store($mail['mail'], $channelNameData['nazev'] . " OK");
-                            }
-                        }
-                    }
-                }
-
-                // odebrání kanálu z fronty na odeslani alertu
-                NotFunctionChannelController::remove($channelId);
+            // odebrání kanálu z fronty na odeslani alertu
+            // NotFunctionChannelController::remove($channelId);
+            if (ChannelErrorTime::where('channelId', $channelId)->where('ok_time', null)->first()) {
+                ChannelErrorTimeController::update($channelId); // update tabulky, kdy je zaznamenáno, kdy skomcil výpadek na kanálu
             }
         }
     }
@@ -123,10 +107,16 @@ class StreamDiagnostic extends Controller
                 }
             }
         }
-
-        Bitrate::create([
-            'channelId' => $channelId,
-            'bitrate' => $bitrate
-        ]);
+        try {
+            Bitrate::create([
+                'channelId' => $channelId,
+                'bitrate' => $bitrate
+            ]);
+        } catch (\Throwable $th) {
+            Bitrate::create([
+                'channelId' => $channelId,
+                'bitrate' => "0"
+            ]);
+        }
     }
 }

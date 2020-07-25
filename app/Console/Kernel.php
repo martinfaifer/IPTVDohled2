@@ -35,10 +35,12 @@ class Kernel extends ConsoleKernel
         /**
          * Prikaz pro vytvoreni nahledu, diagnostikování a získání hlasitosti ze streamu
          */
-        $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping()->runInBackground();
-
-        // MAIL ALERT -> zasila se na 4 pokus co byl kanal testován
-        // $schedule->command('command:sendVolumeMailAlert')->everyFifteenMinutes()->runInBackground();
+        $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping(2)->runInBackground();  // balík příkazů jednak pro získání bitratu, ffproby a vytvoření náhledu
+        // dohled IPTV zarizeni / platformy
+        $schedule->command('command:CheckIPTVDevice')->everyFiveMinutes()->runInBackground(); // kontrola IPTV zařízení
+        $schedule->command('command:sendErrorMail')->everyMinute()->runInBackground(); // odeslání mail alertu s chybovými kanály
+        $schedule->command('command:sendSuccessMail')->everyMinute()->runInBackground(); // odeslání mail alertu , když je kanál již ok
+        $schedule->command('command:deleteImgOlderThanOneHour')->everyTenMinutes()->runInBackground(); // odebrání obrázků starších jak 1h z file systému
         // Sheduler pro smazání dat starších jak 7 týden
         $schedule->call(function () {
             Volume::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
@@ -52,20 +54,7 @@ class Kernel extends ConsoleKernel
             CrashedChannel::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
         })->daily();
 
-        // DESKTOP ALERT -> zasila se alert na 3. pokus co byl kanal testovan
-        $schedule->call(function () {
-            if (NotFunctionChannel::where("test_three", "true")->first()) {
-                $allChannelsProblems = NotFunctionChannel::where("test_three", "true")->get();
-                foreach ($allChannelsProblems as $channelProblem) {
-                    $findChannelName = Channel::where('id', $channelProblem->channelId)->get();
-                    foreach ($findChannelName as $channel) {
-                        event(new SendDesktopAlert($channel));
-                    }
-                }
-            }
-        })->everyFiveMinutes();
-
-        // fn pro kontrolu již nedohledovaných kanalá, aby zbytecne nekde mevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
+        // fn pro kontrolu již nedohledovaných kanalů, aby zbytecne nekde nevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
         $schedule->call(function () {
             if (Channel::where('noMonitor', "mdi-close")->first()) {
                 // kanaály, ktere se nedohledují

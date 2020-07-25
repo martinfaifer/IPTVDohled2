@@ -1,47 +1,79 @@
 <template>
-  <div>
-    <v-img :src="channelData.img" width="500px" height="280px"></v-img>
-  </div>
+    <div>
+        <v-img
+            v-if="channelData.img === 'false'"
+            width="720px"
+            height="405px"
+            contain
+        >
+            <v-progress-circular
+                :size="70"
+                :width="7"
+                color="grey lighten-5"
+                indeterminate
+            ></v-progress-circular>
+        </v-img>
+        <v-img
+            v-else-if="channelData.img === '/storage/noImg.jpg'"
+            width="720px"
+            height="405px"
+            contain
+        >
+            <v-icon color="orange" class="mt-8 ml-12" large>
+                mdi-television-off
+            </v-icon>
+        </v-img>
+
+        <v-img
+            v-else
+            :lazy-src="channelData.img"
+            :src="channelData.img"
+            width="720px"
+            height="405px"
+            contain
+        ></v-img>
+        <!-- <v-img :src="channelData.img" width="720px" height="405px"></v-img> -->
+    </div>
 </template>
 <script>
 export default {
-  props: ["channelId"],
-  data() {
-    return {
-      channelData: []
-    };
-  },
+    props: ["channelId"],
+    data() {
+        return {
+            channelData: []
+        };
+    },
 
-  created() {
-    let currentObj = this;
-    axios
-      .post("/api/channel/getDetail", {
-        id: this.channelId
-      })
-      .then(function(response) {
-        currentObj.channelData = response.data;
-      })
-      .catch(function(error) {
-        console.log("chyba" + error);
-      });
-  },
-  mounted() {
-    this.interval = setInterval(
-      function() {
+    created() {
         let currentObj = this;
         axios
-          .post("/api/channel/getDetail", {
-            id: this.channelId
-          })
-          .then(function(response) {
-            currentObj.channelData = response.data;
-          })
-          .catch(function(error) {
-            console.log("chyba" + error);
-          });
-      }.bind(this),
-      5000
-    );
-  }
+            .post("/api/channel/getDetail", {
+                id: this.channelId
+            })
+            .then(function(response) {
+                currentObj.channelData = response.data;
+            })
+            .catch(function(error) {
+                console.log("chyba" + error);
+            });
+    },
+    mounted() {
+        this.interval = setInterval(
+            function() {
+                let currentObj = this;
+                axios
+                    .post("/api/channel/getDetail", {
+                        id: this.channelId
+                    })
+                    .then(function(response) {
+                        currentObj.channelData = response.data;
+                    })
+                    .catch(function(error) {
+                        console.log("chyba" + error);
+                    });
+            }.bind(this),
+            1000
+        );
+    }
 };
 </script>

@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Channel;
+use App\MailAlerts;
+use App\SendedAlert;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+
+class AlertController extends Controller
+{
+    /**
+     * fn pro odeslání mailu po 10 min, kdy kanál crashne
+     * do té doby nebude zaslán žádný alert
+     *
+     * @return bolean
+     */
+    public static function sendErrorMail()
+    {
+        $data = Channel::where('Alert', "error")->where('updated_at', '<=', Carbon::now()->second(300))->get(['nazev', 'url', 'id']);
+        if (count($data) == "0") {
+            // vynecháme
+            return false;
+        } else {
+            // vratí se data, která se následne reportují
+
+            foreach ($data as $channelToSend) {
+                // overení, ze kanal jiz nebyl jednou zaslan
+                if (!SendedAlert::where('channelId', $channelToSend['id'])->first()) {
+                    // vyhledání zda kanál je komu poslat
+                    if (MailAlerts::first()) {
+                        // existuji minimálne jeden mail na který se poslou alerty
+                        foreach (MailAlerts::get() as  $mail) {
+
+                            // kanal, status, prijmece
+                            try {
+                                MailController::basic_email($channelToSend['nazev'], "KO", "KO - " . $channelToSend['nazev'], $mail['mail']);
+                                MailHistoryController::store($mail['mail'], $channelToSend['nazev'] . " KO");
+                                SendedAlertController::store($channelToSend['id']);
+                            } catch (\Throwable $th) {
+                                // něco selhalo
+                                echo "neco selhalo pri odesilani / ukladani dat";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static function sendSuccessMail()
+    {
+        // overeni, ze je komu odeslat alert
+        if (MailAlerts::first()) {
+
+            // existuje alert
+            if (SendedAlert::first()) {
+                foreach (SendedAlert::get() as $sendedAlert) {
+                    $channel = Channel::where('id', $sendedAlert['channelId'])->first();
+                    if ($channel->Alert == "success") {
+                        foreach (MailAlerts::get() as  $mail) {
+
+                            // kanal, status, prijmece
+                            try {
+                                MailController::basic_email($channel['nazev'], "OK", "OK - " . $channel['nazev'], $mail['mail']);
+                                MailHistoryController::store($mail['mail'], $channel['nazev'] . " OK");
+                                SendedAlertController::remove($sendedAlert['channelId']);
+                            } catch (\Throwable $th) {
+                                // něco selhalo
+                                echo "neco selhalo pri odesilani / ukladani dat";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

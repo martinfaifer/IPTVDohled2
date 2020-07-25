@@ -1,11 +1,17 @@
 <?php
 
 use App\Channel;
+use App\ChannelErrorTime;
 use App\Events\SendDesktopAlert;
+use App\IPTVDevice;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/video', function () {
+    return view('video');
 });
 
 
@@ -15,14 +21,13 @@ Route::post('/api/channel/getDetail', 'ChannelController@getDetail');
 Route::post('/api/channel/bitrate', 'ChannelController@getBitrate');
 Route::get('/channel/bitrate/hourdata/{id}', 'BitrateController@getHourData');
 Route::post('/api/channel/ffprobeGet', 'ChannelController@getFFprobe');
-// Route::get('/api/channel/ffprobeGet', 'ChannelController@getFFprobe');
 Route::post('/api/channel/ffprobe/formats', 'ChannelController@getVideoAudioFormat');
 Route::post('/api/channel/volume', 'VolumeController@getChannelVolumesForHour');
 Route::post('/api/channel/volume/dayData', 'VolumeController@getChannelVolumesForADay');
 Route::post('/api/channel/bitrates', 'BitrateController@getChannelBitratesForHour');
 Route::post('/api/channel/bitrate/dayData', 'BitrateController@getChannelBitratesForADay');
 Route::get('/api/channels/crashed', 'ChannelController@getCrashedStreams');
-Route::post('/api/channel/chart/crash/hour', 'CrashedChannelController@getChannelCrashForADay');
+Route::post('/api/channel/chart/crash/hour', 'ChannelErrorTimeController@getLasDayData');
 Route::get('/api/bitrate/delteOlderThanTwoDays', 'BitrateController@delteOlderThanTwoDays');
 
 Route::get('/api/settings/dashboard/crashedChannels', 'CrashedChannelController@takeTopTenCrashedChannels');
@@ -60,6 +65,7 @@ Route::post('/api/mailAlert/remove', 'MailAlertsController@remove');
 Route::post('/api/user/login', 'UserController@login');
 Route::get('/api/user/logout', 'UserController@logOut');
 Route::post('/api/user/edit', 'UserController@editUser');
+Route::post('/api/user/alert/visibility', 'UserController@alertVisibility');
 Route::get('/api/user/get', 'UserController@getUser');
 Route::get('/api/users/get', 'UserController@getAll');
 Route::post('/api/user/create', 'UserController@create');
@@ -74,6 +80,9 @@ Route::get('/api/channel/crashed/{name}', 'NotFunctionChannelController@getCrash
 // Hardware
 Route::get('/api/disk', 'HardwareController@getDifferenceDiskSpace');
 Route::get('/api/sysdata', 'HardwareController@sysdata');
+Route::get('/api/devices', 'IPTVDeviceController@getDevices');
+
+Route::get('/api/device/check', 'IPTVDeviceController@deviceCheck');
 
 Route::get('/api/channels/audioProblem', 'VolumeAlertController@getAll');
 Route::get('/api/channels/audio/chart', 'VolumeAlertController@difference');
@@ -83,12 +92,12 @@ Route::get('/api/channels/audio/chart', 'VolumeAlertController@difference');
 Route::get('/api/users/history', 'UserHistoryController@getAll');
 Route::get('/api/mail/history', 'MailHistoryController@getAll');
 
-Route::get('event', function () {
-    $channel = Channel::first();
-    event(new SendDesktopAlert($channel));
-});
+// Route::get('event', function () {
+//     $channel = Channel::first();
+//     event(new SendDesktopAlert($channel));
+// });
 
-Route::get('/api/ffprobeData/get', function () {
-    $data = App\Channel::where('id', "11")->first();
-    return json_decode($data->FFProbe, true);
-});
+// Route::get('/api/ffprobeData/get', function () {
+//     $data = App\Channel::where('id', "11")->first();
+//     return json_decode($data->FFProbe, true);
+// });

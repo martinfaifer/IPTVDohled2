@@ -90,6 +90,28 @@ class UserController extends Controller
         ];
     }
 
+    /**
+     * fn pro změnu viditelnosti alertu
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function alertVisibility(Request $request)
+    {
+        $user = User::where('id', $request->userId)->first();
+        if ($user->alert == "show") {
+            // nastavení na hide
+            $update = User::find($request->userId);
+            $update->alert = "hide";
+            $update->save();
+        } else {
+            // nastaveni na show
+            $update = User::find($request->userId);
+            $update->alert = "show";
+            $update->save();
+        }
+    }
+
 
     /**
      * zalození noveho uzivatele

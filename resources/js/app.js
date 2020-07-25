@@ -20,6 +20,7 @@ import SettingsComponent from './components/settings/SettingsComponent.vue';
 import UsersComponent from './components/settings/UsersComponent.vue';
 import AlertSettingsComponent from './components/settings/AlertsComponents/AlertSettingsComponent.vue';
 import LogComponent from './components/settings/logs/LogComponent.vue';
+import DeviceComponent from './components/settings/devices/DeviceComponent';
 
 
 // midleware
@@ -71,6 +72,10 @@ let routes = [
                     {
                         path: 'logs',
                         component: LogComponent
+                    },
+                    {
+                        path: 'devices',
+                        component: DeviceComponent
                     }
                 ]
             }
@@ -90,15 +95,15 @@ let routes = [
 // Enable pusher logging - don't include this in production
 // Pusher.logToConsole = true;
 
-var pusher = new Pusher('7eb4240a3bb1b22d6a10', {
-    cluster: 'eu',
-    forceTLS: false
-});
+// var pusher = new Pusher('7eb4240a3bb1b22d6a10', {
+//     cluster: 'eu',
+//     forceTLS: false
+// });
 
-var channel = pusher.subscribe('kanals');
-channel.bind('SendDesktopAlert', function (data) {
-    app.messages.push(JSON.stringify(data));
-});
+// var channel = pusher.subscribe('kanals');
+// channel.bind('SendDesktopAlert', function (data) {
+//     app.messages.push(JSON.stringify(data));
+// });
 
 
 // definice konstant

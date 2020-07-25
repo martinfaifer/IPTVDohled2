@@ -6,7 +6,7 @@
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="shortcut icon" href="img/icon/favicon.ico" type="image/x-icon">
-        <title>{{ config('app.name', 'IPTV Dohled') }}</title>
+        <title>{{ config('app.name') }}</title>
         <script>
             window.Laravel = {!! json_encode([
                 'csrfToken' => csrf_token(),
@@ -17,7 +17,6 @@
         <script src="{{ asset('js/app.js') }}" defer></script>
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-        <script src="https://js.pusher.com/5.1/pusher.min.js"></script>
         {{-- css --}}
         <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -28,7 +27,7 @@
     </head>
     <body>
 
-      {{$channelName}} -> {{$status}}
+      Kanál {{$channel}} má status {{$status}}
 
     </body>
 </html>

@@ -19,9 +19,11 @@ class FFprobeDataController extends Controller
     {
         $allWorkers = Worker::all();
         foreach ($allWorkers as $worker) {
-            foreach (ChannelController::workersChannels($worker->id) as $channel) {
+            $channels = ChannelController::workersChannels($worker->id);
+            foreach ($channels as $channel) {
                 shell_exec('php artisan' . ' command:channelFFprobe ' . $channel->url . '  > /dev/null &');
                 shell_exec('php artisan' . ' command:takeVolume ' . $channel->url . '  > /dev/null &');
+
                 shell_exec('php artisan' . ' command:img ' . $channel->url . '  > /dev/null &');
             }
         }
@@ -38,8 +40,8 @@ class FFprobeDataController extends Controller
 
         $channel = Channel::where('url', $channelUrl)->first();
 
-        // exec('/usr/local/bin/ffmpeg -timeout 1000 -i ' . $channelUrl . ' -vframes 1 -af "volumedetect" -f null /dev/null 2>&1', $output, $return_var);
-        exec('ffmpeg -timeout 1000 -i ' . $channelUrl . ' -vframes 1 -af "volumedetect" -f null /dev/null 2>&1', $output, $return_var);
+        exec('/usr/local/bin/ffmpeg -timeout 4 -timelimit 4 -i ' . $channelUrl . ' -vframes 1 -af "volumedetect" -f null /dev/null 2>&1', $output, $return_var);
+        // exec('ffmpeg -timeout 4 -timelimit 4 -i ' . $channelUrl . ' -vframes 1 -af "volumedetect" -f null /dev/null 2>&1', $output, $return_var);
 
         $celkovyPocelKlicu =  count($output);
 

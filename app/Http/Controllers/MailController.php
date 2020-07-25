@@ -14,7 +14,7 @@ class MailController extends Controller
      * nazev, status, prijemce
      * @return void
      */
-    public static function basic_email($channelName, $status, $toUser)
+    public static function basic_email($channelName, $status, $subject, $toUser)
     {
         $data = array(
             'name' => "Alert",
@@ -22,8 +22,8 @@ class MailController extends Controller
             'channel' => $channelName
         );
 
-        Mail::send('mail', $data, function ($message) use ($toUser) {
-            $message->to($toUser, 'IPTV Dohled')->subject('IPTV Dohled');
+        Mail::send('mail', $data, function ($message) use ($toUser, $subject) {
+            $message->to($toUser, 'IPTV Dohled')->subject($subject);
             $message->from('faifermartin2@seznam.cz', 'IPTV Dohled');
         });
     }

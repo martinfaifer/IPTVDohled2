@@ -42,6 +42,7 @@ class CreateChannelsTable extends Migration
             $table->string('worker_id')->index();
             $table->string('poznamka')->nullable();
             $table->text('FFProbe')->nullable();
+            $table->string('locked');
             $table->timestamps();
         });
     }

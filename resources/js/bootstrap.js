@@ -17,7 +17,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 
-window.Pusher = require('pusher-js');
+// window.Pusher = require('pusher-js');
 
 // import Echo from "laravel-echo"
 
@@ -25,19 +25,13 @@ window.Pusher = require('pusher-js');
 //     broadcaster: 'pusher',
 //     key: '7eb4240a3bb1b22d6a10',
 //     cluster: 'eu',
-//     encrypted: true
+//     forceTLS: false
 // });
 
-import Echo from "laravel-echo"
 
+import Echo from 'laravel-echo';
+import Larasocket from 'larasocket-js';
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: '7eb4240a3bb1b22d6a10',
-    cluster: 'eu',
-    forceTLS: false
-});
-
-var channel = window.Echo.channel('kanals');
-channel.listen('kanals', function (data) {
-    alert(JSON.stringify(data));
+    broadcaster: Larasocket,
+    token: process.env.MIX_LARASOCKET_TOKEN,
 });

@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('user_role');
             $table->string('pagination')->nullable()->default('18');
+            $table->string('alert')->nullable()->default('show');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -244,14 +244,27 @@ class ChannelController extends Controller
     /**
      * fn pro custom velikost mozaiky -> pocet kanálu per stránka
      *
-     * @return void
+     * @return Channels
      */
     public function pagination()
     {
         $user = Auth::user();
         if (empty($user)) {
+            // none
         } else {
-            return Channel::where('noMonitor', "mdi-check")->paginate($user->pagination);
+            // fn pro overení ze URL existuje, pokud neexistuje zmeni se na /storage/noImg.jpg
+            foreach (Channel::where('locked', "unlocked")->get() as $channel) {
+                $img = str_replace("/storage/", "", $channel["img"]);
+
+                // overeni zda jiz existoval img
+                if ($channel["img"] != "/storage/noImg.jpg") {
+                    // vyhledání původního náhledu a odstranění z filesystemu
+                    if (!file_exists(public_path('storage/' . $img))) {
+                        Channel::find($channel->id)->update(['img' => "/storage/noImg.jpg"]);
+                    }
+                }
+            }
+            return Channel::where('noMonitor', "mdi-check")->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert']);
         }
     }
 
@@ -536,7 +549,14 @@ class ChannelController extends Controller
      */
     public function getCrashedStreams()
     {
-        return Channel::where('alert', "error")->get();
+        $user = Auth::user();
+        if ($user->alert == "show") {
+            if (Channel::where('alert', "error")->first()) {
+                return Channel::where('alert', "error")->get();
+            } else {
+                return "false";
+            }
+        }
     }
 
 
