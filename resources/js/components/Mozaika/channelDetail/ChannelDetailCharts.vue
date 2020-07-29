@@ -1,9 +1,9 @@
 <template>
     <div>
-        <v-card flat class="ml-6 mt-2" height="100%" width="850px">
+        <v-card flat class="ml-6 mt-2">
             <v-card-text>
                 <v-row>
-                    <v-col class="d-flex" cols="8" sm="2">
+                    <v-col class="d-flex" cols="8" sm="6">
                         <v-select
                             :items="items"
                             v-model="value"
@@ -20,7 +20,7 @@
                         </p>
                         <line-chart
                             label="úroveň hlasitosti v dB"
-                            width="900px"
+                            width="800px"
                             height="250px"
                             xtitle="posledních 60min"
                             ytitle="dB"
@@ -30,7 +30,7 @@
                         <p class="text-center">Graf hlasitosti za 24h</p>
                         <line-chart
                             label="úroveň hlasitosti v dB"
-                            width="900px"
+                            width="800px"
                             height="250px"
                             xtitle="Data za jeden den"
                             ytitle="dB"
@@ -44,7 +44,7 @@
                         </p>
                         <line-chart
                             label="bitrate v Mbps"
-                            width="900px"
+                            width="800px"
                             height="250px"
                             xtitle="posledních 60min"
                             ytitle="Bitrate"
@@ -54,7 +54,7 @@
                         <p class="text-center">Graf bitratu za 24h</p>
                         <line-chart
                             label="bitrate v Mbps"
-                            width="900px"
+                            width="800px"
                             height="250px"
                             xtitle="Data za jeden den"
                             ytitle="Bitrate"
@@ -64,12 +64,6 @@
                     <div v-if="value === 'Výpadky'">
                         <br />
                         <p class="text-center">Graf výpadků za 24h</p>
-                        <!-- <column-chart
-                            :colors="['#FF0000']"
-                            width="900px"
-                            height="450px"
-                            :data="crasheddata"
-                        ></column-chart> -->
                         <div v-if="crasheddata === 'false'">
                             <v-alert
                                 type="success"

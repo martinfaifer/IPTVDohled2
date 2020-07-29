@@ -27,17 +27,53 @@ class StreamDiagnostic extends Controller
     public static function ffprobe($channelUrl)
     {
         $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
-        // dd($output);
-        // die;
         // $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
 
         // Aktulizace nových dat v Channels
         $channel = Channel::where('url', $channelUrl)->first();
-        Channel::where('id', $channel->id)->update(['FFProbe' => $output]);
 
         // analyzování dat zda je vystup platný
-        self::analyzeRecord($output, $channel->id);
-        self::getBitrate($output, $channel->id);
+        $channelStatus = self::analyzeRecord($output, $channel->id);
+
+        try {
+            if ($channelStatus == "success") {
+                $data = json_decode($output, true);
+                if (!array_key_exists("programs", $data)) {
+                    $language = null;
+                } else {
+                    foreach ($data['programs'] as $program) {
+                        foreach ($program['streams'] as $stream) {
+                            if (!array_key_exists("tags", $stream)) {
+                                $language = null;
+                            } else {
+                                $language = $stream['tags']["language"];
+                            }
+                        }
+                    }
+                }
+            } else {
+                $language = null;
+            }
+        } catch (\Throwable $th) {
+            $language = null;
+        }
+
+        $update = Channel::find($channel->id);
+        $update->Alert = $channelStatus;
+        $update->FFProbe = $output;
+        $update->audioLang = $language;
+        $update->save();
+
+        // overeni ze kanal má povolený dohled Bitratu
+        if ($channel->dohledBitrate == "1") {
+            self::getBitrate($output, $channel->id);
+        }
+
+        // overeni ze kanal má povolený dohled Hlasitosti
+        if ($channel->dohledVolume == "1") {
+            shell_exec('php artisan' . ' command:takeVolume ' . $channelUrl . ' > /dev/null &');
+        }
+        shell_exec('php artisan' . ' command:img ' . $channelUrl . ' > /dev/null &');
     }
 
 
@@ -56,34 +92,43 @@ class StreamDiagnostic extends Controller
             // ulození, že kanál selhal
             // NotFunctionChannelController::store($channelId);
 
+            $output = "error";
+
             // Pokud je kanál uložen ve stavu success , tak zmena na error
             $channelData = Channel::where('id', $channelId)->first();
             if ($channelData->Alert != "error") {
-                // Channel::where('id', $channelId)->update(['Alert', "error"]);
-                $update = Channel::find($channelId);
-                $update->Alert = "error";
-                $update->save();
+
+                $output = "error";
             }
 
             CrashedChannel::create([
                 'channelId' => $channelId,
             ]);
 
-            ChannelErrorTimeController::store($channelId); // ulození do tabulky, kde bude zaznamenáno od kdy do kdy byl výpadek
-        } else {
-            $overeniZdaJeNutneProvadetUpdate = Channel::where('id', $channelId)->first();
-            if ($overeniZdaJeNutneProvadetUpdate->Alert != "success") {
-                $update = Channel::find($channelId);
-                $update->Alert = "success";
-                $update->save();
+
+            // ulození do tabulky, kde bude zaznamenáno od kdy do kdy byl výpadek
+            if (ChannelErrorTimeController::store($channelId) == true) {
+                //
+            } else {
+                return;
             }
+        } else {
+
+            $output = "success";
+
+            // $overeniZdaJeNutneProvadetUpdate = Channel::where('id', $channelId)->first();
+            // if ($overeniZdaJeNutneProvadetUpdate->Alert != "success") {
+
+            //     $output = "success";
+            // }
 
             // odebrání kanálu z fronty na odeslani alertu
-            // NotFunctionChannelController::remove($channelId);
             if (ChannelErrorTime::where('channelId', $channelId)->where('ok_time', null)->first()) {
                 ChannelErrorTimeController::update($channelId); // update tabulky, kdy je zaznamenáno, kdy skomcil výpadek na kanálu
             }
         }
+
+        return $output;
     }
 
     public static function getBitrate($jsonData, $channelId)
@@ -113,10 +158,7 @@ class StreamDiagnostic extends Controller
                 'bitrate' => $bitrate
             ]);
         } catch (\Throwable $th) {
-            Bitrate::create([
-                'channelId' => $channelId,
-                'bitrate' => "0"
-            ]);
+            // vznikla chyba, nechame zatím ez jakékoliv akce a následně by se dodělal log
         }
     }
 }

@@ -3,27 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\ChannelErrorTime;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ChannelErrorTimeController extends Controller
 {
     public static function store($channelId)
     {
+        SetLocale(LC_ALL, "Czech");
+
         if (!ChannelErrorTime::where('channelId', $channelId)->where('ok_time', null)->first()) {
             ChannelErrorTime::create([
                 'channelId' => $channelId,
-                'ko_time' => date("l jS \of F Y H:i:s"),
+                'ko_time' => Date("j/m/Y H:i:s", Time()),
                 'ok_time' => null
             ]);
+
+            return true;
         }
     }
 
 
     public static function update($channelId)
     {
+        SetLocale(LC_ALL, "Czech");
+
         $id = ChannelErrorTime::where('channelId', $channelId)->first();
         $update = ChannelErrorTime::find($id->id);
-        $update->ok_time = date("l jS \of F Y H:i:s");
+        $update->ok_time = Date("j/m/Y H:i:s", Time());
 
         $update->save();
     }
@@ -32,8 +39,8 @@ class ChannelErrorTimeController extends Controller
     public function getLasDayData(Request $request)
     {
 
-        if (ChannelErrorTime::where('channelId', $request->id)->first()) {
-            foreach (ChannelErrorTime::where('channelId', $request->id)->get() as $channelReport) {
+        if (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(1))->first()) {
+            foreach (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(1))->get() as $channelReport) {
 
                 if ($channelReport->ok_time != null) {
 

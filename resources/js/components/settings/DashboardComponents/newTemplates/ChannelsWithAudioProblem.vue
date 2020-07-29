@@ -6,7 +6,11 @@
       :items="crashed"
       item-key="name"
       class="elevation-1"
-    ></v-data-table>
+    >
+     <template v-slot:item.name="{ item }">
+          <span class="red--text" dark>{{ item.name }}</span>
+      </template>
+    </v-data-table>
   </div>
 </template>
 <script>
@@ -17,27 +21,27 @@ export default {
       crashed: [],
       headers: [
         {
-          text: "Kanály, kde se nepodařilo detekovat audio",
+          text: "Problémová IPTV zařízení",
           align: "center",
-          value: "nazev"
+          value: "name"
         }
       ]
     };
   },
   created() {
     // Informace, zda jsou nefunknčí streamy
-    window.axios.get("/api/channels/audioProblem").then(response => {
+    window.axios.get("/api/devices/crash").then(response => {
       this.crashed = response.data;
     });
   },
   mounted() {
     this.interval = setInterval(
       function() {
-        window.axios.get("/api/channels/audioProblem").then(response => {
+        window.axios.get("/api/devices/crash").then(response => {
           this.crashed = response.data;
         });
       }.bind(this),
-      2000
+      10000
     );
   },
 

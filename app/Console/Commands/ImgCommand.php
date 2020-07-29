@@ -38,6 +38,6 @@ class ImgCommand extends Command
      */
     public function handle()
     {
-        print_r(ImgController::createThumbnailAndDeleteOriginalLogika($this->argument('channels')));
+        ImgController::createThumbnailAndDeleteOriginalLogika($this->argument('channels'));
     }
 }

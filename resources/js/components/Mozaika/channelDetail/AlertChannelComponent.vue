@@ -2,38 +2,56 @@
     <div>
         <br />
         <div id="alertDivMozaika">
-            <template>
-                <div
-                    dense
-                    v-for="item in crashedStreams"
-                    :key="item.id"
-                    class="white--text body-1"
-                >
-                    <transition name="fade" mode="out-in">
-                        <v-alert border="bottom" type="error" elevation="24">
+                <div>
+                    <div
+                        dense
+                        v-for="item in crashedStreams"
+                        :key="item.id"
+                        class="white--text body-1"
+                    >
+                        <!-- <transition name="fade" mode="out-in"> -->
+                            <v-alert
+                                transition="scroll-y-transition"
+                                border="bottom"
+                                type="error"
+                                elevation="24"
+                            >
+                                <v-row>
+                                    <v-spacer></v-spacer>
+                                    <strong class="body-1">{{
+                                        item.nazev
+                                    }}</strong>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                        class="pb-2"
+                                        @click="
+                                            (channelId = item.id),
+                                                (channelName = item.nazev)
+                                        "
+                                        color="error"
+                                        fab
+                                        elevation="0"
+                                        x-small
+                                        dark
+                                    >
+                                        <v-icon>mdi-magnify</v-icon>
+                                    </v-btn>
+                                </v-row>
+                            </v-alert>
+                        <!-- </transition> -->
+                    </div>
+                </div>
+                <div v-show="crashedStreams === false">
+                    <!-- <transition name="fade" mode="out-in"> -->
+                        <v-alert transition="scroll-y-transition" border="bottom" type="success" elevation="24">
                             <v-row>
-                                <v-spacer></v-spacer>
-                                <strong class="body-1">{{ item.nazev }}</strong>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    class="pb-2"
-                                    @click="
-                                        (channelId = item.id),
-                                            (channelName = item.nazev)
-                                    "
-                                    color="error"
-                                    fab
-                                    elevation="0"
-                                    x-small
-                                    dark
+                                <strong class="body-1"
+                                    >Všechny kanály fungují</strong
                                 >
-                                    <v-icon>mdi-magnify</v-icon>
-                                </v-btn>
                             </v-row>
                         </v-alert>
-                    </transition>
+                    <!-- </transition> -->
                 </div>
-            </template>
         </div>
         <!-- modal -->
         <v-row justify="center">
@@ -41,17 +59,25 @@
                 <v-card>
                     <v-card-text>
                         <br />
-                        <p class="title text-center">Výpadky za poslední den</p>
+                        <p class="title text-center">
+                            Výpadky za poslední den
+                        </p>
                         <v-container height="1920px" fluid>
                             <v-timeline align-top dense>
-                                <v-timeline-item  v-for="crashData in crashChart" v-bind:key="crashData.id" :color="crashData.color"small>
+                                <v-timeline-item
+                                    v-for="crashData in crashChart"
+                                    v-bind:key="crashData.id"
+                                    :color="crashData.color"
+                                    small
+                                >
                                     <v-row class="pt-1">
                                         <v-col cols="12">
-                                            <strong >{{crashData.time}}</strong>
+                                            <strong>{{
+                                                crashData.time
+                                            }}</strong>
                                         </v-col>
                                     </v-row>
                                 </v-timeline-item>
-
                             </v-timeline>
                         </v-container>
                     </v-card-text>

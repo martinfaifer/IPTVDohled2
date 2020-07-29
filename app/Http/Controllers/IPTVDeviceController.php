@@ -6,6 +6,7 @@ use App\APIDeviceUrl;
 use App\IPTVDevice;
 use App\Events\DevicesUpdate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use JJG\Ping;
 
 use function GuzzleHttp\Psr7\try_fopen;
@@ -31,6 +32,49 @@ class IPTVDeviceController extends Controller
 
 
     /**
+     * fn pro vypsání zařízení ktere maji status fail
+     *
+     * @return void
+     */
+    protected function getFailDevices()
+    {
+        if (IPTVDevice::where('status', "fail")->first()) {
+            return IPTVDevice::where('status', "fail")->get(['name']);
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * fn pro zobrazení dat do grafu
+     *
+     * @return void
+     */
+    protected function getIPTVDevicesGrafCount()
+    {
+
+        $allDevices = IPTVDevice::get()->count(); //100%
+        $devicesNeco = IPTVDevice::where('status', "success")->get()->count(); // nejake ceslo
+
+        if ($allDevices == $devicesNeco) {
+            return [
+                "percent" => "100",
+                "celkem" => $allDevices,
+                "checl" => $devicesNeco
+            ];
+        } else {
+
+            $onePercent = $allDevices / 100;
+
+            return [
+                "percent" => round($devicesNeco / $onePercent),
+                "celkem" => $allDevices,
+                "checl" => $devicesNeco
+            ];
+        }
+    }
+
+    /**
      * fn pro dohledování zařízení
      *
      * dva typy overeni (connection) ping / api
@@ -41,7 +85,7 @@ class IPTVDeviceController extends Controller
     {
         if (!IPTVDevice::first()) {
 
-            exit("Nejsou žádná zařízení k dohledu...");
+            return;
         }
 
         // kontrola ICMP / PING
@@ -74,7 +118,7 @@ class IPTVDeviceController extends Controller
 
                         // pokud o připojení do api
                         try {
-                            $apiData = file_get_contents('http://' . $deviceApi->ip . APIDeviceUrl::where('deviceId', $deviceApi->id)->where('type', "backendData")->first()->url);
+                            $apiData = Http::get('http://' . $deviceApi->ip . APIDeviceUrl::where('deviceId', $deviceApi->id)->where('type', "backendData")->first()->url);
 
                             $update = IPTVDevice::find($deviceApi->id);
                             $update->status = "success";

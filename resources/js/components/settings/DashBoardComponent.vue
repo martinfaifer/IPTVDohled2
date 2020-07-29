@@ -8,6 +8,8 @@
           <v-spacer></v-spacer>
           <percent-functions class></percent-functions>
           <v-spacer></v-spacer>
+          <iptvdevices-component></iptvdevices-component>
+          <v-spacer></v-spacer>
           <volume-chart></volume-chart>
           <v-spacer></v-spacer>
           <hdd-space class></hdd-space>
@@ -41,6 +43,7 @@ import PercentMonitored from "./DashboardComponents/newTemplates/ChannelPomerCom
 import PercentFunctionChannels from "./DashboardComponents/newTemplates/ChannelsFunctionsSum";
 import VolumeProblems from "./DashboardComponents/newTemplates/ChannelsWithAudioProblem";
 import VolumeChart from "./DashboardComponents/newTemplates/ChannelAudio";
+import IPTVDevicesComponent from "./DashboardComponents/newTemplates/IPTVDevicesComponent";
 
 export default {
   data() {
@@ -60,7 +63,8 @@ export default {
     "percent-monitored": PercentMonitored,
     "percent-functions": PercentFunctionChannels,
     "volume-problems": VolumeProblems,
-    "volume-chart": VolumeChart
+    "volume-chart": VolumeChart,
+    "iptvdevices-component": IPTVDevicesComponent
   }
 };
 </script>

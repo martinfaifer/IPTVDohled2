@@ -3,7 +3,9 @@
         <br />
         <br />
         <!-- test crash -->
-        <crashed-streams></crashed-streams>
+        <!-- <transition name="fade" mode="out-in"> -->
+            <crashed-streams transition="scroll-y-transition"></crashed-streams>
+        <!-- </transition> -->
         <!-- end test crash -->
         <!-- konec alertingu -->
         <v-container class="ml-12" fluid>
@@ -22,7 +24,9 @@
                                 @click="
                                     channelInfoFunction(),
                                         (channelId = stream.id),
-                                        (channelName = stream.nazev)
+                                        (channelName = stream.nazev),
+                                        (channelApi = stream.api),
+                                        (urlDokumentace = stream.dokumentaceUrl)
                                 "
                             >
                                 <v-list-item>
@@ -67,7 +71,9 @@
                                 @click="
                                     channelInfoFunction(),
                                         (channelId = stream.id),
-                                        (channelName = stream.nazev)
+                                        (channelName = stream.nazev),
+                                        (channelApi = stream.api),
+                                        (urlDokumentace = stream.dokumentaceUrl)
                                 "
                             >
                                 <v-list-item>
@@ -114,6 +120,25 @@
                                                 >
                                                     mdi-television-off
                                                 </v-icon>
+                                                <v-row
+                                                    v-show="
+                                                        stream.audioLang != null
+                                                    "
+                                                    align="end"
+                                                    class="lightbox white--text fill-height"
+                                                >
+                                                    <v-col>
+                                                        <div
+                                                            class="body-1 green--text"
+                                                        >
+                                                            <strong>
+                                                                {{
+                                                                    stream.audioLang
+                                                                }}
+                                                            </strong>
+                                                        </div>
+                                                    </v-col>
+                                                </v-row>
                                             </v-img>
                                             <v-img
                                                 v-else-if="
@@ -124,10 +149,7 @@
                                                 height="140"
                                                 contain
                                             >
-                                                <v-icon
-                                                    class="mt-8"
-                                                    large
-                                                >
+                                                <v-icon class="mt-8" large>
                                                     mdi-radio
                                                 </v-icon>
                                             </v-img>
@@ -138,7 +160,41 @@
                                                 :src="stream.img"
                                                 height="140"
                                                 contain
-                                            ></v-img>
+                                            >
+                                                <!-- template pro získání animace loadingu pri lazy nacteni obrázku -->
+                                                <template v-slot:placeholder>
+                                                    <v-row
+                                                        class="fill-height ma-0"
+                                                        align="center"
+                                                        justify="center"
+                                                    >
+                                                        <v-progress-circular
+                                                            indeterminate
+                                                            color="grey lighten-5"
+                                                        ></v-progress-circular>
+                                                    </v-row>
+                                                </template>
+
+                                                <v-row
+                                                    v-show="
+                                                        stream.audioLang != null
+                                                    "
+                                                    align="end"
+                                                    class="lightbox white--text fill-height"
+                                                >
+                                                    <v-col>
+                                                        <div
+                                                            class="body-1 green--text"
+                                                        >
+                                                            <strong>
+                                                                {{
+                                                                    stream.audioLang
+                                                                }}
+                                                            </strong>
+                                                        </div>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-img>
                                         </v-btn>
                                     </v-list-item-content>
                                 </v-list-item>
@@ -184,6 +240,15 @@
                             >
                                 <v-icon>mdi-view-dashboard</v-icon>
                             </v-btn>
+                            <v-btn
+                                v-show="channelApi === '1'"
+                                @click="contextMenu = 'api'"
+                                :color="colorApi"
+                                class="white--text"
+                                icon
+                            >
+                                <v-icon>mdi-glasses</v-icon>
+                            </v-btn>
 
                             <v-btn
                                 @click="contextMenu = 'grafy'"
@@ -213,6 +278,11 @@
                                 >{{ channelName }} - Přehled</v-row
                             >
                             <v-row
+                                v-if="contextMenu === 'api'"
+                                class="title"
+                                >{{ channelName }} - Výpis z Dokumentace</v-row
+                            >
+                            <v-row
                                 v-if="contextMenu === 'ffprobe'"
                                 class="title"
                                 >{{ channelName }} - FFProbe</v-row
@@ -240,6 +310,12 @@
                                 "
                                 :channelId="channelId"
                             ></ffprobeTree-component>
+                            <apidokumentace-component
+                             v-if="
+                                    channelId != '' && contextMenu === 'api'
+                                "
+                                :channelId="channelId"
+                            ></apidokumentace-component>
                             <channelBitrate-component
                                 v-if="
                                     channelId != '' && contextMenu === 'prehled'
@@ -252,6 +328,7 @@
                                 "
                                 :channelId="channelId"
                             ></chart-component>
+
                         </v-row>
                     </v-row>
                     <!-- end content -->
@@ -271,6 +348,7 @@ import FFProbeComponent from "./channelDetail/ChannelDetailTreeFFprobe";
 import BitrateComponent from "./channelDetail/ChannelNameWithBitrate";
 import crashedStreams from "./channelDetail/AlertChannelComponent";
 import ChartComponent from "./channelDetail/ChannelDetailCharts";
+import ApiDokumentaceComponent from "./channelDetail/ApiDokumentaceComponent";
 export default {
     data() {
         return {
@@ -279,12 +357,15 @@ export default {
             colorPrehled: "teal",
             colorFfprobe: "",
             colorGrafs: "",
+            colorApi: "",
             channelId: "",
             channelName: "",
+            urlDokumentace: "",
             url: "",
             urlData: "",
             detailInfo: "",
             channelInfo: false,
+            channelApi: "",
             problems: "",
             crashed: "",
             page: 1,
@@ -318,7 +399,8 @@ export default {
         "channelBitrate-component": BitrateComponent,
         "ffprobeTree-component": FFProbeComponent,
         "crashed-streams": crashedStreams,
-        "chart-component": ChartComponent
+        "chart-component": ChartComponent,
+        "apidokumentace-component": ApiDokumentaceComponent
     },
     methods: {
         channelInfoFunction() {
@@ -343,7 +425,7 @@ export default {
         },
         onPageChange() {
             this.getStreams();
-        },
+        }
     },
 
     mounted() {
@@ -423,14 +505,22 @@ export default {
                 (this.colorPrehled = "teal"),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "");
+                    (this.colorApi = "");
             } else if (this.contextMenu === "ffprobe") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = "teal"),
                     (this.colorGrafs = "");
+                    (this.colorApi = "");
             } else if (this.contextMenu === "grafy") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "teal");
+                    (this.colorApi = "");
+            } else if (this.contextMenu === "api") {
+                 (this.colorPrehled = ""),
+                    (this.colorFfprobe = ""),
+                    (this.colorGrafs = "");
+                    (this.colorApi = "teal");
             }
         }
     }

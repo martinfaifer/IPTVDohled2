@@ -35,11 +35,9 @@ class Kernel extends ConsoleKernel
         /**
          * Prikaz pro vytvoreni nahledu, diagnostikování a získání hlasitosti ze streamu
          */
-        $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping(2)->runInBackground();  // balík příkazů jednak pro získání bitratu, ffproby a vytvoření náhledu
-        // dohled IPTV zarizeni / platformy
-        $schedule->command('command:CheckIPTVDevice')->everyFiveMinutes()->runInBackground(); // kontrola IPTV zařízení
-        $schedule->command('command:sendErrorMail')->everyMinute()->runInBackground(); // odeslání mail alertu s chybovými kanály
-        $schedule->command('command:sendSuccessMail')->everyMinute()->runInBackground(); // odeslání mail alertu , když je kanál již ok
+        $schedule->command('command:ffprobe')->everyMinute()->runInBackground();  // balík příkazů jednak pro získání bitratu, ffproby a vytvoření náhledu
+        $schedule->command('command:sendErrorMail')->everyThreeMinutes()->runInBackground(); // odeslání mail alertu s chybovými kanály
+        $schedule->command('command:sendSuccessMail')->everyThreeMinutes()->runInBackground(); // odeslání mail alertu , když je kanál již ok
         $schedule->command('command:deleteImgOlderThanOneHour')->everyTenMinutes()->runInBackground(); // odebrání obrázků starších jak 1h z file systému
         // Sheduler pro smazání dat starších jak 7 týden
         $schedule->call(function () {
@@ -68,6 +66,9 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->everyMinute();
+
+        // dohled IPTV zarizeni / platformy
+        $schedule->command('command:CheckIPTVDevice')->everyFiveMinutes()->runInBackground(); // kontrola IPTV zařízení
     }
 
     /**

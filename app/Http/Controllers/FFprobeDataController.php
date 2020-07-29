@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Jobs\FFProbe;
 use App\Volume;
 use App\VolumeAlert;
 use App\VolumeException;
@@ -17,15 +18,9 @@ class FFprobeDataController extends Controller
      */
     public static function FFProbeAnalyza()
     {
-        $allWorkers = Worker::all();
-        foreach ($allWorkers as $worker) {
-            $channels = ChannelController::workersChannels($worker->id);
-            foreach ($channels as $channel) {
-                shell_exec('php artisan' . ' command:channelFFprobe ' . $channel->url . '  > /dev/null &');
-                shell_exec('php artisan' . ' command:takeVolume ' . $channel->url . '  > /dev/null &');
-
-                shell_exec('php artisan' . ' command:img ' . $channel->url . '  > /dev/null &');
-            }
+        // pro kazdý kanál se odpálí JOB pro QUEUE, které se násldně paralelně zpracovává
+        foreach (Channel::where('noMonitor', "mdi-check")->get() as $channel) {
+            dispatch(new FFProbe($channel->url));
         }
     }
 

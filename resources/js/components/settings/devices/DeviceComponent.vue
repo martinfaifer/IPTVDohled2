@@ -1,17 +1,18 @@
 <template>
     <div class="body-2">
+        <br>
         <transition name="fade" mode="out-in">
             <alert-component
                 v-if="status != []"
                 :status="status"
             ></alert-component>
         </transition>
-        <div class="mt-12">
+        <div >
             <v-data-table
                 :headers="headers"
                 :items="devices"
                 :search="search"
-                class="elevation-0 mr-12 mt-12"
+                class="elevation-0 mr-12"
             >
                 <template v-slot:top>
                     <v-toolbar color="transparent" flat>

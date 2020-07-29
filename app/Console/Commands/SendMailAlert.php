@@ -98,9 +98,9 @@ class SendMailAlert extends Command
                     //     MailController::basic_email($volumeErr, $falsecrash, $mail->mail);
                     //     MailHistoryController::store($mail->mail, "Kanály bez zvuku => " . json_encode($volumeErr));
                 } else {
-                    MailController::basic_email($volumeErr, $channelCrash, $mail->mail);
+
                     // MailHistoryController::store($mail->mail, "Kanály bez zvuku => " . json_encode($volumeErr) . " , nefuknčí kanály => " . json_encode($channelCrash));
-                    MailHistoryController::store($mail->mail, "nefuknčí kanály => " . json_encode($channelCrash));
+
                 }
             }
         }

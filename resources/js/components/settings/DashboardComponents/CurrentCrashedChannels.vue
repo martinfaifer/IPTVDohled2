@@ -26,7 +26,7 @@ export default {
   },
   created() {
     // Informace, zda jsou nefunknčí streamy
-    window.axios.get("/api/channels/crashed").then(response => {
+    window.axios.get("/api/channels/crashed/forDashboard").then(response => {
       this.crashed = response.data;
     });
   },
@@ -39,7 +39,7 @@ export default {
   mounted() {
     this.interval = setInterval(
       function() {
-        window.axios.get("/api/channels/crashed").then(response => {
+        window.axios.get("/api/channels/crashed/forDashboard").then(response => {
           this.crashed = response.data;
         });
       }.bind(this),

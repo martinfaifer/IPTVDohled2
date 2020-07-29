@@ -6,12 +6,11 @@
           class="mt-2 mr-6"
           :size="100"
           :width="3"
-          :value="percent.percent"
-          color="#EA7773"
-        >{{ percent.percent }} %</v-progress-circular>
+          :value="percent"
+          color="primary"
+        >{{ percent }} %</v-progress-circular>
         <span class="mt-10">
-          <span class="display-1">{{percent.audio}} /</span>
-          {{percent.celkem}} kanály, kde nic nebylo slyšet
+          <span class="display-1">CPU</span>
         </span>
       </v-row>
     </div>
@@ -27,7 +26,7 @@ export default {
   },
   created() {
     // Informace, zda jsou nefunknčí streamy
-    window.axios.get("/api/channels/audio/chart").then(response => {
+    window.axios.get("/api/cpu").then(response => {
       this.percent = response.data;
     });
   },
@@ -35,11 +34,11 @@ export default {
   mounted() {
     this.interval = setInterval(
       function() {
-        window.axios.get("/api/channels/audio/chart").then(response => {
+        window.axios.get("/api/cpu").then(response => {
           this.percent = response.data;
         });
       }.bind(this),
-      2000
+      1000
     );
   },
 

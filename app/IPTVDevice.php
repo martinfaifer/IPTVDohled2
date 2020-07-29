@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class IPTVDevice extends Model
 {
     protected $fillable = [
-        'name', 'ip', 'connection', 'status', 'data'
+        'name', 'ip', 'connection', 'status', 'data', 'api'
     ];
 }

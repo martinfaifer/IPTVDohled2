@@ -39,7 +39,7 @@
 
             <!-- user -->
             <template v-if="$vuetify.breakpoint.smAndUp">
-                <v-menu offset-y>
+                <v-menu transition="scroll-y-transition" >
                     <template v-slot:activator="{ on }">
                         <v-btn class="white--text" fab text v-on="on">
                             <v-icon>mdi-account-circle</v-icon>
@@ -59,6 +59,7 @@
                 </v-menu>
             </template>
             <!-- end user -->
+
             <!-- alerts -->
             <div v-if="this.$route.path === '/'">
                 <v-btn
@@ -67,10 +68,9 @@
                     fab
                     text
                 >
-                    <v-icon v-if="crashedStreams != 'false'" color="red"
+                    <v-icon :color="crashedStreams.color"
                         >mdi-comment-alert</v-icon
                     >
-                    <v-icon v-else>mdi-comment-alert</v-icon>
                 </v-btn>
             </div>
 
@@ -142,8 +142,15 @@
                 v-if="status.isAlert === 'isAlert'"
                 :color="status.stat"
                 v-model="snackbar"
+                timeout="10000"
+                multi-line
             >
-                {{ status.msg }}
+                <v-row justify="center">
+                    <strong>{{ status.msg }}</strong>
+                </v-row>
+                <v-row justify="center">
+                    Změny budou provedeny do 10s
+                </v-row>
             </v-snackbar>
         </div>
     </div>
@@ -167,6 +174,10 @@ export default {
     created() {
         console.log(this.$route.path);
 
+        axios.get("/api/channels/notification").then(response => {
+            this.crashedStreams = response.data;
+        });
+
         let currentObj = this;
         axios.get("/api/user/get").then(function(response) {
             if (response.data.stat === "error") {
@@ -181,19 +192,9 @@ export default {
         "alert-component": Alert
     },
 
-    mounted() {
-        this.loadAlerts();
-        this.intervalAlert = setInterval(
-            function() {
-                this.loadAlerts();
-            }.bind(this),
-            2000
-        );
-    },
-
     methods: {
         loadAlerts() {
-            axios.get("/api/channels/crashed").then(response => {
+            axios.get("/api/channels/notification").then(response => {
                 this.crashedStreams = response.data;
             });
         },
@@ -238,12 +239,21 @@ export default {
                 .catch(function(error) {
                     console.log(error);
                 });
-        },
+        }
     },
     watch: {
         status: function() {
-            setTimeout(() => (this.status = false), 3000);
+            setTimeout(() => (this.status = false), 10000);
         }
+    },
+    mounted() {
+        this.loadAlerts();
+        this.intervalAlert = setInterval(
+            function() {
+                this.loadAlerts();
+            }.bind(this),
+            1000
+        );
     }
 };
 </script>

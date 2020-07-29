@@ -27,6 +27,8 @@ Route::post('/api/channel/volume/dayData', 'VolumeController@getChannelVolumesFo
 Route::post('/api/channel/bitrates', 'BitrateController@getChannelBitratesForHour');
 Route::post('/api/channel/bitrate/dayData', 'BitrateController@getChannelBitratesForADay');
 Route::get('/api/channels/crashed', 'ChannelController@getCrashedStreams');
+Route::get('/api/channels/crashed/forDashboard', 'ChannelController@getCrashedStreamsForDashBoard');
+Route::get('/api/channels/notification', 'ChannelController@notificationIconAlert');
 Route::post('/api/channel/chart/crash/hour', 'ChannelErrorTimeController@getLasDayData');
 Route::get('/api/bitrate/delteOlderThanTwoDays', 'BitrateController@delteOlderThanTwoDays');
 
@@ -35,8 +37,6 @@ Route::get('/api/settings/dashboard/chartChannel', 'ChannelController@getChannel
 
 Route::post('/api/testVolume', 'FFProbeDataController@getVolumeLevelFromStream');
 
-// Workers
-Route::get('/api/channel/freeWorkers', 'WorkerController@freeWorkers');
 
 // SETTINGS->CHANNELS
 Route::post('/api/channel/ffprobe', 'ChannelController@ffprobe');
@@ -79,7 +79,7 @@ Route::get('/api/channel/crashed/{name}', 'NotFunctionChannelController@getCrash
 
 // Hardware
 Route::get('/api/disk', 'HardwareController@getDifferenceDiskSpace');
-Route::get('/api/sysdata', 'HardwareController@sysdata');
+Route::get('/api/cpu', 'HardwareController@checkCPU');
 Route::get('/api/devices', 'IPTVDeviceController@getDevices');
 
 Route::get('/api/device/check', 'IPTVDeviceController@deviceCheck');
@@ -88,16 +88,20 @@ Route::get('/api/channels/audioProblem', 'VolumeAlertController@getAll');
 Route::get('/api/channels/audio/chart', 'VolumeAlertController@difference');
 
 
+// API pro komunikaci s dohledem napojení na editaci kanalu
+Route::get('/api/api/channel', 'ApiChannelController@get');
+
 // history
 Route::get('/api/users/history', 'UserHistoryController@getAll');
 Route::get('/api/mail/history', 'MailHistoryController@getAll');
 
-// Route::get('event', function () {
-//     $channel = Channel::first();
-//     event(new SendDesktopAlert($channel));
-// });
+/**
+ * API komunikace s IPTVdokumentací
+ */
+Route::post('/api/communication/channel', 'ChannelController@getDataFromAPi');
 
-// Route::get('/api/ffprobeData/get', function () {
-//     $data = App\Channel::where('id', "11")->first();
-//     return json_decode($data->FFProbe, true);
-// });
+/**
+ * IPTV Zařízení
+ */
+Route::get('/api/devices/crash', 'IPTVDeviceController@getFailDevices');
+Route::get('/api/devices/chart', 'IPTVDeviceController@getIPTVDevicesGrafCount');

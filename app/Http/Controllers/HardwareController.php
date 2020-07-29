@@ -32,4 +32,15 @@ class HardwareController extends Controller
     {
         return sys_getloadavg();
     }
+
+    /**
+     * sledování zátěže cpu
+     *
+     * @return void
+     */
+    public function checkCPU()
+    {
+        $load = sys_getloadavg();
+        return round($load[0], 2);
+    }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiChannel;
 use App\Bitrate;
 use App\Channel;
 use App\CrashedChannel;
 use App\Volume;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class ChannelController extends Controller
 {
@@ -30,7 +32,19 @@ class ChannelController extends Controller
             $noMonitor = "mdi-close";
         }
 
-        $data = "url => " . $request->url . " , nazev => " . $request->channelName . " , worker_id  => " . $request->workerId . " , dohledovat => " . $request->dohledovat;
+        if ($request->dohledVolume == true) {
+            $dohledVolume = "1";
+        } else {
+            $dohledVolume = "0";
+        }
+
+        if ($request->dohledBitrate == true) {
+            $dohledBitrate = "1";
+        } else {
+            $dohledBitrate = "0";
+        }
+
+        $data = "url => " . $request->url . " , nazev => " . $request->channelName . " , dohledovat => " . $request->dohledovat;
         $user = Auth::user();
         UserHistoryController::store($user->email, "create_stream", $data);
 
@@ -42,13 +56,22 @@ class ChannelController extends Controller
             $img = "false";
         }
 
+        if ($request->api == true) {
+            $api = "1";
+        } else {
+            $api = null;
+        }
+
         Channel::create([
             'url' => $request->url,
             'nazev' => $request->channelName,
-            'worker_id' => $request->workerId,
             'noMonitor' => $noMonitor,
             'radio' => $radio,
-            'img' => $img
+            'dokumentaceUrl' => $request->apiUrl,
+            'img' => $img,
+            'api' => $api,
+            'dohledVolume' => $dohledVolume,
+            'dohledBitrate' => $dohledBitrate
         ]);
 
         return [
@@ -103,7 +126,10 @@ class ChannelController extends Controller
             'nazev' => $channel->nazev,
             'url' => $channel->url,
             'dohled' => $dohled,
-            'worker' => $channel->worker_id
+            'dokumentaceUrl' => $channel->dokumentaceUrl,
+            'api' => $channel->api,
+            'dohledVolume' => $channel->dohledVolume,
+            'dohledBitrate' => $channel->dohledBitrate
         ];
     }
 
@@ -122,6 +148,25 @@ class ChannelController extends Controller
      */
     public function edit(Request $request)
     {
+
+        if ($request->api == true) {
+            $api = "1";
+        } else {
+            $api = null;
+        }
+
+        if ($request->dohledVolume == true) {
+            $dohledVolume = "1";
+        } else {
+            $dohledVolume = "0";
+        }
+
+        if ($request->dohledBitrate == true) {
+            $dohledBitrate = "1";
+        } else {
+            $dohledBitrate = "0";
+        }
+
         if ($request->dohled == true) {
             $noMonitor = "mdi-check";
         } else {
@@ -136,7 +181,7 @@ class ChannelController extends Controller
         }
 
 
-        $data = "nazev => " . $request->nazev . " , dohled  => " . $request->dohled . " , worker => " . $request->workerId;
+        $data = "nazev => " . $request->nazev . " , dohled  => " . $request->dohled;
         $user = Auth::user();
         UserHistoryController::store($user->email, "edit_stream", $data);
 
@@ -144,9 +189,10 @@ class ChannelController extends Controller
         $update->nazev = $request->nazev;
         $update->url = $request->url;
         $update->noMonitor = $noMonitor;
-        if (!empty($request->workerId)) {
-            $update->worker_id = $request->workerId;
-        }
+        $update->dokumentaceUrl = $request->apiUrl;
+        $update->dohledVolume = $dohledVolume;
+        $update->dohledBitrate = $dohledBitrate;
+        $update->api = $api;
 
         $update->save();
 
@@ -238,7 +284,7 @@ class ChannelController extends Controller
      */
     public function getAllChannels()
     {
-        return Channel::all();
+        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate']);
     }
 
     /**
@@ -264,7 +310,7 @@ class ChannelController extends Controller
                     }
                 }
             }
-            return Channel::where('noMonitor', "mdi-check")->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert']);
+            return Channel::where('noMonitor', "mdi-check")->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']);
         }
     }
 
@@ -298,6 +344,7 @@ class ChannelController extends Controller
             'img' => $channel->img,
             'nazev' => $channel->nazev,
             'poznamka' => $channel->poznamka,
+            'dokumentaceUrl' => $channel->dokumentaceUrl
 
         ];
     }
@@ -551,11 +598,43 @@ class ChannelController extends Controller
     {
         $user = Auth::user();
         if ($user->alert == "show") {
-            if (Channel::where('alert', "error")->first()) {
-                return Channel::where('alert', "error")->get();
+            if (Channel::where('Alert', "error")->first()) {
+                return Channel::where('Alert', "error")->get();
             } else {
                 return "false";
             }
+        }
+    }
+
+    /**
+     * fn pro získání všech nefunknčích kanálů
+     *
+     * @return void
+     */
+    public function getCrashedStreamsForDashBoard()
+    {
+        if (Channel::where('Alert', "error")->first()) {
+            return Channel::where('Alert', "error")->get();
+        } else {
+            return "false";
+        }
+    }
+
+    /**
+     * fn pro podbarvení ikony v navigacnim baru pro alerting
+     *
+     * @return void
+     */
+    protected function notificationIconAlert()
+    {
+        if (Channel::where('Alert', "error")->first()) {
+            return [
+                'color' => "red"
+            ];
+        } else {
+            return [
+                'color' => "white"
+            ];
         }
     }
 
@@ -630,6 +709,29 @@ class ChannelController extends Controller
         $channel = Channel::where('nazev', $name)->first();
         if ($channel != null) {
             return $channel->img;
+        } else {
+            return "false";
+        }
+    }
+
+
+    /**
+     * fn pro získání dat o kanálu z extermího systému
+     *
+     * @param Request $request->id
+     * @return void
+     */
+    public function getDataFromAPi(Request $request)
+    {
+        $kanal = Channel::find($request->id);
+
+        if ($kanal->api != null) {
+            // vytažení id kanálu na dokumentaci z dokumentaceUrl
+            $idKanaluZdokumentaceUrl  = explode("/", $kanal->dokumentaceUrl);
+
+            $channelData = Http::get(ApiChannel::where('id', $kanal->api)->first()->apiUrl . $idKanaluZdokumentaceUrl["5"]);
+
+            return $channelData->json();
         } else {
             return "false";
         }
