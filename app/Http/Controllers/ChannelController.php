@@ -44,6 +44,12 @@ class ChannelController extends Controller
             $dohledBitrate = "0";
         }
 
+        if ($request->sendAlert == true) {
+            $sendAlert = "1";
+        } else {
+            $sendAlert = "0";
+        }
+
         $data = "url => " . $request->url . " , nazev => " . $request->channelName . " , dohledovat => " . $request->dohledovat;
         $user = Auth::user();
         UserHistoryController::store($user->email, "create_stream", $data);
@@ -71,7 +77,8 @@ class ChannelController extends Controller
             'img' => $img,
             'api' => $api,
             'dohledVolume' => $dohledVolume,
-            'dohledBitrate' => $dohledBitrate
+            'dohledBitrate' => $dohledBitrate,
+            'sendAlert' => $sendAlert
         ]);
 
         return [
@@ -129,7 +136,8 @@ class ChannelController extends Controller
             'dokumentaceUrl' => $channel->dokumentaceUrl,
             'api' => $channel->api,
             'dohledVolume' => $channel->dohledVolume,
-            'dohledBitrate' => $channel->dohledBitrate
+            'dohledBitrate' => $channel->dohledBitrate,
+            'sendAlert' => $channel->sendAlert
         ];
     }
 
@@ -167,6 +175,13 @@ class ChannelController extends Controller
             $dohledBitrate = "0";
         }
 
+        if ($request->sendAlert == true) {
+            $sendAlert = "1";
+        } else {
+            $sendAlert = "0";
+        }
+
+
         if ($request->dohled == true) {
             $noMonitor = "mdi-check";
         } else {
@@ -193,6 +208,7 @@ class ChannelController extends Controller
         $update->dohledVolume = $dohledVolume;
         $update->dohledBitrate = $dohledBitrate;
         $update->api = $api;
+        $update->sendAlert = $sendAlert;
 
         $update->save();
 
@@ -273,10 +289,10 @@ class ChannelController extends Controller
      * @param [type] $id
      * @return array
      */
-    public static function workersChannels($id)
-    {
-        return Channel::where('worker_id', $id)->where('noMonitor', "mdi-check")->get();
-    }
+    // public static function workersChannels($id)
+    // {
+    //     return Channel::where('worker_id', $id)->where('noMonitor', "mdi-check")->get();
+    // }
     /**
      * fn pro získání vsech kanálů
      *
@@ -284,7 +300,7 @@ class ChannelController extends Controller
      */
     public function getAllChannels()
     {
-        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate']);
+        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate', 'sendAlert']);
     }
 
     /**
@@ -310,7 +326,7 @@ class ChannelController extends Controller
                     }
                 }
             }
-            return Channel::where('noMonitor', "mdi-check")->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']);
+            return Channel::where('noMonitor', "mdi-check")->orderBy('nazev', 'asc')->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']);
         }
     }
 

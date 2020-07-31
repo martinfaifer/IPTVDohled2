@@ -7,6 +7,7 @@
             ></alert-component>
         </transition>
         <v-data-table
+            :dense="userData.dense"
             :headers="headers"
             :items="channels"
             :search="search"
@@ -41,9 +42,14 @@
                                     <v-row>
                                         <v-col cols="12" sm="12" md="12">
                                             <v-text-field
+                                                :rules="channelInputRule"
                                                 v-model="channelInput"
                                                 label="Adresa dohledovaného streamu"
                                                 autofocus
+                                                :disabled="
+                                                    ffprobeOutput.stat ===
+                                                        'success'
+                                                "
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -53,6 +59,7 @@
                                         <v-col cols="12" sm="12" md="12">
                                             <v-text-field
                                                 v-model="ffprobeOutput.nazev"
+                                                :rules="namestreamRule"
                                                 label="Popis streamu"
                                             ></v-text-field>
                                         </v-col>
@@ -129,6 +136,19 @@
                                             ></v-checkbox>
                                         </v-col>
                                     </v-row>
+                                    <v-row
+                                        v-show="
+                                            ffprobeOutput.stat === 'success' &&
+                                                dohledovatKanal != false
+                                        "
+                                    >
+                                        <v-col cols="12" sm="12" md="12">
+                                            <v-checkbox
+                                                v-model="sendAlert"
+                                                label="Zaslat alert"
+                                            ></v-checkbox>
+                                        </v-col>
+                                    </v-row>
                                 </v-card-text>
                                 <!-- ffprobe status / zavreni dialogu -->
                                 <v-card-actions>
@@ -168,6 +188,7 @@
                                         >Zavřít</v-btn
                                     >
                                     <v-btn
+                                        :disabled="ffprobeOutput.nazev === ''"
                                         color="green darken-1"
                                         text
                                         @click="saveNewImput()"
@@ -201,6 +222,15 @@
             <!-- dohled bitratu -->
             <template v-slot:item.dohledBitrate="{ item }">
                 <v-icon v-if="item.dohledBitrate != '1'" color="red"
+                    >mdi-close</v-icon
+                >
+                <v-icon v-else color="green">mdi-check</v-icon>
+            </template>
+
+            <!-- zobrazeí, zda kanál má zasílat alerting sendAlert -->
+
+            <template v-slot:item.sendAlert="{ item }">
+                <v-icon v-if="item.sendAlert != '1'" color="red"
                     >mdi-close</v-icon
                 >
                 <v-icon v-else color="green">mdi-check</v-icon>
@@ -295,6 +325,7 @@
                                     v-model="editdat.url"
                                     label="Adresa dohledovaného streamu"
                                     readonly
+                                    disabled="true"
                                 ></v-text-field>
                             </v-col>
                         </v-row>
@@ -302,6 +333,7 @@
                             <v-col cols="12" sm="12" md="12">
                                 <v-text-field
                                     v-model="editdat.nazev"
+                                    :rules="namestreamRule"
                                     label="Popis dohledovaného streamu"
                                 ></v-text-field>
                             </v-col>
@@ -349,6 +381,14 @@
                                 ></v-checkbox>
                             </v-col>
                         </v-row>
+                        <v-row v-show="editdat.dohled != false">
+                            <v-col cols="12" sm="12" md="12">
+                                <v-checkbox
+                                    v-model="editdat.sendAlert"
+                                    label="Zaslat alert"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -359,6 +399,7 @@
                             >Zavřít</v-btn
                         >
                         <v-btn
+                        :disabled="editdat.nazev === ''"
                             color="green darken-1"
                             text
                             @click="saveEditDialog()"
@@ -444,6 +485,7 @@ export default {
         api: "",
         dohledVolume: "",
         dohledBitrate: "",
+        sendAlert: "",
         start: "",
         end: "",
         dialog: false,
@@ -467,6 +509,7 @@ export default {
             { text: "Dohled Hlasitosti", value: "dohledVolume" },
             { text: "Dohled Bitratu", value: "dohledBitrate" },
             { text: "Dohledováno", value: "noMonitor" },
+            { text: "Zaslání mail Alertů", value: "sendAlert" },
             { text: "Status", value: "Alert" },
             { text: "Akce", value: "actions" }
         ],
@@ -478,7 +521,9 @@ export default {
         loading: false,
         editdat: [],
         userData: false,
-        apiUrl: ""
+        apiUrl: "",
+        channelInputRule: [v => !!v || "vyplňte url požadováného streamu"],
+        namestreamRule: [v => !!v || "název streamu je požadovaný"]
     }),
     components: {
         "alert-component": Alert
@@ -497,6 +542,18 @@ export default {
         window.axios.get("/api/api/channel").then(response => {
             currentObj.apis = response.data;
         });
+    },
+
+    mounted() {
+        this.interval = setInterval(
+            function() {
+                let currentObj = this;
+                axios.get("/api/user/get").then(function(response) {
+                    currentObj.userData = response.data;
+                });
+            }.bind(this),
+            5000
+        );
     },
     methods: {
         openAlertDialog() {
@@ -561,13 +618,15 @@ export default {
                     apiUrl: this.editdat.dokumentaceUrl,
                     api: this.editdat.api,
                     dohledVolume: this.editdat.dohledVolume,
-                    dohledBitrate: this.editdat.dohledBitrate
+                    dohledBitrate: this.editdat.dohledBitrate,
+                    sendAlert: this.editdat.sendAlert
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
                     currentObj.editDialog = false;
                     currentObj.channelId = "";
                     currentObj.editdat = [];
+                    currentObj.sendAlert = "";
                     window.axios.get("/api/channels").then(response => {
                         currentObj.channels = response.data;
                     });
@@ -673,7 +732,8 @@ export default {
                     apiUrl: this.apiUrl,
                     api: this.api,
                     dohledVolume: this.dohledVolume,
-                    dohledBitrate: this.dohledBitrate
+                    dohledBitrate: this.dohledBitrate,
+                    sendAlert: this.sendAlert
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
@@ -682,6 +742,7 @@ export default {
                     currentObj.api = "";
                     currentObj.dohledVolume = "";
                     currentObj.dohledBitrate = "";
+                    currentObj.sendAlert = "";
                     (currentObj.ffprobeAnalyzedData = "false"),
                         (currentObj.dohledovatKanal = true),
                         (currentObj.ffprobeOutput = []);

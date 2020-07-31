@@ -21,6 +21,7 @@ import UsersComponent from './components/settings/UsersComponent.vue';
 import AlertSettingsComponent from './components/settings/AlertsComponents/AlertSettingsComponent.vue';
 import LogComponent from './components/settings/logs/LogComponent.vue';
 import DeviceComponent from './components/settings/devices/DeviceComponent';
+import PageNotFoundComponent from './components/PageNotFoundComponent';
 
 
 // midleware
@@ -46,7 +47,7 @@ let routes = [
             },
 
             {
-                path: '/settings',
+                path: '/settings/dashboard',
                 component: SettingsComponent,
                 children: [
                     {
@@ -54,27 +55,27 @@ let routes = [
                         component: DashBoardComponent
                     },
                     {
-                        path: 'channels',
+                        path: '/settings/channels',
                         component: ChannelsComponent
                     },
                     {
-                        path: 'channels/:id/charts',
+                        path: '/settings/channels/:id/charts',
                         component: ChartsComponent
                     },
                     {
-                        path: 'users',
+                        path: '/settings/users',
                         component: UsersComponent
                     },
                     {
-                        path: 'alerts',
+                        path: '/settings/alerts',
                         component: AlertSettingsComponent
                     },
                     {
-                        path: 'logs',
+                        path: '/settings/logs',
                         component: LogComponent
                     },
                     {
-                        path: 'devices',
+                        path: '/settings/devices',
                         component: DeviceComponent
                     }
                 ]
@@ -85,10 +86,10 @@ let routes = [
         path: '/login',
         component: LoginComponent
     },
-    // {
-    //     path: '*',
-    //     component: PageNotFoundComponent
-    // },
+    {
+        path: '*',
+        component: PageNotFoundComponent
+    },
 ];
 
 

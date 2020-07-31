@@ -122,7 +122,7 @@
                 ></line-chart>
             </div>
             <div v-if="value === 'Výpadky'">
-                <div>
+                <!-- <div>
                     <br />
                     <p class="text-center">
                         <v-tooltip bottom>
@@ -137,8 +137,8 @@
                             <span>Vlastní výběr</span>
                         </v-tooltip>
                     </p>
-                </div>
-                <div v-if="errorCustomChart === true">
+                </div> -->
+                <!-- <div v-if="errorCustomChart === true">
                     <div>
                         <br />
                         <p class="text-center">Uživatelem nadefinovaný graf</p>
@@ -150,22 +150,16 @@
                         :data="customErrorchartdata"
                     ></column-chart>
                 </div>
-                <br />
-                <p class="text-center">Data za 24h</p>
-                <!-- <column-chart :colors="['#FF0000']" width="1150px" height="250px" :data="crasheddata"></column-chart> -->
-                <!-- <column-chart
-                            :colors="['#FF0000']"
-                            width="900px"
-                            height="450px"
-                            :data="crasheddata"
-                        ></column-chart> -->
-                <div v-if="crasheddata.status === 'false'">
+                <br /> -->
+                <br>
+                <p class="text-center mt-12 ml-12">Data za týden</p>
+                <div v-if="crasheddata.status === 'false'" class="ml-12">
                     <br>
                     <v-alert type="success">
                         Kanál nemá evidovaný žádný výpadek
                     </v-alert>
                 </div>
-                <div v-else>
+                <div v-else class="ml-12">
                     <br>
                     <v-timeline width="200px" align-top dense>
                         <v-timeline-item
@@ -581,7 +575,7 @@ export default {
                 let currentObj = this;
 
                 axios
-                    .post("/api/channel/chart/crash/hour", {
+                    .post("/api/channel/chart/crash/week", {
                         id: this.$route.params.id
                     })
                     .then(function(response) {

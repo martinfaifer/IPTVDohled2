@@ -158,7 +158,7 @@ class StreamDiagnostic extends Controller
                 'bitrate' => $bitrate
             ]);
         } catch (\Throwable $th) {
-            // vznikla chyba, nechame zatím ez jakékoliv akce a následně by se dodělal log
+            // vznikla chyba, nechame zatím bez jakékoliv akce a následně by se dodělal log
         }
     }
 }

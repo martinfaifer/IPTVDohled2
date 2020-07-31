@@ -139,4 +139,25 @@ class IPTVDeviceController extends Controller
             }
         }
     }
+
+
+    protected function devicesApiData()
+    {
+        foreach (IPTVDevice::where('connection', "api")->where('data', "!=", null)->get(['data']) as $apiDatas) {
+            $apiData = $apiDatas;
+        }
+
+        foreach (json_decode($apiDatas->data, true) as $transcodersData) {
+            foreach ($transcodersData as $transcoderData) {
+                // return $transcoderData;
+                // name , status
+                $outputData[] = array(
+                    'name' => $transcoderData["name"],
+                    'status' => $transcoderData["status"]
+                );
+            }
+        }
+
+        return $outputData;
+    }
 }

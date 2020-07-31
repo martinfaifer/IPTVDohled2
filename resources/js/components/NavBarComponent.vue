@@ -25,7 +25,7 @@
                     <template v-slot:activator="{ on }">
                         <v-btn
                             link
-                            to="/settings"
+                            to="/settings/dashboard"
                             class="white--text"
                             icon
                             v-on="on"
@@ -39,7 +39,7 @@
 
             <!-- user -->
             <template v-if="$vuetify.breakpoint.smAndUp">
-                <v-menu transition="scroll-y-transition" >
+                <v-menu transition="scroll-y-transition">
                     <template v-slot:activator="{ on }">
                         <v-btn class="white--text" fab text v-on="on">
                             <v-icon>mdi-account-circle</v-icon>
@@ -107,6 +107,14 @@
                                         label="Počet polí v mozaice"
                                         type="number"
                                     ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12" sm="12" md="12">
+                                    <v-checkbox
+                                        v-model="userData.dense"
+                                        label="Kompaktní mód"
+                                    ></v-checkbox>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -217,7 +225,8 @@ export default {
                     userId: this.userData.id,
                     mail: this.userData.email,
                     password: this.password,
-                    pagination: this.userData.pagination
+                    pagination: this.userData.pagination,
+                    dense: this.userData.dense
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
@@ -243,7 +252,7 @@ export default {
     },
     watch: {
         status: function() {
-            setTimeout(() => (this.status = false), 10000);
+            setTimeout(() => (this.status = false), 5000);
         }
     },
     mounted() {

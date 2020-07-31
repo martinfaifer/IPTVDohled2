@@ -18,7 +18,7 @@ class AlertController extends Controller
      */
     public static function sendErrorMail()
     {
-        $data = Channel::where('Alert', "error")->where('updated_at', '<=', Carbon::now()->second(300))->get(['nazev', 'url', 'id']);
+        $data = Channel::where('Alert', "error")->where('sendAlert', "1")->where('updated_at', '<=', Carbon::now()->second(300))->get(['nazev', 'url', 'id']);
         if (count($data) == "0") {
             // vynecháme
             return false;
@@ -58,7 +58,7 @@ class AlertController extends Controller
             // existuje alert
             if (SendedAlert::first()) {
                 foreach (SendedAlert::get() as $sendedAlert) {
-                    $channel = Channel::where('id', $sendedAlert['channelId'])->first();
+                    $channel = Channel::where('id', $sendedAlert['channelId'])->where('sendAlert', "1")->first();
                     if ($channel->Alert == "success") {
                         foreach (MailAlerts::get() as  $mail) {
 

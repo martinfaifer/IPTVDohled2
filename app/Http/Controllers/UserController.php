@@ -7,6 +7,7 @@ use App\UserHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use PhpParser\Node\Stmt\TryCatch;
 
 class UserController extends Controller
 {
@@ -61,7 +62,21 @@ class UserController extends Controller
                 'msg' => "Nejste přihlášen!",
             ];
         } else {
-            return $user;
+            if ($user->dense != "true") {
+                $dense = false;
+            } else {
+                $dense = true;
+            }
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'surname' => $user->surname,
+                'email' => $user->email,
+                'user_role' => $user->user_role,
+                'pagination' => $user->pagination,
+                'alert' => $user->alert,
+                'dense' => $dense
+            ];
         }
     }
 
@@ -74,20 +89,35 @@ class UserController extends Controller
      */
     public function editUser(Request $request)
     {
-        $update = User::find($request->userId);
-        $update->email = $request->mail;
-        $update->pagination = $request->pagination;
-        if (!empty($request->password)) {
-            $update->password = Hash::make($request->password);
+        try {
+            if ($request->dense == true) {
+                $dense = "true";
+            } else {
+                $dense = "false";
+            }
+
+            $update = User::find($request->userId);
+            $update->email = $request->mail;
+            $update->dense = $dense;
+            $update->pagination = $request->pagination;
+            if (!empty($request->password)) {
+                $update->password = Hash::make($request->password);
+            }
+
+            $update->save();
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "Editace byla úspěšná",
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "Nepodařilo se z editovat uživatele, prosím obraťe se na správce",
+            ];
         }
-
-        $update->save();
-
-        return [
-            'isAlert' => "isAlert",
-            'stat' => "success",
-            'msg' => "Editace byla úspěšná",
-        ];
     }
 
     /**

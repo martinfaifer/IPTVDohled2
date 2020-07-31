@@ -39,7 +39,7 @@ export default {
           this.percent = response.data;
         });
       }.bind(this),
-      1000
+      5000
     );
   },
 

@@ -40,7 +40,38 @@ class ChannelErrorTimeController extends Controller
     {
 
         if (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(1))->first()) {
+
             foreach (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(1))->get() as $channelReport) {
+
+                if ($channelReport->ok_time != null) {
+
+                    $poleDat[] = array(
+                        'id' => $channelReport->id,
+                        'time' => $channelReport->ok_time,
+                        'color' => "green",
+                    );
+                }
+                $poleDat[] = array(
+                    'id' => $channelReport->id,
+                    'time' => $channelReport->ko_time,
+                    'color' => "red",
+                );
+            }
+            return $poleDat;
+        } else {
+            return [
+                'status' => "false"
+            ];
+        }
+    }
+
+
+    public function getLasDayWeek(Request $request)
+    {
+
+        if (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(7))->first()) {
+
+            foreach (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(7))->get() as $channelReport) {
 
                 if ($channelReport->ok_time != null) {
 

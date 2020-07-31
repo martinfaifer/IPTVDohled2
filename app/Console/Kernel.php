@@ -6,7 +6,9 @@ use App\Bitrate;
 use App\Channel;
 use App\CrashedChannel;
 use App\Events\SendDesktopAlert;
+use App\MailHistory;
 use App\NotFunctionChannel;
+use App\UserHistory;
 use App\Volume;
 use App\VolumeAlert;
 use Carbon\Carbon;
@@ -52,6 +54,16 @@ class Kernel extends ConsoleKernel
             CrashedChannel::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
         })->daily();
 
+        // promázávání historie mailů
+        $schedule->call(function () {
+            MailHistory::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
+        })->daily();
+
+        // promázávání user logu
+        $schedule->call(function () {
+            UserHistory::where('created_at', '<=', Carbon::now()->subdays(14))->delete();
+        })->daily();
+
         // fn pro kontrolu již nedohledovaných kanalů, aby zbytecne nekde nevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
         $schedule->call(function () {
             if (Channel::where('noMonitor', "mdi-close")->first()) {
@@ -68,7 +80,7 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
 
         // dohled IPTV zarizeni / platformy
-        $schedule->command('command:CheckIPTVDevice')->everyFiveMinutes()->runInBackground(); // kontrola IPTV zařízení
+        $schedule->command('command:CheckIPTVDevice')->everyFiveMinutes()->runInBackground();
     }
 
     /**

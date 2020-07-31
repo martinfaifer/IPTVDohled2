@@ -30,6 +30,7 @@ Route::get('/api/channels/crashed', 'ChannelController@getCrashedStreams');
 Route::get('/api/channels/crashed/forDashboard', 'ChannelController@getCrashedStreamsForDashBoard');
 Route::get('/api/channels/notification', 'ChannelController@notificationIconAlert');
 Route::post('/api/channel/chart/crash/hour', 'ChannelErrorTimeController@getLasDayData');
+Route::post('/api/channel/chart/crash/week', 'ChannelErrorTimeController@getLasDayWeek');
 Route::get('/api/bitrate/delteOlderThanTwoDays', 'BitrateController@delteOlderThanTwoDays');
 
 Route::get('/api/settings/dashboard/crashedChannels', 'CrashedChannelController@takeTopTenCrashedChannels');
@@ -105,3 +106,4 @@ Route::post('/api/communication/channel', 'ChannelController@getDataFromAPi');
  */
 Route::get('/api/devices/crash', 'IPTVDeviceController@getFailDevices');
 Route::get('/api/devices/chart', 'IPTVDeviceController@getIPTVDevicesGrafCount');
+Route::get('/api/devices/connection/api', 'IPTVDeviceController@devicesApiData');

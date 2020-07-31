@@ -27,6 +27,7 @@ class CreateChannelsTable extends Migration
             $table->longText('dokumentaceUrl')->nullable();
             $table->string('dohledVolume')->index();
             $table->string('dohledBitrate')->index();
+            $table->string('sendAlert')->index();
             $table->timestamps();
         });
     }

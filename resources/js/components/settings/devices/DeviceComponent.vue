@@ -1,14 +1,15 @@
 <template>
     <div class="body-2">
-        <br>
+        <br />
         <transition name="fade" mode="out-in">
             <alert-component
                 v-if="status != []"
                 :status="status"
             ></alert-component>
         </transition>
-        <div >
+        <div>
             <v-data-table
+                :dense="userData.dense"
                 :headers="headers"
                 :items="devices"
                 :search="search"
@@ -132,6 +133,18 @@ export default {
         axios.get("/api/user/get").then(function(response) {
             currentObj.userData = response.data;
         });
+    },
+
+    mounted() {
+        this.interval = setInterval(
+            function() {
+                let currentObj = this;
+                axios.get("/api/user/get").then(function(response) {
+                    currentObj.userData = response.data;
+                });
+            }.bind(this),
+            5000
+        );
     },
 
     methods: {

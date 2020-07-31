@@ -19,7 +19,7 @@
                                     <template v-slot:activator="{ on }">
                                         <v-btn
                                             link
-                                            to="/settings"
+                                            to="/settings/dashboard"
                                             @click="contextMenu = 'prehled'"
                                             :color="colorPrehled"
                                             class="white--text"
@@ -159,7 +159,7 @@ export default {
         };
     },
     created() {
-        if (this.$route.path === "/settings") {
+        if (this.$route.path === "/settings/dashboard") {
             (this.colorPrehled = "teal"),
                 (this.colorChannels = ""),
                 (this.colorAccounts = ""),
@@ -210,7 +210,7 @@ export default {
     },
     watch: {
         contextMenu: function() {
-            if (this.$route.path === "/settings") {
+            if (this.$route.path === "/settings/dashboard") {
                 (this.colorPrehled = "teal"),
                     (this.colorChannels = ""),
                     (this.colorAccounts = ""),

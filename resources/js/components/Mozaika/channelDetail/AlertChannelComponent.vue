@@ -4,13 +4,13 @@
         <div id="alertDivMozaika">
                 <div>
                     <div
-                        dense
                         v-for="item in crashedStreams"
                         :key="item.id"
                         class="white--text body-1"
                     >
                         <!-- <transition name="fade" mode="out-in"> -->
                             <v-alert
+                                dense
                                 transition="scroll-y-transition"
                                 border="bottom"
                                 type="error"
