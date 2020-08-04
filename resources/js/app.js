@@ -22,6 +22,7 @@ import AlertSettingsComponent from './components/settings/AlertsComponents/Alert
 import LogComponent from './components/settings/logs/LogComponent.vue';
 import DeviceComponent from './components/settings/devices/DeviceComponent';
 import PageNotFoundComponent from './components/PageNotFoundComponent';
+import CalendarComponent from './components/calendar/CalendarComponent';
 
 
 // midleware
@@ -44,6 +45,10 @@ let routes = [
             {
                 path: '/channel/:id',
                 component: ChannelComponent
+            },
+            {
+                path: 'calendar',
+                component: CalendarComponent
             },
 
             {

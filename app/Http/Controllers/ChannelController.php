@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ApiChannel;
 use App\Bitrate;
+use App\Calendar;
 use App\Channel;
 use App\CrashedChannel;
 use App\Volume;
@@ -774,5 +775,44 @@ class ChannelController extends Controller
         } else {
             return "false";
         }
+    }
+
+    /**
+     * fm pro poslání dat o kanálech do kalendáre pro modal
+     *
+     * @return void
+     */
+    public function getChannelsForCalendar()
+    {
+        foreach (Channel::get() as $channel) {
+            $output[] = array(
+                'id' => $channel->id,
+                'nazev' => $channel->nazev
+            );
+        }
+
+        return $output;
+    }
+
+    /**
+     * fn pro pridani nove udalosti do kalendare
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function save(Request $request)
+    {
+        Calendar::create([
+            'channelId' => $request->channelId,
+            'start' => $request->startDate . " " . $request->startTime,
+            'end' => $request->endDate . " " . $request->endTime,
+            'color' => "error"
+        ]);
+
+        return [
+            'isAlert' => "isAlert",
+            'status' => "success",
+            'msg' => "přidána nová událost"
+        ];
     }
 }

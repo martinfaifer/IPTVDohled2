@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Calendar;
 use App\Channel;
 use App\Jobs\FFProbe;
 use App\Volume;
 use App\VolumeAlert;
 use App\VolumeException;
 use App\Worker;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 
 class FFprobeDataController extends Controller
@@ -19,8 +22,27 @@ class FFprobeDataController extends Controller
     public static function FFProbeAnalyza()
     {
         // pro kazdý kanál se odpálí JOB pro QUEUE, které se násldně paralelně zpracovává
+
         foreach (Channel::where('noMonitor', "mdi-check")->get() as $channel) {
-            dispatch(new FFProbe($channel->url));
+
+            if (Calendar::where("channelId", $channel->id)->first()) {
+
+                foreach (Calendar::where("channelId", $channel->id)->get() as $calendardata) {
+                    $now = new Carbon();
+                    $begintime = new Carbon($calendardata->start);
+                    $endtime = new Carbon($calendardata->end);
+
+                    if ($now >= $begintime && $now <= $endtime) {
+                        // kanál nedohleujeme
+
+                    } else {
+                        dispatch(new FFProbe($channel->url));
+                    }
+                }
+            } else {
+
+                dispatch(new FFProbe($channel->url));
+            }
         }
     }
 

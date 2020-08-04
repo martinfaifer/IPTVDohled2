@@ -4,6 +4,7 @@ use App\Channel;
 use App\ChannelErrorTime;
 use App\Events\SendDesktopAlert;
 use App\IPTVDevice;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -86,6 +87,7 @@ Route::post('/api/user/getUserdata', 'UserController@getUserdata');
 
 Route::get('/api/channel/nahled/{name}', 'ChannelController@getNahledByName');
 Route::get('/api/channel/crashed/{name}', 'NotFunctionChannelController@getCrashedChannel');
+Route::get('/api/channel/event/{id}', 'CalendarController@getById');
 
 // Hardware
 Route::get('/api/disk', 'HardwareController@getDifferenceDiskSpace');
@@ -120,3 +122,16 @@ Route::post('/api/communication/channel', 'ChannelController@getDataFromAPi');
 Route::get('/api/devices/crash', 'IPTVDeviceController@getFailDevices');
 Route::get('/api/devices/chart', 'IPTVDeviceController@getIPTVDevicesGrafCount');
 Route::get('/api/devices/connection/api', 'IPTVDeviceController@devicesApiData');
+
+
+/**
+ * KALENDAR
+ */
+
+Route::get('/api/calendar', 'CalendarController@return');
+Route::get('/api/calendar/channels', 'ChannelController@getChannelsForCalendar');
+Route::post('/api/calendar/save', 'ChannelController@save');
+
+Route::get('/test', function () {
+    printf(new Carbon("2020-08-04 12:30"));
+});

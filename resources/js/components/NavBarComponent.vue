@@ -19,6 +19,23 @@
                 </v-tooltip>
             </div>
             <v-spacer></v-spacer>
+            <!-- calendar -->
+            <template v-if="$vuetify.breakpoint.smAndUp">
+                <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                        <v-btn
+                            link
+                            to="/calendar"
+                            class="white--text"
+                            icon
+                            v-on="on"
+                        >
+                            <v-icon>mdi-calendar</v-icon>
+                        </v-btn>
+                    </template>
+                </v-menu>
+            </template>
+            <!-- end calendar -->
             <!-- settings -->
             <template v-if="$vuetify.breakpoint.smAndUp">
                 <v-menu offset-y>
@@ -66,7 +83,7 @@
             <!-- end user -->
 
             <!-- alerts -->
-            <div v-if="this.$route.path === '/'">
+            <div v-show="this.$route.path === '/'">
                 <v-btn
                     class="white--text"
                     @click="chanheAlertVisibility()"
