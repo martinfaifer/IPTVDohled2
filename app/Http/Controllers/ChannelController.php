@@ -50,6 +50,12 @@ class ChannelController extends Controller
             $sendAlert = "0";
         }
 
+        if ($request->createImg == true) {
+            $vytvoritNahled = "1";
+        } else {
+            $vytvoritNahled = "0";
+        }
+
         $data = "url => " . $request->url . " , nazev => " . $request->channelName . " , dohledovat => " . $request->dohledovat;
         $user = Auth::user();
         UserHistoryController::store($user->email, "create_stream", $data);
@@ -78,7 +84,8 @@ class ChannelController extends Controller
             'api' => $api,
             'dohledVolume' => $dohledVolume,
             'dohledBitrate' => $dohledBitrate,
-            'sendAlert' => $sendAlert
+            'sendAlert' => $sendAlert,
+            'vytvoritNahled' => $vytvoritNahled
         ]);
 
         return [
@@ -137,7 +144,8 @@ class ChannelController extends Controller
             'api' => $channel->api,
             'dohledVolume' => $channel->dohledVolume,
             'dohledBitrate' => $channel->dohledBitrate,
-            'sendAlert' => $channel->sendAlert
+            'sendAlert' => $channel->sendAlert,
+            'vytvoritNahled' => $channel->vytvoritNahled
         ];
     }
 
@@ -181,6 +189,14 @@ class ChannelController extends Controller
             $sendAlert = "0";
         }
 
+        // createImg
+
+        if ($request->createImg == true) {
+            $vytvoritNahled = "1";
+        } else {
+            $vytvoritNahled = "0";
+        }
+
 
         if ($request->dohled == true) {
             $noMonitor = "mdi-check";
@@ -209,6 +225,7 @@ class ChannelController extends Controller
         $update->dohledBitrate = $dohledBitrate;
         $update->api = $api;
         $update->sendAlert = $sendAlert;
+        $update->vytvoritNahled = $vytvoritNahled;
 
         $update->save();
 
@@ -300,7 +317,7 @@ class ChannelController extends Controller
      */
     public function getAllChannels()
     {
-        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate', 'sendAlert']);
+        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate', 'sendAlert', 'vytvoritNahled']);
     }
 
     /**
@@ -312,7 +329,7 @@ class ChannelController extends Controller
     {
         $user = Auth::user();
         if (empty($user)) {
-            // none
+            // none uživatel není znám
         } else {
             // fn pro overení ze URL existuje, pokud neexistuje zmeni se na /storage/noImg.jpg
             foreach (Channel::where('locked', "unlocked")->get() as $channel) {
@@ -326,7 +343,13 @@ class ChannelController extends Controller
                     }
                 }
             }
-            return Channel::where('noMonitor', "mdi-check")->orderBy('nazev', 'asc')->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']);
+
+            if ($user->mozaikaAlphaBet == "true") {
+                return Channel::where('noMonitor', "mdi-check")->orderBy('nazev', 'asc')->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']);
+            } else {
+
+                return Channel::where('noMonitor', "mdi-check")->paginate($user->pagination, ['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']);
+            }
         }
     }
 

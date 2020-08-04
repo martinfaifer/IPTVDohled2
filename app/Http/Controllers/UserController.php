@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\MailAlerts;
 use App\User;
 use App\UserHistory;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], true)) {
             return [
                 'isAlert' => "isAlert",
                 'stat' => "success",
@@ -67,6 +68,25 @@ class UserController extends Controller
             } else {
                 $dense = true;
             }
+
+            if ($user->mozaikaAlphaBet != "true") {
+                $mozaikaAlphaBet = false;
+            } else {
+                $mozaikaAlphaBet = true;
+            }
+
+            if (MailAlerts::where('mail', $user->email)->first()) {
+                $mailMotifikace = true;
+            } else {
+                $mailMotifikace = false;
+            }
+
+            if ($user->avatar != null) {
+                $avatar = $user->avatar;
+            } else {
+                $avatar = false;
+            }
+
             return [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -75,14 +95,22 @@ class UserController extends Controller
                 'user_role' => $user->user_role,
                 'pagination' => $user->pagination,
                 'alert' => $user->alert,
-                'dense' => $dense
+                'dense' => $dense,
+                'mozaikaAlphaBet' => $mozaikaAlphaBet,
+                'mailMotifikace' => $mailMotifikace,
+                'avatar' => $avatar
             ];
         }
     }
 
 
     /**
-     * fn pro editaci usera
+     * editace uživatele
+     * mail,
+     * heslo,
+     * aleting,
+     * pagination,
+     * razeni kanálu v mozaice
      *
      * @param Request $request
      * @return void
@@ -96,9 +124,37 @@ class UserController extends Controller
                 $dense = "false";
             }
 
+            if ($request->mozaikaAlphaBet == true) {
+                $mozaikaAlphaBet = "true";
+            } else {
+                $mozaikaAlphaBet = "false";
+            }
+
+            if ($request->mailMotifikace == true) {
+
+                if (MailAlerts::where('mail', $request->mail)->first()) {
+
+                    // mail je již zaveden
+
+                } else {
+
+                    MailAlerts::create([
+                        'mail' => $request->mail
+                    ]);
+                }
+            } else {
+                // odebrání mailu z alertu
+                // kontrola, zda vubec existuje mail k odebrani
+                if (MailAlerts::where("mail", $request->mail)->first()) {
+                    $idAlertuNaSmazani = MailAlerts::where("mail", $request->mail)->first()->id;
+                    MailAlerts::find($idAlertuNaSmazani)->delete();
+                }
+            }
+
             $update = User::find($request->userId);
             $update->email = $request->mail;
             $update->dense = $dense;
+            $update->mozaikaAlphaBet = $mozaikaAlphaBet;
             $update->pagination = $request->pagination;
             if (!empty($request->password)) {
                 $update->password = Hash::make($request->password);
@@ -238,12 +294,24 @@ class UserController extends Controller
         ];
     }
 
-
+    /**
+     * získání informací o userovi vcetne informace o tom, zda se mu posílá jakýkoliv alert
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getUserdata(Request $request)
     {
         return User::where('id', $request->userId)->first();
     }
 
+
+    /**
+     * settings editace uzivatele
+     *
+     * @param Request $request
+     * @return void
+     */
     public function edit(Request $request)
     {
         if ($request->name == "") {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\ChannelErrorTime;
 use App\MailAlerts;
 use App\SendedAlert;
 use Carbon\Carbon;
@@ -35,7 +36,7 @@ class AlertController extends Controller
 
                             // kanal, status, prijmece
                             try {
-                                MailController::basic_email($channelToSend['nazev'], "KO", "KO - " . $channelToSend['nazev'], $mail['mail']);
+                                MailController::basic_email($channelToSend['nazev'], "KO", "KO - " . $channelToSend['nazev'], $mail['mail'], "false", env("APP_URL") . "/#/settings/channels/" . $channelToSend['id'] . "/charts");
                                 MailHistoryController::store($mail['mail'], $channelToSend['nazev'] . " KO");
                                 SendedAlertController::store($channelToSend['id']);
                             } catch (\Throwable $th) {
@@ -64,7 +65,8 @@ class AlertController extends Controller
 
                             // kanal, status, prijmece
                             try {
-                                MailController::basic_email($channel['nazev'], "OK", "OK - " . $channel['nazev'], $mail['mail']);
+                                $dobaVypadku = ChannelErrorTime::where('channelId', $sendedAlert['channelId'])->orderBy('created_at', 'desc')->first();
+                                MailController::basic_email($channel['nazev'], "OK", "OK - " . $channel['nazev'],  $mail['mail'], $dobaVypadku, env("APP_URL") . "/#/settings/channels/" . $sendedAlert['channelId'] . "/charts");
                                 MailHistoryController::store($mail['mail'], $channel['nazev'] . " OK");
                                 SendedAlertController::remove($sendedAlert['channelId']);
                             } catch (\Throwable $th) {

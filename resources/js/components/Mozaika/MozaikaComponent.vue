@@ -267,6 +267,18 @@
                             >
                                 <v-icon>mdi-loupe</v-icon>
                             </v-btn>
+
+
+                            <v-btn
+                                @click="contextMenu = 'notes'"
+                                :color="colorNote"
+                                class="white--text"
+                                icon
+                            >
+                                <v-icon>mdi-message</v-icon>
+                            </v-btn>
+
+                            <!-- mdi-message -->
                             <v-spacer></v-spacer>
                         </v-toolbar>
                     </v-row>
@@ -289,6 +301,9 @@
                             >
                             <v-row v-if="contextMenu === 'grafy'" class="title"
                                 >{{ channelName }} - Grafy</v-row
+                            >
+                            <v-row v-if="contextMenu === 'notes'" class="title"
+                                >{{ channelName }} - Poznámky</v-row
                             >
                         </div>
                     </v-row>
@@ -328,6 +343,11 @@
                                 "
                                 :channelId="channelId"
                             ></chart-component>
+                            <note-component  v-if="
+                                    channelId != '' && contextMenu === 'notes'
+                                "
+                                :channelId="channelId">
+                            </note-component>
 
                         </v-row>
                     </v-row>
@@ -349,6 +369,7 @@ import BitrateComponent from "./channelDetail/ChannelNameWithBitrate";
 import crashedStreams from "./channelDetail/AlertChannelComponent";
 import ChartComponent from "./channelDetail/ChannelDetailCharts";
 import ApiDokumentaceComponent from "./channelDetail/ApiDokumentaceComponent";
+import NoteComponent from "./channelDetail/NoteComponent";
 export default {
     data() {
         return {
@@ -356,6 +377,7 @@ export default {
             color: "",
             colorPrehled: "teal",
             colorFfprobe: "",
+            colorNote: "",
             colorGrafs: "",
             colorApi: "",
             channelId: "",
@@ -400,7 +422,8 @@ export default {
         "ffprobeTree-component": FFProbeComponent,
         "crashed-streams": crashedStreams,
         "chart-component": ChartComponent,
-        "apidokumentace-component": ApiDokumentaceComponent
+        "apidokumentace-component": ApiDokumentaceComponent,
+        "note-component": NoteComponent
     },
     methods: {
         channelInfoFunction() {
@@ -506,21 +529,31 @@ export default {
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "");
                     (this.colorApi = "");
+                    (this.colorNote = "");
             } else if (this.contextMenu === "ffprobe") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = "teal"),
                     (this.colorGrafs = "");
                     (this.colorApi = "");
+                    (this.colorNote = "");
             } else if (this.contextMenu === "grafy") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "teal");
                     (this.colorApi = "");
+                    (this.colorNote = "");
             } else if (this.contextMenu === "api") {
                  (this.colorPrehled = ""),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "");
+                    (this.colorNote = "");
                     (this.colorApi = "teal");
+            } else if(this.contextMenu === "notes") {
+                (this.colorPrehled = ""),
+                    (this.colorFfprobe = ""),
+                    (this.colorGrafs = "");
+                    (this.colorApi = "");
+                    (this.colorNote = "teal");
             }
         }
     }

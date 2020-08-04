@@ -144,6 +144,19 @@
                                     >
                                         <v-col cols="12" sm="12" md="12">
                                             <v-checkbox
+                                                v-model="createImg"
+                                                label="Vytvořit náhled"
+                                            ></v-checkbox>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row
+                                        v-show="
+                                            ffprobeOutput.stat === 'success' &&
+                                                dohledovatKanal != false
+                                        "
+                                    >
+                                        <v-col cols="12" sm="12" md="12">
+                                            <v-checkbox
                                                 v-model="sendAlert"
                                                 label="Zaslat alert"
                                             ></v-checkbox>
@@ -231,6 +244,13 @@
 
             <template v-slot:item.sendAlert="{ item }">
                 <v-icon v-if="item.sendAlert != '1'" color="red"
+                    >mdi-close</v-icon
+                >
+                <v-icon v-else color="green">mdi-check</v-icon>
+            </template>
+
+            <template v-slot:item.vytvoritNahled="{ item }">
+                <v-icon v-if="item.vytvoritNahled != '1'" color="red"
                     >mdi-close</v-icon
                 >
                 <v-icon v-else color="green">mdi-check</v-icon>
@@ -377,15 +397,15 @@
                             <v-col cols="12" sm="12" md="12">
                                 <v-checkbox
                                     v-model="editdat.dohledBitrate"
-                                    label="Dohledovat datového toku"
+                                    label="Dohled datového toku"
                                 ></v-checkbox>
                             </v-col>
                         </v-row>
-                        <v-row v-show="editdat.dohled != false">
+                        <v-row v-show="editdat.vytvoritNahled != false">
                             <v-col cols="12" sm="12" md="12">
                                 <v-checkbox
-                                    v-model="editdat.sendAlert"
-                                    label="Zaslat alert"
+                                    v-model="editdat.vytvoritNahled"
+                                    label="Vytvořit náhled"
                                 ></v-checkbox>
                             </v-col>
                         </v-row>
@@ -399,7 +419,7 @@
                             >Zavřít</v-btn
                         >
                         <v-btn
-                        :disabled="editdat.nazev === ''"
+                            :disabled="editdat.nazev === ''"
                             color="green darken-1"
                             text
                             @click="saveEditDialog()"
@@ -510,6 +530,7 @@ export default {
             { text: "Dohled Bitratu", value: "dohledBitrate" },
             { text: "Dohledováno", value: "noMonitor" },
             { text: "Zaslání mail Alertů", value: "sendAlert" },
+            { text: "Vytváření IMG", value: "vytvoritNahled" },
             { text: "Status", value: "Alert" },
             { text: "Akce", value: "actions" }
         ],
@@ -517,6 +538,7 @@ export default {
         search: "",
         channelId: "",
         status: "",
+        createImg: "",
         channelName: "",
         loading: false,
         editdat: [],
@@ -619,7 +641,8 @@ export default {
                     api: this.editdat.api,
                     dohledVolume: this.editdat.dohledVolume,
                     dohledBitrate: this.editdat.dohledBitrate,
-                    sendAlert: this.editdat.sendAlert
+                    sendAlert: this.editdat.sendAlert,
+                    createImg: this.editdat.vytvoritNahled
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
@@ -733,7 +756,8 @@ export default {
                     api: this.api,
                     dohledVolume: this.dohledVolume,
                     dohledBitrate: this.dohledBitrate,
-                    sendAlert: this.sendAlert
+                    sendAlert: this.sendAlert,
+                    createImg: this.createImg
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
@@ -743,6 +767,7 @@ export default {
                     currentObj.dohledVolume = "";
                     currentObj.dohledBitrate = "";
                     currentObj.sendAlert = "";
+                    currentObj.createImg = "";
                     (currentObj.ffprobeAnalyzedData = "false"),
                         (currentObj.dohledovatKanal = true),
                         (currentObj.ffprobeOutput = []);

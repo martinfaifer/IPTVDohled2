@@ -27,7 +27,25 @@
     </head>
     <body>
 
-      Kanál {{$channel}} má status {{$status}}
+      <h3 style="color: black">
+        Kanál {{$channel}} je
+        @if ($status === 'KO')
+        nedostupný
+        @else
+        v pořádku
+        @endif
 
+        @if ($vypadek === 'false')
+
+        @else
+      </h3>
+      <p>
+          Výpadek trval od {{$vypadek->ko_time}} do {{$vypadek->ok_time}}
+      </p>
+      @endif
+
+      <p>
+          <a href="{{ $grafUrl }}" target="_blank">Odkaz na grafy</a>
+      </p>
     </body>
 </html>

@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->string('pagination')->nullable()->default('18');
             $table->string('alert')->nullable()->default('show');
             $table->string('dense')->default('false');
+            $table->string('mozaikaAlphaBet')->default('false');
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

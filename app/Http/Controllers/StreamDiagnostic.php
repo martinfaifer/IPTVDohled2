@@ -26,6 +26,7 @@ class StreamDiagnostic extends Controller
      */
     public static function ffprobe($channelUrl)
     {
+        $channelStatus = "success"; // nadefinování výchizí hodnoty
         $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
         // $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
 
@@ -73,7 +74,12 @@ class StreamDiagnostic extends Controller
         if ($channel->dohledVolume == "1") {
             shell_exec('php artisan' . ' command:takeVolume ' . $channelUrl . ' > /dev/null &');
         }
-        shell_exec('php artisan' . ' command:img ' . $channelUrl . ' > /dev/null &');
+
+        if ($channel->vytvoritNahled == "1") {
+            shell_exec('php artisan' . ' command:img ' . $channelUrl . ' > /dev/null &');
+        } else {
+            //  odebraní img a zmena url v channel
+        }
     }
 
 

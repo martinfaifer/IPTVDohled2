@@ -49,7 +49,7 @@ class ImgController extends Controller
                 try {
 
                     // exec pro vytvoření nového náhledu pro mozaiku a uložení do db do tabulky channel pole img
-                    shell_exec('/usr/local/bin/ffmpeg -i ' . $channel["url"] . ' -vframes 1 storage/app/public/' . $imgName . ' -timeout 6  -timelimit 10');
+                    shell_exec('/usr/local/bin/ffmpeg -i ' . $channel["url"] . ' -vframes 1 storage/app/public/' . $imgName . ' -timeout 4  -timelimit 10');
 
                     // overení, ze byl náhled skutecne vytvoren
                     if (file_exists(public_path('storage/' . $imgName))) {

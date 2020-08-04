@@ -122,35 +122,6 @@
                 ></line-chart>
             </div>
             <div v-if="value === 'Výpadky'">
-                <!-- <div>
-                    <br />
-                    <p class="text-center">
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-icon
-                                    @click="cusotmErrorChartDialog = true"
-                                    color="primary"
-                                    v-on="on"
-                                    >mdi-magnify</v-icon
-                                >
-                            </template>
-                            <span>Vlastní výběr</span>
-                        </v-tooltip>
-                    </p>
-                </div> -->
-                <!-- <div v-if="errorCustomChart === true">
-                    <div>
-                        <br />
-                        <p class="text-center">Uživatelem nadefinovaný graf</p>
-                    </div>
-                    <column-chart
-                        :colors="['#FF0000']"
-                        width="1150px"
-                        height="250px"
-                        :data="customErrorchartdata"
-                    ></column-chart>
-                </div>
-                <br /> -->
                 <br>
                 <p class="text-center mt-12 ml-12">Data za týden</p>
                 <div v-if="crasheddata.status === 'false'" class="ml-12">

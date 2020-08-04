@@ -14,12 +14,16 @@ class MailController extends Controller
      * nazev, status, prijemce
      * @return void
      */
-    public static function basic_email($channelName, $status, $subject, $toUser)
+    public static function basic_email($channelName, $status, $subject, $toUser, $vypadek, $grafUrl)
     {
+
+        // exit($toUser);
         $data = array(
             'name' => "Alert",
             'status' => $status,
-            'channel' => $channelName
+            'channel' => $channelName,
+            'vypadek' => $vypadek,
+            'grafUrl' => $grafUrl
         );
 
         Mail::send('mail', $data, function ($message) use ($toUser, $subject) {

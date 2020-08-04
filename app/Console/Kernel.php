@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Bitrate;
 use App\Channel;
+use App\ChannelErrorTime;
 use App\CrashedChannel;
 use App\Events\SendDesktopAlert;
 use App\MailHistory;
@@ -35,34 +36,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         /**
-         * Prikaz pro vytvoreni nahledu, diagnostikování a získání hlasitosti ze streamu
+         * Prikaz pro vytvoreni nahledu, diagnostikování a získání hlasitosti ze streamu everyThreeMinutes
          */
-        $schedule->command('command:ffprobe')->everyMinute()->runInBackground();  // balík příkazů jednak pro získání bitratu, ffproby a vytvoření náhledu
+        $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping()->runInBackground();  // balík příkazů jednak pro získání bitratu, ffproby a vytvoření náhledu
         $schedule->command('command:sendErrorMail')->everyThreeMinutes()->runInBackground(); // odeslání mail alertu s chybovými kanály
         $schedule->command('command:sendSuccessMail')->everyThreeMinutes()->runInBackground(); // odeslání mail alertu , když je kanál již ok
         $schedule->command('command:deleteImgOlderThanOneHour')->everyTenMinutes()->runInBackground(); // odebrání obrázků starších jak 1h z file systému
-        // Sheduler pro smazání dat starších jak 7 týden
-        $schedule->call(function () {
-            Volume::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
-        })->daily();
-
-        $schedule->call(function () {
-            Bitrate::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
-        })->daily();
-
-        $schedule->call(function () {
-            CrashedChannel::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
-        })->daily();
-
-        // promázávání historie mailů
-        $schedule->call(function () {
-            MailHistory::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
-        })->daily();
-
-        // promázávání user logu
-        $schedule->call(function () {
-            UserHistory::where('created_at', '<=', Carbon::now()->subdays(14))->delete();
-        })->daily();
 
         // fn pro kontrolu již nedohledovaných kanalů, aby zbytecne nekde nevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
         $schedule->call(function () {
@@ -81,6 +60,36 @@ class Kernel extends ConsoleKernel
 
         // dohled IPTV zarizeni / platformy
         $schedule->command('command:CheckIPTVDevice')->everyFiveMinutes()->runInBackground();
+
+
+        // Sheduler pro smazání dat starších jak 7 týden
+        $schedule->call(function () {
+            Volume::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
+        })->daily();
+
+        $schedule->call(function () {
+            Bitrate::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
+        })->daily();
+
+        // deprecated, nechává se na docistení db
+        $schedule->call(function () {
+            CrashedChannel::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
+        })->daily();
+
+        // promázávání historie mailů
+        $schedule->call(function () {
+            MailHistory::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
+        })->daily();
+
+        // promázávání user logu
+        $schedule->call(function () {
+            UserHistory::where('created_at', '<=', Carbon::now()->subdays(14))->delete();
+        })->daily();
+
+        // promázávání historie výpadků kanálů
+        $schedule->call(function () {
+            ChannelErrorTime::where('created_at', '<=', Carbon::now()->subdays(7))->delete();
+        })->daily();
     }
 
     /**

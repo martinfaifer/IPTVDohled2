@@ -127,7 +127,13 @@
                                                 >Zavřít</v-btn
                                             >
                                             <v-btn
-                                                :disabled="name === '' || surname === '' || email === '' || password === ''  || value === ''"
+                                                :disabled="
+                                                    name === '' ||
+                                                        surname === '' ||
+                                                        email === '' ||
+                                                        password === '' ||
+                                                        value === ''
+                                                "
                                                 color="green darken-1"
                                                 @click="saveNewUser()"
                                                 text
@@ -140,6 +146,20 @@
                             </v-toolbar>
                         </template>
                         <!-- templaty pro zobtazení informací v tabulce -->
+
+                        <template v-slot:item.dense="{ item }">
+                            <v-icon v-if="item.dense != 'true'" color="red"
+                                >mdi-close</v-icon
+                            >
+                            <v-icon v-else color="green">mdi-check</v-icon>
+                        </template>
+
+                         <template v-slot:item.mozaikaAlphaBet="{ item }">
+                            <v-icon v-if="item.mozaikaAlphaBet != 'true'" color="red"
+                                >mdi-close</v-icon
+                            >
+                            <v-icon v-else color="green">mdi-check</v-icon>
+                        </template>
 
                         <template v-slot:item.actions="{ item }">
                             <!-- edit -->
@@ -239,7 +259,11 @@
                 </div>
             </div>
         </div>
-        <div v-else-if="userData.user_role == 'editor' || userData.user_role == 'náhled'">
+        <div
+            v-else-if="
+                userData.user_role == 'editor' || userData.user_role == 'náhled'
+            "
+        >
             <v-alert class="body-2" type="error"
                 >Nemáte přístup do této sekce</v-alert
             >
@@ -264,6 +288,9 @@ export default {
             },
             { text: "Příjmení", value: "surname" },
             { text: "email", value: "email" },
+            { text: "pagination", value: "pagination" },
+            { text: "dense", value: "dense" },
+            { text: "mozaikaAlphaBet", value: "mozaikaAlphaBet" },
             { text: "Uživatelská role ", value: "user_role" },
 
             { text: "Akce", value: "actions" }
@@ -282,7 +309,7 @@ export default {
         surnameRule: [v => !!v || "příjmení je požadováno"],
         mailRule: [v => !!v || "email je požadován"],
         passwordRule: [v => !!v || "heslo je požadováno"],
-        userroleRule: [v => !!v || "vyberte uživatelské oprávnění"],
+        userroleRule: [v => !!v || "vyberte uživatelské oprávnění"]
     }),
     components: {
         "alert-component": Alert

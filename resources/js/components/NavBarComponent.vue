@@ -42,7 +42,12 @@
                 <v-menu transition="scroll-y-transition">
                     <template v-slot:activator="{ on }">
                         <v-btn class="white--text" fab text v-on="on">
-                            <v-icon>mdi-account-circle</v-icon>
+                            <v-icon v-show="userData.avatar === false"
+                                >mdi-account-circle</v-icon
+                            >
+                            <v-avatar v-show="userData.avatar != false">
+                                <img :src="userData.avatar" />
+                            </v-avatar>
                         </v-btn>
                     </template>
                     <v-list width="250px" class="text-center subtitle-1">
@@ -78,46 +83,113 @@
         </v-app-bar>
 
         <v-row class="body-2" justify="center">
-            <v-dialog v-model="modalEditUser" persistent max-width="550px">
+            <v-dialog
+                v-model="modalEditUser"
+                fullscreen
+                hide-overlay
+                transition="dialog-bottom-transition"
+            >
                 <v-card>
+                    <v-toolbar dark color="transparent">
+                        <v-btn icon dark @click="modalEditUser = false">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-toolbar-title>Nastavení uživatele</v-toolbar-title>
+                    </v-toolbar>
                     <v-card-text>
-                        <v-container height="1920px" fluid>
-                            <v-row>
-                                <v-col cols="12" sm="12" md="12">
-                                    <v-text-field
-                                        v-model="userData.email"
-                                        label="e-mail"
-                                        autofocus
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="12" sm="12" md="12">
-                                    <v-text-field
-                                        v-model="password"
-                                        label="změna hesla"
-                                        type="password"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="12" sm="12" md="12">
-                                    <v-text-field
-                                        v-model="userData.pagination"
-                                        label="Počet polí v mozaice"
-                                        type="number"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="12" sm="12" md="12">
+                        <v-list three-line subheader ml-12>
+                            <v-subheader>Nastavení uživatele</v-subheader>
+                            <v-list-item>
+                                <v-row>
+                                    <v-col cols="6" sm="6" md="6">
+                                        <v-text-field
+                                            v-model="userData.email"
+                                            label="e-mail"
+                                            autofocus
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="6" sm="6" md="6">
+                                        <v-text-field
+                                            v-model="password"
+                                            label="změna hesla"
+                                            type="password"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-list-item>
+                        </v-list>
+                        <v-divider></v-divider>
+                        <v-list three-line subheader>
+                            <v-subheader>Nastavení GUI</v-subheader>
+                            <v-list-item>
+                                <v-list-item-action>
+                                    <v-col cols="12" sm="12" md="12">
+                                        <v-text-field
+                                            v-model="userData.pagination"
+                                            label="Počet polí v mozaice"
+                                            type="number"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-list-item-action>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-list-item-action>
                                     <v-checkbox
                                         v-model="userData.dense"
-                                        label="Kompaktní mód"
                                     ></v-checkbox>
-                                </v-col>
-                            </v-row>
-                        </v-container>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Kompaktní mód</v-list-item-title
+                                    >
+                                    <v-list-item-subtitle
+                                        >Zmenší se tabulky, i alerty, vhodné pro
+                                        monitory s nízkým
+                                        rozlišením</v-list-item-subtitle
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-list-item-action>
+                                    <v-checkbox
+                                        v-model="userData.mozaikaAlphaBet"
+                                    ></v-checkbox>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Abecední řazení kanálů v
+                                        mozaice</v-list-item-title
+                                    >
+                                    <v-list-item-subtitle
+                                        >Kanály se budou v mozaice řadit
+                                        avecedně</v-list-item-subtitle
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list>
+                        <v-divider></v-divider>
+                        <v-list three-line subheader>
+                            <v-subheader>Alerting</v-subheader>
+                            <v-list-item>
+                                <v-list-item-action>
+                                    <v-checkbox
+                                        v-model="userData.mailMotifikace"
+                                    ></v-checkbox>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title
+                                        >Zasílání mailových
+                                        notifikací</v-list-item-title
+                                    >
+                                    <v-list-item-subtitle
+                                        >Dohled bude zasílat upozornění o
+                                        nefunkčních nebo nově funkčních kanálech
+                                        s odkazem na kanál a dobou
+                                        výpadku</v-list-item-subtitle
+                                    >
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -129,6 +201,7 @@
                         >
                         <v-btn
                             color="green darken-1"
+                            type="submit"
                             @click="userEdit(), (modalEditUser = false)"
                             text
                             >Uložit</v-btn
@@ -161,13 +234,17 @@
                 </v-row>
             </v-snackbar>
         </div>
+
+        <footer-component></footer-component>
     </div>
 </template>
 <script>
 import Alert from "./alerts/AlertComponent";
+import FooterComponent from "./FooterComponent";
 export default {
     data() {
         return {
+            mailMotifikace: false,
             rememberMe: true,
             userData: false,
             modalEditUser: false,
@@ -197,7 +274,8 @@ export default {
     },
 
     components: {
-        "alert-component": Alert
+        "alert-component": Alert,
+        "footer-component": FooterComponent
     },
 
     methods: {
@@ -218,6 +296,7 @@ export default {
                 })
                 .catch(function(error) {});
         },
+
         userEdit() {
             let currentObj = this;
             axios
@@ -226,10 +305,13 @@ export default {
                     mail: this.userData.email,
                     password: this.password,
                     pagination: this.userData.pagination,
-                    dense: this.userData.dense
+                    dense: this.userData.dense,
+                    mozaikaAlphaBet: this.userData.mozaikaAlphaBet,
+                    mailMotifikace: this.userData.mailMotifikace
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
+                    console.log(response.data);
                 })
                 .catch(function(error) {
                     console.log(error);

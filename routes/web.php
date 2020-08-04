@@ -53,6 +53,15 @@ Route::post('/api/channel/chart/bitrate/custom', 'BitrateController@getDataFromT
 Route::post('/api/channel/chart/error/custom', 'CrashedChannelController@getDataFromTo');
 
 
+/**
+ * channel messeges
+ */
+
+Route::post('/api/channel/messeges', 'NoteController@get');
+Route::post('/api/channel/message/create', 'NoteController@create');
+Route::post('/api/channel/message/delete', 'NoteController@remove');
+
+
 // DASHBOARD
 Route::get('/api/channels/percent', 'ChannelController@getPercentsChannelMonitoredForCircle');
 Route::get('/api/channels/functions/percent', 'ChannelController@getPercentChannelAreFunction');
