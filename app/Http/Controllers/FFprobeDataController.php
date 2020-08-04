@@ -25,24 +25,24 @@ class FFprobeDataController extends Controller
 
         foreach (Channel::where('noMonitor', "mdi-check")->get() as $channel) {
 
-            if (Calendar::where("channelId", $channel->id)->first()) {
+            // if (Calendar::where("channelId", $channel->id)->first()) {
 
-                foreach (Calendar::where("channelId", $channel->id)->get() as $calendardata) {
-                    $now = new Carbon();
-                    $begintime = new Carbon($calendardata->start);
-                    $endtime = new Carbon($calendardata->end);
+            //     foreach (Calendar::where("channelId", $channel->id)->get() as $calendardata) {
+            //         $now = new Carbon();
+            //         $begintime = new Carbon($calendardata->start);
+            //         $endtime = new Carbon($calendardata->end);
 
-                    if ($now >= $begintime && $now <= $endtime) {
-                        // kanál nedohleujeme
+            //         if ($now >= $begintime && $now <= $endtime) {
+            //             // kanál nedohleujeme
 
-                    } else {
-                        dispatch(new FFProbe($channel->url));
-                    }
-                }
-            } else {
+            //         } else {
+            //             dispatch(new FFProbe($channel->url));
+            //         }
+            //     }
+            // } else {
 
-                dispatch(new FFProbe($channel->url));
-            }
+            dispatch(new FFProbe($channel->url));
+            // }
         }
     }
 
