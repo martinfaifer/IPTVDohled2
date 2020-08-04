@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Calendar;
 use App\Channel;
 use App\ChannelErrorTime;
 use App\MailAlerts;
@@ -27,21 +28,60 @@ class AlertController extends Controller
             // vratí se data, která se následne reportují
 
             foreach ($data as $channelToSend) {
-                // overení, ze kanal jiz nebyl jednou zaslan
-                if (!SendedAlert::where('channelId', $channelToSend['id'])->first()) {
-                    // vyhledání zda kanál je komu poslat
-                    if (MailAlerts::first()) {
-                        // existuji minimálne jeden mail na který se poslou alerty
-                        foreach (MailAlerts::get() as  $mail) {
 
-                            // kanal, status, prijmece
-                            try {
-                                MailController::basic_email($channelToSend['nazev'], "KO", "KO - " . $channelToSend['nazev'], $mail['mail'], "false", env("APP_URL") . "/#/settings/channels/" . $channelToSend['id'] . "/charts");
-                                MailHistoryController::store($mail['mail'], $channelToSend['nazev'] . " KO");
-                                SendedAlertController::store($channelToSend['id']);
-                            } catch (\Throwable $th) {
-                                // něco selhalo
-                                echo "neco selhalo pri odesilani / ukladani dat";
+                // sort kanálu, které mají plánovaný výpadek a neposílají se alerty
+
+                if (Calendar::where("channelId", $data->id)->first()) {
+
+                    foreach (Calendar::where("channelId", $data->id)->get() as $calendardata) {
+                        $now = new Carbon();
+                        $begintime = new Carbon($calendardata->start);
+                        $endtime = new Carbon($calendardata->end);
+
+                        if ($now >= $begintime && $now <= $endtime) {
+                            // kanál nedohledujeme
+
+                        } else {
+
+                            // overení, ze kanal jiz nebyl jednou zaslan
+                            if (!SendedAlert::where('channelId', $channelToSend['id'])->first()) {
+                                // vyhledání zda kanál je komu poslat
+                                if (MailAlerts::first()) {
+                                    // existuji minimálne jeden mail na který se poslou alerty
+                                    foreach (MailAlerts::get() as  $mail) {
+
+                                        // kanal, status, prijmece
+                                        try {
+                                            MailController::basic_email($channelToSend['nazev'], "KO", "KO - " . $channelToSend['nazev'], $mail['mail'], "false", env("APP_URL") . "/#/settings/channels/" . $channelToSend['id'] . "/charts");
+                                            MailHistoryController::store($mail['mail'], $channelToSend['nazev'] . " KO");
+                                            SendedAlertController::store($channelToSend['id']);
+                                        } catch (\Throwable $th) {
+                                            // něco selhalo
+                                            echo "neco selhalo pri odesilani / ukladani dat";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+
+                    // overení, ze kanal jiz nebyl jednou zaslan
+                    if (!SendedAlert::where('channelId', $channelToSend['id'])->first()) {
+                        // vyhledání zda kanál je komu poslat
+                        if (MailAlerts::first()) {
+                            // existuji minimálne jeden mail na který se poslou alerty
+                            foreach (MailAlerts::get() as  $mail) {
+
+                                // kanal, status, prijmece
+                                try {
+                                    MailController::basic_email($channelToSend['nazev'], "KO", "KO - " . $channelToSend['nazev'], $mail['mail'], "false", env("APP_URL") . "/#/settings/channels/" . $channelToSend['id'] . "/charts");
+                                    MailHistoryController::store($mail['mail'], $channelToSend['nazev'] . " KO");
+                                    SendedAlertController::store($channelToSend['id']);
+                                } catch (\Throwable $th) {
+                                    // něco selhalo
+                                    echo "neco selhalo pri odesilani / ukladani dat";
+                                }
                             }
                         }
                     }

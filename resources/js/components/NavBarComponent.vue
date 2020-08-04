@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-app-bar color="transparent" fixed dense dark>
+        <v-app-bar color="transparent" fixed dense dark height="43">
             <div v-if="this.$route.path != '/'">
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
@@ -62,7 +62,7 @@
                             <v-icon v-show="userData.avatar === false"
                                 >mdi-account-circle</v-icon
                             >
-                            <v-avatar v-show="userData.avatar != false">
+                            <v-avatar size="26" v-show="userData.avatar != false">
                                 <img :src="userData.avatar" />
                             </v-avatar>
                         </v-btn>
@@ -88,7 +88,7 @@
                     class="white--text"
                     @click="chanheAlertVisibility()"
                     fab
-                    text
+                    icon
                 >
                     <v-icon :color="crashedStreams.color"
                         >mdi-comment-alert</v-icon
