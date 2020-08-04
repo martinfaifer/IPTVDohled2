@@ -91,6 +91,10 @@ Route::get('/api/channel/crashed/{name}', 'NotFunctionChannelController@getCrash
 Route::get('/api/disk', 'HardwareController@getDifferenceDiskSpace');
 Route::get('/api/cpu', 'HardwareController@checkCPU');
 Route::get('/api/devices', 'IPTVDeviceController@getDevices');
+Route::post('/api/device/create', 'IPTVDeviceController@create');
+Route::post('/api/device/get', 'IPTVDeviceController@get');
+Route::post('/api/device/edit', 'IPTVDeviceController@editDevice');
+Route::post('/api/device/delete', 'IPTVDeviceController@delete');
 
 Route::get('/api/device/check', 'IPTVDeviceController@deviceCheck');
 

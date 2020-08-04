@@ -160,4 +160,144 @@ class IPTVDeviceController extends Controller
 
         return $outputData;
     }
+
+
+    /**
+     * fn pro vytvoreni nového zařízení ktere se bude dohledovat
+     *
+     *  deviceName
+     *  deviceIp
+     * dohledType
+     * @param Request $request
+     * @return array
+     */
+    public function create(Request $request)
+    {
+
+        if (IPTVDevice::where('ip', $request->deviceIp)->first()) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "zařízení s touto IP již existuje"
+            ];
+            die();
+        }
+
+        if (!filter_var($request->deviceIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "neplatný formát IP"
+            ];
+            die();
+        }
+
+        try {
+            IPTVDevice::create([
+                'name' => $request->deviceName,
+                'ip' => $request->deviceIp,
+                'connection' => $request->dohledType,
+                'status' => "waiting"
+            ]);
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "zařízení bylo vytvořeno"
+            ];
+        } catch (\Throwable $th) {
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "Nepodařilo se vytvořit zařízení"
+            ];
+        }
+    }
+
+    /**
+     * fn pro získání informací o jednom zařízení dle jeho id
+     *  deviceId
+     * @param Request $request
+     * @return void
+     */
+    public function get(Request $request)
+    {
+        return IPTVDevice::find($request->deviceId);
+    }
+
+    /**
+     * fn pro editaci zarizeni, ktere je zalozené
+     *
+     *  deviceName
+     *  deviceIp
+     *  dohledType
+     *  deviceId
+     * @param Request $request
+     * @return array
+     */
+    public function editDevice(Request $request)
+    {
+
+        if (!filter_var($request->deviceIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "neplatný formát IP"
+            ];
+            die();
+        }
+
+        try {
+            $update = IPTVDevice::find($request->deviceId);
+            $update->name = $request->deviceName;
+            $update->ip = $request->deviceIp;
+            $update->status = "waiting";
+            if ($request->dohledType != "") {
+                $update->connection = $request->deohledType;
+            }
+
+            $update->save();
+
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "editace byla úspěšná"
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "nepodařilo se z editovat zařízení"
+            ];
+        }
+    }
+
+    /**
+     * fn pro odenrání zařízení dle deviceId
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function delete(Request $request)
+    {
+        try {
+
+            IPTVDevice::find($request->deviceId)->delete();
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "odebrání bylo úspěšné"
+            ];
+        } catch (\Throwable $th) {
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "erro",
+                'msg' => "odebrání se nepodařilo"
+            ];
+        }
+    }
 }

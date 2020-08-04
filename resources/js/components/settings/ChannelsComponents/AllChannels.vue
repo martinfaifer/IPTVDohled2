@@ -345,7 +345,7 @@
                                     v-model="editdat.url"
                                     label="Adresa dohledovaného streamu"
                                     readonly
-                                    disabled="true"
+                                    disabled
                                 ></v-text-field>
                             </v-col>
                         </v-row>
@@ -551,19 +551,12 @@ export default {
         "alert-component": Alert
     },
     created() {
-        // Informace, zda jsou nefunknčí streamy
-        window.axios.get("/api/channels").then(response => {
-            this.channels = response.data;
-        });
+        this.loadChannels();
 
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
+        this.loadUserData();
 
-        window.axios.get("/api/api/channel").then(response => {
-            currentObj.apis = response.data;
-        });
+        this.loadChannelApi();
+
     },
 
     mounted() {
@@ -578,6 +571,26 @@ export default {
         );
     },
     methods: {
+        loadChannels() {
+            window.axios.get("/api/channels").then(response => {
+                this.channels = response.data;
+            });
+        },
+
+        loadUserData() {
+            let currentObj = this;
+            axios.get("/api/user/get").then(function(response) {
+                currentObj.userData = response.data;
+            });
+        },
+
+        loadChannelApi() {
+            let currentObj = this;
+            window.axios.get("/api/api/channel").then(response => {
+                currentObj.apis = response.data;
+            });
+        },
+
         openAlertDialog() {
             let currentObj = this;
 
@@ -650,9 +663,7 @@ export default {
                     currentObj.channelId = "";
                     currentObj.editdat = [];
                     currentObj.sendAlert = "";
-                    window.axios.get("/api/channels").then(response => {
-                        currentObj.channels = response.data;
-                    });
+                    currentObj.loadChannels();
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -670,9 +681,8 @@ export default {
                     currentObj.editdat = response.data;
                     currentObj.editDialog = true;
 
-                    window.axios.get("/api/api/channel").then(response => {
-                        currentObj.apis = response.data;
-                    });
+                    currentObj.loadChannelApi();
+
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -698,9 +708,8 @@ export default {
                     currentObj.deleteDialog = false;
                     currentObj.channelId = "";
                     currentObj.loading = false;
-                    window.axios.get("/api/channels").then(response => {
-                        currentObj.channels = response.data;
-                    });
+
+                    currentObj.loadChannels();
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -773,9 +782,7 @@ export default {
                         (currentObj.ffprobeOutput = []);
                     currentObj.loading = false;
 
-                    axios.get("/api/channels").then(response => {
-                        currentObj.channels = response.data;
-                    });
+                    currentObj.loadChannels();
                 })
                 .catch(function(error) {
                     console.log(error);
