@@ -11,10 +11,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/video', function () {
-    return view('video');
-});
-
 
 Route::get('/api/channels', 'ChannelController@getAllChannels');
 Route::get('/api/channels/pagination', 'ChannelController@pagination');
@@ -131,7 +127,5 @@ Route::get('/api/devices/connection/api', 'IPTVDeviceController@devicesApiData')
 Route::get('/api/calendar', 'CalendarController@return');
 Route::get('/api/calendar/channels', 'ChannelController@getChannelsForCalendar');
 Route::post('/api/calendar/save', 'ChannelController@save');
-
-Route::get('/test', function () {
-    printf(new Carbon("2020-08-04 12:30"));
-});
+Route::get('/api/calendar/todayAlerts', 'CalendarController@checkIfIsTodayAnyPlannedChannelIssue');
+Route::post('/api/calendar/channel/errors', 'ChannelErrorTimeController@getCalendarView');

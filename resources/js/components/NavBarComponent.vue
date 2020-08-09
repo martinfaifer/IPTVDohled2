@@ -62,7 +62,10 @@
                             <v-icon v-show="userData.avatar === false"
                                 >mdi-account-circle</v-icon
                             >
-                            <v-avatar size="26" v-show="userData.avatar != false">
+                            <v-avatar
+                                size="26"
+                                v-show="userData.avatar != false"
+                            >
                                 <img :src="userData.avatar" />
                             </v-avatar>
                         </v-btn>
@@ -252,6 +255,28 @@
             </v-snackbar>
         </div>
 
+            <v-row justify="center">
+                <v-dialog v-model="todayChannelDialogNotification" persistent max-width="600">
+                    <v-card>
+                        <v-card-title class="headline"
+                            >Na dnešní den jsou plánované výpadky</v-card-title
+                        >
+                        <v-card-text
+                            >kanály</v-card-text
+                        >
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="green darken-1"
+                                text
+                                @click="todayChannelDialogNotification = false"
+                                >Zavřít</v-btn
+                            >
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-row>
+
         <footer-component></footer-component>
     </div>
 </template>
@@ -261,6 +286,7 @@ import FooterComponent from "./FooterComponent";
 export default {
     data() {
         return {
+            todayChannelDialogNotification: false,
             mailMotifikace: false,
             rememberMe: true,
             userData: false,

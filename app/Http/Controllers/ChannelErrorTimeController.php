@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Channel;
 use App\ChannelErrorTime;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -92,6 +93,55 @@ class ChannelErrorTimeController extends Controller
             return [
                 'status' => "false"
             ];
+        }
+    }
+
+
+    /**
+     * fn pro zobrazení dat v kalendari
+     *
+     * pokud je end = null => v názvu dát přívlastek kanál stále ve výpadku
+     *
+     * vyhledání dat podle channelId
+     *
+     * @return array
+     */
+    public function getCalendarView(Request $request)
+    {
+        if (ChannelErrorTime::where('channelId', $request->channelId)->first()) {
+
+            foreach (ChannelErrorTime::where('channelId', $request->channelId)->get() as $channelErrorData) {
+
+                $channelName = Channel::find($request->channelId)->nazev; // získání názvu kanálu
+
+                // vytvoření pole , název, zacatek_vypadku , konec_vypadku
+
+                $startSeparate = explode(" ", $channelErrorData->ko_time);
+
+                $start = explode("/", $startSeparate[0]);
+                $tart = str_replace("/", "-", $start);
+                $zacatekVypadku = $start[2] . "-" . $start[1] . "-" . $start[0] . " " . $startSeparate[1];
+
+                if ($channelErrorData->ok_time == null) {
+                    $channelName = $channelName . " kanál ve výpadku";
+
+                    $konecVypadku =  $zacatekVypadku;
+                } else {
+                    $end = explode("/", $channelErrorData->ok_time);
+                    $konecVypadku = $end[2] . "-" . $end[1] . "-" . $end[0];
+                }
+
+                // pole pro kalendar
+                $output[] = array(
+                    'name' => $channelName,
+                    'start' => $zacatekVypadku,
+                    'end' => $konecVypadku
+                );
+            }
+
+            return $output;
+        } else {
+            return false;
         }
     }
 }
