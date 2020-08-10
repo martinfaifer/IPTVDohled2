@@ -159,59 +159,18 @@ export default {
         };
     },
     created() {
-        if (this.$route.path === "/settings/dashboard") {
-            (this.colorPrehled = "teal"),
-                (this.colorChannels = ""),
-                (this.colorAccounts = ""),
-                (this.colorAlerts = ""),
-                (this.colorLog = ""),
-                (this.colorDevices = "");
-        } else if (this.$route.path === "/settings/channels") {
-            (this.colorPrehled = ""),
-                (this.colorChannels = "teal"),
-                (this.colorAccounts = ""),
-                (this.colorAlerts = ""),
-                (this.colorLog = ""),
-                (this.colorDevices = "");
-        } else if (this.$route.path === "/settings/users") {
-            (this.colorPrehled = ""),
-                (this.colorChannels = ""),
-                (this.colorAccounts = "teal"),
-                (this.colorAlerts = ""),
-                (this.colorLog = ""),
-                (this.colorDevices = "");
-        } else if (this.$route.path === "/settings/alerts") {
-            (this.colorPrehled = ""),
-                (this.colorChannels = ""),
-                (this.colorAccounts = ""),
-                (this.colorAlerts = "teal"),
-                (this.colorLog = ""),
-                (this.colorDevices = "");
-        } else if (this.$route.path === "/settings/logs") {
-            (this.colorPrehled = ""),
-                (this.colorChannels = ""),
-                (this.colorAccounts = ""),
-                (this.colorAlerts = ""),
-                (this.colorLog = "teal"),
-                (this.colorDevices = "");
-        } else if (this.$route.path === "/settings/devices") {
-            (this.colorPrehled = ""),
-                (this.colorChannels = ""),
-                (this.colorAccounts = ""),
-                (this.colorAlerts = "");
-                (this.colorLog = ""),
-                (this.colorDevices = "teal");
-        }
+        this.watchIconColor();
 
         let currentObj = this;
         axios.get("/api/user/get").then(function(response) {
             currentObj.userData = response.data;
         });
     },
-    watch: {
-        contextMenu: function() {
+
+    methods: {
+        watchIconColor() {
             if (this.$route.path === "/settings/dashboard") {
-                (this.colorPrehled = "teal"),
+                    (this.colorPrehled = "teal"),
                     (this.colorChannels = ""),
                     (this.colorAccounts = ""),
                     (this.colorAlerts = ""),
@@ -239,20 +198,26 @@ export default {
                     (this.colorLog = ""),
                     (this.colorDevices = "");
             } else if (this.$route.path === "/settings/logs") {
-                    (this.colorPrehled = ""),
+                (this.colorPrehled = ""),
                     (this.colorChannels = ""),
                     (this.colorAccounts = ""),
                     (this.colorAlerts = ""),
                     (this.colorLog = "teal"),
                     (this.colorDevices = "");
-            } else if (this.$route.path === "/settings/devices") {
-                (this.colorPrehled = ""),
+            } else  {
+                (this.colorDevices = "teal"),
+                    (this.colorPrehled = ""),
                     (this.colorChannels = ""),
                     (this.colorAccounts = ""),
                     (this.colorAlerts = ""),
-                    (this.colorLog = ""),
-                    (this.colorDevices = "teal");
+                    (this.colorLog = "");
             }
+        }
+    },
+
+    watch: {
+        contextMenu: function() {
+            this.watchIconColor();
         }
     }
 };

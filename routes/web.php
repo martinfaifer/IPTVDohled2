@@ -111,6 +111,7 @@ Route::get('/api/mail/history', 'MailHistoryController@getAll');
  * API komunikace s IPTVdokumentací
  */
 Route::post('/api/communication/channel', 'ChannelController@getDataFromAPi');
+Route::get('/api/communication/channels', 'ApiChannelController@checkIfExistApiForCreateChannel');
 
 /**
  * IPTV Zařízení

@@ -1,6 +1,10 @@
 <template>
     <div>
-        <v-timeline class="mt-12 ml-12" width="800px" v-show="messeges != false">
+        <v-timeline
+            class="mt-12 ml-12"
+            width="800px"
+            v-show="messeges != false"
+        >
             <v-timeline-item
                 v-for="singleMessege in messeges"
                 :key="singleMessege.id"
@@ -92,20 +96,23 @@ export default {
         noteRule: [v => !!v || "pole nesmí být prázdné"]
     }),
     created() {
-        let currentObj = this;
-        axios
-            .post("/api/channel/messeges", {
-                id: this.channelId
-            })
-            .then(function(response) {
-                currentObj.messeges = response.data;
-            })
-            .catch(function(error) {
-                console.log("chyba" + error);
-            });
+        this.loadNotes();
     },
 
     methods: {
+        loadNotes() {
+            let currentObj = this;
+            axios
+                .post("/api/channel/messeges", {
+                    id: this.channelId
+                })
+                .then(function(response) {
+                    currentObj.messeges = response.data;
+                })
+                .catch(function(error) {
+                    console.log("chyba" + error);
+                });
+        },
         newNote() {
             this.noteDialog = true;
         },
@@ -149,17 +156,7 @@ export default {
     mounted() {
         this.interval = setInterval(
             function() {
-                let currentObj = this;
-                axios
-                    .post("/api/channel/messeges", {
-                        id: this.channelId
-                    })
-                    .then(function(response) {
-                        currentObj.messeges = response.data;
-                    })
-                    .catch(function(error) {
-                        console.log("chyba" + error);
-                    });
+                this.loadNotes();
             }.bind(this),
             1000
         );

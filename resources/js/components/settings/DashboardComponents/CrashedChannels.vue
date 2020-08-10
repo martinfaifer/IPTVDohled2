@@ -37,44 +37,42 @@ export default {
         };
     },
     created() {
-        // Informace, zda jsou nefunknčí streamy
-        window.axios
-            .get("/api/devices/connection/api")
-            .then(response => {
-                this.devices = response.data;
-                this.tableLoading = "false";
-            });
+        this.loadDevices();
 
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
+        this.loadUser();
     },
 
     methods: {
         getCountColor(count) {
             return "red--text";
+        },
+
+        loadDevices() {
+            window.axios.get("/api/devices/connection/api").then(response => {
+                this.devices = response.data;
+                this.tableLoading = "false";
+            });
+        },
+
+        loadUser() {
+            let currentObj = this;
+            axios.get("/api/user/get").then(function(response) {
+                currentObj.userData = response.data;
+            });
         }
     },
 
     mounted() {
         this.interval = setInterval(
             function() {
-                window.axios
-                    .get("/api/devices/connection/api")
-                    .then(response => {
-                        this.devices = response.data;
-                    });
+                this.loadDevices();
             }.bind(this),
             300000
         );
 
         this.interval = setInterval(
             function() {
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
+                this.loadUser();
             }.bind(this),
             10000
         );

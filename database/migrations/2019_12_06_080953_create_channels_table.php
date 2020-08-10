@@ -29,6 +29,7 @@ class CreateChannelsTable extends Migration
             $table->string('dohledBitrate')->index();
             $table->string('sendAlert')->index();
             $table->string('vytvoritNahled')->index();
+            $table->string('dokumentaceId')->nullable();
             $table->timestamps();
         });
     }

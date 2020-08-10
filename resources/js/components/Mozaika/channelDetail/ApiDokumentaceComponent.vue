@@ -143,55 +143,47 @@ export default {
         channel: []
     }),
     created() {
-        let currentObj = this;
-        axios
-            .post("/api/communication/channel", {
-                id: this.channelId
-            })
-            .then(function(response) {
-                currentObj.items = response.data;
-            })
-            .catch(function(error) {
-                console.log("chyba" + error);
-            });
+        this.loadChannelInfo();
 
-        axios
-            .post("/api/channel/getDetail", {
-                id: this.channelId
-            })
-            .then(function(response) {
-                currentObj.channel = response.data;
-            })
-            .catch(function(error) {
-                console.log("chyba" + error);
-            });
+        this.loadChannelDetail();
+    },
+
+    methods: {
+        loadChannelInfo() {
+            let currentObj = this;
+            axios
+                .post("/api/communication/channel", {
+                    id: this.channelId
+                })
+                .then(function(response) {
+                    currentObj.items = response.data;
+                })
+                .catch(function(error) {
+                    console.log("chyba" + error);
+                });
+        },
+
+        loadChannelDetail() {
+            let currentObj = this;
+
+            axios
+                .post("/api/channel/getDetail", {
+                    id: this.channelId
+                })
+                .then(function(response) {
+                    currentObj.channel = response.data;
+                })
+                .catch(function(error) {
+                    console.log("chyba" + error);
+                });
+        }
     },
 
     mounted() {
         this.interval = setInterval(
             function() {
-                let currentObj = this;
-                axios
-                    .post("/api/communication/channel", {
-                        id: this.channelId
-                    })
-                    .then(function(response) {
-                        currentObj.items = response.data;
-                    })
-                    .catch(function(error) {
-                        console.log("chyba" + error);
-                    });
-
-                axios
-                    .post("/api/channel/getDetail", {
-                        id: this.channelId
-                    })
-                    .then(function(response) {
-                        currentObj.channel = response.data;
-                    })
-                    .catch(function(error) {
-                        console.log("chyba" + error);
-                    });
+                this.loadChannelInfo();
+                this.loadChannelDetail();
             }.bind(this),
             1000
         );

@@ -22,9 +22,7 @@
             </v-data-table>
         </div>
         <div v-else>
-            <v-alert
-                type="success"
-                class="font-weight-regular"
+            <v-alert type="success" class="font-weight-regular"
                 >Není zde žádný alert</v-alert
             >
         </div>
@@ -48,36 +46,35 @@ export default {
     },
     created() {
         // Informace, zda jsou nefunknčí streamy
-        window.axios
-            .get("/api/channels/crashed/forDashboard")
-            .then(response => {
-                this.crashed = response.data;
-            });
-
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
+        this.loadCrashedChannels();
+        this.loadUser();
     },
 
     methods: {
         getNazevColor(nazev) {
             return "red--text";
+        },
+
+        loadCrashedChannels() {
+            window.axios
+                .get("/api/channels/crashed/forDashboard")
+                .then(response => {
+                    this.crashed = response.data;
+                });
+        },
+        loadUser() {
+            let currentObj = this;
+            axios.get("/api/user/get").then(function(response) {
+                currentObj.userData = response.data;
+            });
         }
     },
     mounted() {
         this.interval = setInterval(
             function() {
-                window.axios
-                    .get("/api/channels/crashed/forDashboard")
-                    .then(response => {
-                        this.crashed = response.data;
-                    });
+                this.loadCrashedChannels();
 
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
+                this.loadUser();
             }.bind(this),
             5000
         );

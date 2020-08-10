@@ -31,27 +31,31 @@ export default {
         };
     },
     created() {
-        // Informace, zda jsou nefunknčí streamy
-        window.axios.get("/api/devices/crash").then(response => {
-            this.crashed = response.data;
-        });
-
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
+        this.loadIptvDevices();
+        this.loadUser();
     },
+
+    methods: {
+        loadUser() {
+            let currentObj = this;
+            axios.get("/api/user/get").then(function(response) {
+                currentObj.userData = response.data;
+            });
+        },
+
+        loadIptvDevices() {
+            window.axios.get("/api/devices/crash").then(response => {
+                this.crashed = response.data;
+            });
+        }
+    },
+
     mounted() {
         this.interval = setInterval(
             function() {
-                window.axios.get("/api/devices/crash").then(response => {
-                    this.crashed = response.data;
-                });
+                this.loadIptvDevices();
 
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
+                this.userData();
             }.bind(this),
             10000
         );

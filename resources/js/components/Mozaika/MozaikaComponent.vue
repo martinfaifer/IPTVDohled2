@@ -4,7 +4,7 @@
         <br />
         <!-- test crash -->
         <!-- <transition name="fade" mode="out-in"> -->
-            <crashed-streams transition="scroll-y-transition"></crashed-streams>
+        <crashed-streams transition="scroll-y-transition"></crashed-streams>
         <!-- </transition> -->
         <!-- end test crash -->
         <!-- konec alertingu -->
@@ -268,7 +268,6 @@
                                 <v-icon>mdi-loupe</v-icon>
                             </v-btn>
 
-
                             <v-btn
                                 @click="contextMenu = 'notes'"
                                 :color="colorNote"
@@ -289,9 +288,7 @@
                                 class="title"
                                 >{{ channelName }} - Přehled</v-row
                             >
-                            <v-row
-                                v-if="contextMenu === 'api'"
-                                class="title"
+                            <v-row v-if="contextMenu === 'api'" class="title"
                                 >{{ channelName }} - Výpis z Dokumentace</v-row
                             >
                             <v-row
@@ -326,9 +323,7 @@
                                 :channelId="channelId"
                             ></ffprobeTree-component>
                             <apidokumentace-component
-                             v-if="
-                                    channelId != '' && contextMenu === 'api'
-                                "
+                                v-if="channelId != '' && contextMenu === 'api'"
                                 :channelId="channelId"
                             ></apidokumentace-component>
                             <channelBitrate-component
@@ -343,12 +338,13 @@
                                 "
                                 :channelId="channelId"
                             ></chart-component>
-                            <note-component  v-if="
+                            <note-component
+                                v-if="
                                     channelId != '' && contextMenu === 'notes'
                                 "
-                                :channelId="channelId">
+                                :channelId="channelId"
+                            >
                             </note-component>
-
                         </v-row>
                     </v-row>
                     <!-- end content -->
@@ -408,13 +404,7 @@ export default {
         };
     },
     created() {
-        window.axios
-            .get("/api/channels/pagination?page=" + this.pagination.current)
-            .then(response => {
-                this.streams = response.data.data;
-                this.pagination.current = response.data.current_page;
-                this.pagination.total = response.data.last_page;
-            });
+        this.getStreams();
     },
     components: {
         "img-component": ImgComponent,
@@ -452,13 +442,7 @@ export default {
     },
 
     mounted() {
-        window.axios
-            .get("/api/channels/pagination?page=" + this.pagination.current)
-            .then(response => {
-                this.streams = response.data.data;
-                this.pagination.current = response.data.current_page;
-                this.pagination.total = response.data.last_page;
-            });
+        this.getStreams();
         this.interval = setInterval(
             function() {
                 this.getStreams();
@@ -470,30 +454,10 @@ export default {
             function() {
                 if (this.pagination.current <= this.pagination.total - 1) {
                     this.pagination.current = this.pagination.current + 1;
-                    window.axios
-                        .get(
-                            "/api/channels/pagination?page=" +
-                                this.pagination.current
-                        )
-                        .then(response => {
-                            this.streams = response.data.data;
-                            this.pagination.current =
-                                response.data.current_page;
-                            this.pagination.total = response.data.last_page;
-                        });
+                    this.getStreams();
                 } else {
                     this.pagination.current = 1;
-                    window.axios
-                        .get(
-                            "/api/channels/pagination?page=" +
-                                this.pagination.current
-                        )
-                        .then(response => {
-                            this.streams = response.data.data;
-                            this.pagination.current =
-                                response.data.current_page;
-                            this.pagination.total = response.data.last_page;
-                        });
+                    this.getStreams();
                 }
             }.bind(this),
             30000
@@ -528,32 +492,32 @@ export default {
                 (this.colorPrehled = "teal"),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "");
-                    (this.colorApi = "");
-                    (this.colorNote = "");
+                this.colorApi = "";
+                this.colorNote = "";
             } else if (this.contextMenu === "ffprobe") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = "teal"),
                     (this.colorGrafs = "");
-                    (this.colorApi = "");
-                    (this.colorNote = "");
+                this.colorApi = "";
+                this.colorNote = "";
             } else if (this.contextMenu === "grafy") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "teal");
-                    (this.colorApi = "");
-                    (this.colorNote = "");
+                this.colorApi = "";
+                this.colorNote = "";
             } else if (this.contextMenu === "api") {
-                 (this.colorPrehled = ""),
-                    (this.colorFfprobe = ""),
-                    (this.colorGrafs = "");
-                    (this.colorNote = "");
-                    (this.colorApi = "teal");
-            } else if(this.contextMenu === "notes") {
                 (this.colorPrehled = ""),
                     (this.colorFfprobe = ""),
                     (this.colorGrafs = "");
-                    (this.colorApi = "");
-                    (this.colorNote = "teal");
+                this.colorNote = "";
+                this.colorApi = "teal";
+            } else if (this.contextMenu === "notes") {
+                (this.colorPrehled = ""),
+                    (this.colorFfprobe = ""),
+                    (this.colorGrafs = "");
+                this.colorApi = "";
+                this.colorNote = "teal";
             }
         }
     }

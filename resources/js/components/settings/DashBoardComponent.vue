@@ -16,9 +16,6 @@
         </v-row>
       </div>
     </v-container>
-    <!-- <v-container fluid>
-        <transcoderchart-component></transcoderchart-component>
-    </v-container> -->
     <v-container fluid>
       <div>
         <v-row class="body-2 mt-8">
@@ -47,7 +44,6 @@ import PercentFunctionChannels from "./DashboardComponents/newTemplates/Channels
 import VolumeProblems from "./DashboardComponents/newTemplates/ChannelsWithAudioProblem";
 import VolumeChart from "./DashboardComponents/newTemplates/ChannelAudio";
 import IPTVDevicesComponent from "./DashboardComponents/newTemplates/IPTVDevicesComponent";
-// import TranscoderChartComponent from "./DashboardComponents/newTemplates/TranscoderChartComponent";
 
 export default {
   data() {
@@ -69,7 +65,6 @@ export default {
     "volume-problems": VolumeProblems,
     "volume-chart": VolumeChart,
     "iptvdevices-component": IPTVDevicesComponent,
-    // "transcoderchart-component": TranscoderChartComponent
   }
 };
 </script>

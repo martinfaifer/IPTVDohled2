@@ -255,27 +255,29 @@
             </v-snackbar>
         </div>
 
-            <v-row justify="center">
-                <v-dialog v-model="todayChannelDialogNotification" persistent max-width="600">
-                    <v-card>
-                        <v-card-title class="headline"
-                            >Na dnešní den jsou plánované výpadky</v-card-title
+        <v-row justify="center">
+            <v-dialog
+                v-model="todayChannelDialogNotification"
+                persistent
+                max-width="600"
+            >
+                <v-card>
+                    <v-card-title class="headline"
+                        >Na dnešní den jsou plánované výpadky</v-card-title
+                    >
+                    <v-card-text>kanály</v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="green darken-1"
+                            text
+                            @click="todayChannelDialogNotification = false"
+                            >Zavřít</v-btn
                         >
-                        <v-card-text
-                            >kanály</v-card-text
-                        >
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                color="green darken-1"
-                                text
-                                @click="todayChannelDialogNotification = false"
-                                >Zavřít</v-btn
-                            >
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </v-row>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
 
         <footer-component></footer-component>
     </div>
@@ -300,20 +302,9 @@ export default {
         };
     },
     created() {
-        console.log(this.$route.path);
+        this.loadAlerts();
 
-        axios.get("/api/channels/notification").then(response => {
-            this.crashedStreams = response.data;
-        });
-
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            if (response.data.stat === "error") {
-                currentObj.$router.push("/login");
-            } else {
-                currentObj.userData = response.data;
-            }
-        });
+        this.loadUser();
     },
 
     components: {
@@ -325,6 +316,17 @@ export default {
         loadAlerts() {
             axios.get("/api/channels/notification").then(response => {
                 this.crashedStreams = response.data;
+            });
+        },
+
+        loadUser() {
+            let currentObj = this;
+            axios.get("/api/user/get").then(function(response) {
+                if (response.data.stat === "error") {
+                    currentObj.$router.push("/login");
+                } else {
+                    currentObj.userData = response.data;
+                }
             });
         },
         LogOut() {

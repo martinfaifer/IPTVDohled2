@@ -79,7 +79,7 @@
                                             >Zavřít</v-btn
                                         >
                                         <v-btn
-                                            :disabled="email ==''"
+                                            :disabled="email == ''"
                                             color="green darken-1"
                                             text
                                             @click="saveNewMail()"
@@ -179,23 +179,14 @@ export default {
         };
     },
     created() {
-        window.axios.get("/api/mailAlert/getAll").then(response => {
-            this.mailTableData = response.data;
-        });
-
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
+        this.loadMailTableData();
+        this.loadUser();
     },
 
     mounted() {
         this.interval = setInterval(
             function() {
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
+                this.loadUser();
             }.bind(this),
             1000
         );
@@ -204,6 +195,17 @@ export default {
         "alert-component": Alert
     },
     methods: {
+        loadUser() {
+            let currentObj = this;
+            axios.get("/api/user/get").then(function(response) {
+                currentObj.userData = response.data;
+            });
+        },
+        loadMailTableData() {
+            window.axios.get("/api/mailAlert/getAll").then(response => {
+                this.mailTableData = response.data;
+            });
+        },
         closeModal() {
             (this.mail = ""), (this.neMailDialog = false);
             this.deleteMailDialog = false;

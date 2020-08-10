@@ -2,56 +2,57 @@
     <div>
         <br />
         <div id="alertDivMozaika">
-                <div>
-                    <div
-                        v-for="item in crashedStreams"
-                        :key="item.id"
-                        class="white--text body-1"
-                    >
-                        <!-- <transition name="fade" mode="out-in"> -->
-                            <v-alert
-                                dense
-                                transition="scroll-y-transition"
-                                border="bottom"
-                                type="error"
-                                elevation="24"
-                            >
-                                <v-row>
-                                    <v-spacer></v-spacer>
-                                    <strong class="body-1">{{
-                                        item.nazev
-                                    }}</strong>
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                        class="pb-2"
-                                        @click="
-                                            (channelId = item.id),
-                                                (channelName = item.nazev)
-                                        "
-                                        color="error"
-                                        fab
-                                        elevation="0"
-                                        x-small
-                                        dark
-                                    >
-                                        <v-icon>mdi-magnify</v-icon>
-                                    </v-btn>
-                                </v-row>
-                            </v-alert>
-                        <!-- </transition> -->
-                    </div>
-                </div>
-                <div v-show="crashedStreams === false">
+            <div>
+                <div
+                    v-for="item in crashedStreams"
+                    :key="item.id"
+                    class="white--text body-1"
+                >
                     <!-- <transition name="fade" mode="out-in"> -->
-                        <v-alert transition="scroll-y-transition" border="bottom" type="success" elevation="24">
-                            <v-row>
-                                <strong class="body-1"
-                                    >Všechny kanály fungují</strong
-                                >
-                            </v-row>
-                        </v-alert>
+                    <v-alert
+                        dense
+                        transition="scroll-y-transition"
+                        border="bottom"
+                        type="error"
+                        elevation="24"
+                    >
+                        <v-row>
+                            <v-spacer></v-spacer>
+                            <strong class="body-1">{{ item.nazev }}</strong>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                class="pb-2"
+                                @click="
+                                    (channelId = item.id),
+                                        (channelName = item.nazev)
+                                "
+                                color="error"
+                                fab
+                                elevation="0"
+                                x-small
+                                dark
+                            >
+                                <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
+                        </v-row>
+                    </v-alert>
                     <!-- </transition> -->
                 </div>
+            </div>
+            <div v-show="crashedStreams === false">
+                <!-- <transition name="fade" mode="out-in"> -->
+                <v-alert
+                    transition="scroll-y-transition"
+                    border="bottom"
+                    type="success"
+                    elevation="24"
+                >
+                    <v-row>
+                        <strong class="body-1">Všechny kanály fungují</strong>
+                    </v-row>
+                </v-alert>
+                <!-- </transition> -->
+            </div>
         </div>
         <!-- modal -->
         <v-row justify="center">
@@ -109,10 +110,7 @@ export default {
         };
     },
     created() {
-        // Informace, zda jsou nefunknčí streamy
-        window.axios.get("/api/channels/crashed").then(response => {
-            this.crashedStreams = response.data;
-        });
+        this.loadAlerts();
     },
     methods: {
         disableChannelInfoFunction() {

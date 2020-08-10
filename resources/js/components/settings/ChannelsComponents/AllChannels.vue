@@ -39,7 +39,8 @@
                                     >Založení nového kanálu</v-card-title
                                 >
                                 <v-card-text>
-                                    <v-row>
+                                    <!-- zobrazí se pouze pokud není napojení na api dokumentace -->
+                                    <v-row v-show="apiChannels === false || addChannelUrl != false">
                                         <v-col cols="12" sm="12" md="12">
                                             <v-text-field
                                                 :rules="channelInputRule"
@@ -52,6 +53,28 @@
                                                 "
                                             ></v-text-field>
                                         </v-col>
+                                    </v-row>
+                                    <!-- napojení na dohled -->
+                                    <v-row v-show="apiChannels != false || addChannelUrl === false">
+                                        <v-col cols="12" sm="12" md="12">
+                                            <v-autocomplete
+                                                v-model="channelInput"
+                                                :rules="channelInputAPIRule"
+                                                :items="apiChannels"
+                                                item-text="nazev"
+                                                item-value="dohledUrl"
+                                                label="Vyberte kanál, který chcete dohledovat"
+                                            ></v-autocomplete>
+                                        </v-col>
+                                    </v-row>
+                                    <!-- zobrazení možnosti pridat kanál pomocí url, pokud je uživatelská role === admin -->
+                                    <v-row
+                                        v-show="userData.user_role === 'admin'"
+                                    >
+                                        <v-switch
+                                            v-model="addChannelUrl"
+                                            label="Přidat kanál ručně"
+                                        ></v-switch>
                                     </v-row>
                                     <v-row
                                         v-if="ffprobeOutput.stat === 'success'"
@@ -497,6 +520,8 @@
 import Alert from "../../alerts/AlertComponent";
 export default {
     data: () => ({
+        addChannelUrl: false,
+        apiChannels: false,
         loadingBtn: false,
         editDialog: false,
         deleteDialog: false,
@@ -545,6 +570,9 @@ export default {
         userData: false,
         apiUrl: "",
         channelInputRule: [v => !!v || "vyplňte url požadováného streamu"],
+        channelInputAPIRule: [
+            v => !!v || "vyberte kanál, který se má dohledovat"
+        ],
         namestreamRule: [v => !!v || "název streamu je požadovaný"]
     }),
     components: {
@@ -557,6 +585,7 @@ export default {
 
         this.loadChannelApi();
 
+        this.checkIfCanUseDokumentationAPI();
     },
 
     mounted() {
@@ -571,6 +600,16 @@ export default {
         );
     },
     methods: {
+        checkIfCanUseDokumentationAPI() {
+            window.axios.get("/api/communication/channels").then(response => {
+                if (response.data === false) {
+                    this.apiChannels = false;
+                } else {
+                    this.apiChannels = response.data;
+                }
+            });
+        },
+
         loadChannels() {
             window.axios.get("/api/channels").then(response => {
                 this.channels = response.data;
@@ -682,7 +721,6 @@ export default {
                     currentObj.editDialog = true;
 
                     currentObj.loadChannelApi();
-
                 })
                 .catch(function(error) {
                     console.log(error);

@@ -32,7 +32,6 @@
             height="405px"
             contain
         ></v-img>
-        <!-- <v-img :src="channelData.img" width="720px" height="405px"></v-img> -->
     </div>
 </template>
 <script>
@@ -45,32 +44,27 @@ export default {
     },
 
     created() {
-        let currentObj = this;
-        axios
-            .post("/api/channel/getDetail", {
-                id: this.channelId
-            })
-            .then(function(response) {
-                currentObj.channelData = response.data;
-            })
-            .catch(function(error) {
-                console.log("chyba" + error);
-            });
+        this.loadDetail();
+    },
+    methods: {
+        loadDetail() {
+            let currentObj = this;
+            axios
+                .post("/api/channel/getDetail", {
+                    id: this.channelId
+                })
+                .then(function(response) {
+                    currentObj.channelData = response.data;
+                })
+                .catch(function(error) {
+                    console.log("chyba" + error);
+                });
+        }
     },
     mounted() {
         this.interval = setInterval(
             function() {
-                let currentObj = this;
-                axios
-                    .post("/api/channel/getDetail", {
-                        id: this.channelId
-                    })
-                    .then(function(response) {
-                        currentObj.channelData = response.data;
-                    })
-                    .catch(function(error) {
-                        console.log("chyba" + error);
-                    });
+                this.loadDetail();
             }.bind(this),
             1000
         );
