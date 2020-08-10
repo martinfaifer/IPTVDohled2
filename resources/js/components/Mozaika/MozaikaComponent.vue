@@ -442,7 +442,6 @@ export default {
     },
 
     mounted() {
-        this.getStreams();
         this.interval = setInterval(
             function() {
                 this.getStreams();
@@ -464,6 +463,9 @@ export default {
         );
     },
     watch: {
+
+
+
         // Presmerování na login pokud neni prihlasen uzivatel
         channelId: function() {
             if (this.channelId != "") {

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\ApiChannel;
+use App\APIKey;
+use App\Calendar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -28,6 +30,26 @@ class ApiChannelController extends Controller
             return $channels->json();
         } else {
             return "false";
+        }
+    }
+
+
+    /**
+     * fn pro odeslání kalendáře do externího systému
+     *
+     * authentizace pomoci api klice
+     *
+     * @return void
+     */
+    public function sendCalendarData(Request $request)
+    {
+        if (APIKey::where('apiKey', $request->api)->first()) {
+            return Calendar::get();
+        } else {
+
+            return [
+                'msg' => "nic zde není"
+            ];
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\APIKey;
 use App\MailAlerts;
 use App\User;
 use App\UserHistory;
@@ -14,7 +15,25 @@ class UserController extends Controller
 {
     public function getAll()
     {
-        return User::all();
+        if (User::first()) {
+            foreach (User::get() as $user) {
+                $output[] = array(
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'surname' => $user->surname,
+                    'email' => $user->email,
+                    'user_role' => $user->user_role,
+                    'pagination' => $user->pagination,
+                    'alert' => $user->alert,
+                    'dense' => $user->dense,
+                    'mozaikaAlphaBet' => $user->mozaikaAlphaBet,
+                    'avatar' => $user->avatar,
+                    'apiKey' => APIKeyController::getByUser($user->id)
+                );
+            }
+
+            return $output;
+        }
     }
 
 
@@ -87,6 +106,12 @@ class UserController extends Controller
                 $avatar = false;
             }
 
+            if (APIKey::where('userId', $user->id)->first()) {
+                $apiKey = APIKey::where('userId', $user->id)->first()->apiKey;
+            } else {
+                $apiKey = false;
+            }
+
             return [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -98,7 +123,8 @@ class UserController extends Controller
                 'dense' => $dense,
                 'mozaikaAlphaBet' => $mozaikaAlphaBet,
                 'mailMotifikace' => $mailMotifikace,
-                'avatar' => $avatar
+                'avatar' => $avatar,
+                'apiKey' => $apiKey
             ];
         }
     }
@@ -302,7 +328,21 @@ class UserController extends Controller
      */
     public function getUserdata(Request $request)
     {
-        return User::where('id', $request->userId)->first();
+        $user = User::where('id', $request->userId)->first();
+
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'surname' => $user->surname,
+            'email' => $user->email,
+            'user_role' => $user->user_role,
+            'pagination' => $user->pagination,
+            'alert' => $user->alert,
+            'dense' => $user->dense,
+            'mozaikaAlphaBet' => $user->mozaikaAlphaBet,
+            'avatar' => $user->avatar,
+            'apiKey' => APIKeyController::getByUser($user->id)
+        ];
     }
 
 
@@ -350,6 +390,17 @@ class UserController extends Controller
                 'msg' => "nesprávný formát e-mailu!"
             ];
             die;
+        }
+
+
+        // založení api klice
+        if ($request->createAPI == true) {
+            APIKeyController::create($request->userId);
+        }
+
+        // odebrání api klice
+        if ($request->removeAPI == true) {
+            APIKeyController::remove($request->userId);
         }
 
 

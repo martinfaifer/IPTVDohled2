@@ -122,23 +122,78 @@
                         </v-row>
                         <!-- zacatek -->
                         <v-row class="ml-6" v-show="channelId != ''">
-                            <strong class="white--text">zacatek akce</strong>
-                            <v-row>
-                                <v-col cols="6" sm="6" md="6">
+                            <v-col cols="12" sm="6" md="4">
+                                <v-menu
+                                    ref="menu"
+                                    v-model="startMenu"
+                                    :close-on-content-click="false"
+                                    :return-value.sync="date"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                            v-model="startDate"
+                                            label="datum začátku výpadku"
+                                            prepend-icon="mdi-calendar"
+                                            readonly
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        ></v-text-field>
+                                    </template>
                                     <v-date-picker
                                         v-model="startDate"
-                                        flat
-                                    ></v-date-picker>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="6" sm="6" md="6">
+                                        no-title
+                                        scrollable
+                                    >
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            text
+                                            color="primary"
+                                            @click="startMenu = false"
+                                            >Zavřít</v-btn
+                                        >
+                                    </v-date-picker>
+                                </v-menu>
+                            </v-col>
+                            <v-spacer> </v-spacer>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-menu
+                                    ref="menu"
+                                    v-model="startMenuTime"
+                                    :close-on-content-click="false"
+                                    :return-value.sync="date"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                            v-model="startTime"
+                                            label="čas začátku výpadku"
+                                            prepend-icon="mdi-calendar"
+                                            readonly
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        ></v-text-field>
+                                    </template>
                                     <v-time-picker
                                         v-model="startTime"
+                                        no-title
                                         format="24hr"
-                                    ></v-time-picker>
-                                </v-col>
-                            </v-row>
+                                        scrollable
+                                    >
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            text
+                                            color="primary"
+                                            @click="startMenuTime = false"
+                                            >Zavřít</v-btn
+                                        >
+                                    </v-time-picker>
+                                </v-menu>
+                            </v-col>
                         </v-row>
                         <!-- konec -->
                         <v-row
@@ -149,23 +204,78 @@
                                     startTime != ''
                             "
                         >
-                            <strong class="white--text">konec akce</strong>
-                            <v-row>
-                                <v-col cols="6" sm="6" md="6">
+                            <v-col cols="12" sm="6" md="4">
+                                <v-menu
+                                    ref="menu"
+                                    v-model="endMenu"
+                                    :close-on-content-click="false"
+                                    :return-value.sync="date"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                            v-model="endDate"
+                                            label="datum konce výpadku"
+                                            prepend-icon="mdi-calendar"
+                                            readonly
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        ></v-text-field>
+                                    </template>
                                     <v-date-picker
                                         v-model="endDate"
-                                        flat
-                                    ></v-date-picker>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="6" sm="6" md="6">
+                                        no-title
+                                        scrollable
+                                    >
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            text
+                                            color="primary"
+                                            @click="endMenu = false"
+                                            >Zavřít</v-btn
+                                        >
+                                    </v-date-picker>
+                                </v-menu>
+                            </v-col>
+                            <v-spacer> </v-spacer>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-menu
+                                    ref="menu"
+                                    v-model="endMenuTime"
+                                    :close-on-content-click="false"
+                                    :return-value.sync="date"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                            v-model="endTime"
+                                            label="čas konce výpadku"
+                                            prepend-icon="mdi-calendar"
+                                            readonly
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        ></v-text-field>
+                                    </template>
                                     <v-time-picker
                                         v-model="endTime"
                                         format="24hr"
-                                    ></v-time-picker>
-                                </v-col>
-                            </v-row>
+                                        no-title
+                                        scrollable
+                                    >
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            text
+                                            color="primary"
+                                            @click="endMenuTime = false"
+                                            >Zavřít</v-btn
+                                        >
+                                    </v-time-picker>
+                                </v-menu>
+                            </v-col>
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
@@ -199,6 +309,11 @@
 <script>
 export default {
     data: () => ({
+        date: new Date().toISOString().substr(0, 10),
+        startMenu: false,
+        endMenu: false,
+        endMenuTime: false,
+        startMenuTime: false,
         focus: "",
         userData: [],
         endTime: "",
@@ -216,7 +331,7 @@ export default {
             week: "týdenní",
             day: "denní"
         },
-        weekday: [1, 2, 3, 4, 5, 6, 0],
+        weekday: [1, 2, 3, 4, 5, 6, 0]
     }),
     created() {
         this.loadCalendarData();
@@ -268,6 +383,11 @@ export default {
         },
         closeDialogAndResetImputs() {
             this.newEventDialog = false;
+            this.startTime = "";
+            this.startDate = "";
+            this.endTime = "";
+            this.endDate = "";
+            this.channelId = "";
         },
         saveEditDialog() {
             let currentObj = this;

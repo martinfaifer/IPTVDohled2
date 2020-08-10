@@ -130,3 +130,4 @@ Route::get('/api/calendar/channels', 'ChannelController@getChannelsForCalendar')
 Route::post('/api/calendar/save', 'ChannelController@save');
 Route::get('/api/calendar/todayAlerts', 'CalendarController@checkIfIsTodayAnyPlannedChannelIssue');
 Route::post('/api/calendar/channel/errors', 'ChannelErrorTimeController@getCalendarView');
+Route::post('/api/communication/caledar', 'ApiChannelController@sendCalendarData');

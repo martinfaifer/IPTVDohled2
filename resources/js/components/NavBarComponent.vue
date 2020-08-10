@@ -182,7 +182,7 @@
                                     >
                                     <v-list-item-subtitle
                                         >Kanály se budou v mozaice řadit
-                                        avecedně</v-list-item-subtitle
+                                        abecedně</v-list-item-subtitle
                                     >
                                 </v-list-item-content>
                             </v-list-item>
@@ -210,6 +210,32 @@
                                 </v-list-item-content>
                             </v-list-item>
                         </v-list>
+                        <div v-show="userData.apiKey != false">
+                            <v-divider></v-divider>
+                            <v-list three-line subheader>
+                                <v-subheader>API</v-subheader>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title
+                                            >API klíč</v-list-item-title
+                                        >
+                                        <v-list-item-subtitle class="green--text"
+                                            >{{userData.apiKey}}</v-list-item-subtitle
+                                        >
+                                    </v-list-item-content>
+                                </v-list-item>
+
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title
+                                            >API dokumentace</v-list-item-title
+                                        >
+                                        <v-list-item-subtitle> <i>Bude odkaz do dokumentace</i> </v-list-item-subtitle
+                                        >
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                        </div>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -383,7 +409,6 @@ export default {
         }
     },
     mounted() {
-        this.loadAlerts();
         this.intervalAlert = setInterval(
             function() {
                 this.loadAlerts();

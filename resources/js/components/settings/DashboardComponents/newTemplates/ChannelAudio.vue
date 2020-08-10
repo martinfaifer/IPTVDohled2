@@ -48,11 +48,10 @@ export default {
     data() {
         return {
             interval: false,
-            percent: []
+            percent: ""
         };
     },
     created() {
-        // Informace, zda jsou nefunknčí streamy
         this.loadCpu();
     },
     methods: {

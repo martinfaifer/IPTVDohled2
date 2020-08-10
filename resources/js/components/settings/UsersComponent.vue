@@ -154,8 +154,17 @@
                             <v-icon v-else color="green">mdi-check</v-icon>
                         </template>
 
-                         <template v-slot:item.mozaikaAlphaBet="{ item }">
-                            <v-icon v-if="item.mozaikaAlphaBet != 'true'" color="red"
+                        <template v-slot:item.mozaikaAlphaBet="{ item }">
+                            <v-icon
+                                v-if="item.mozaikaAlphaBet != 'true'"
+                                color="red"
+                                >mdi-close</v-icon
+                            >
+                            <v-icon v-else color="green">mdi-check</v-icon>
+                        </template>
+
+                        <template v-slot:item.apiKey="{ item }">
+                            <v-icon v-if="item.apiKey != true" color="red"
                                 >mdi-close</v-icon
                             >
                             <v-icon v-else color="green">mdi-check</v-icon>
@@ -236,6 +245,21 @@
                                             ></v-select>
                                         </v-col>
                                     </v-row>
+                                    <!-- api modul -->
+                                    <!-- možnost odebrání api klíče  -->
+                                    <v-row v-if="edit.apiKey === true">
+                                        <v-checkbox
+                                            v-model="removeAPI"
+                                            label="odebrání API klíče"
+                                        ></v-checkbox>
+                                    </v-row>
+                                    <!-- založení api klíče -->
+                                    <v-row v-if="edit.apiKey != true">
+                                        <v-checkbox
+                                            v-model="createAPI"
+                                            label="založení API klíče"
+                                        ></v-checkbox>
+                                    </v-row>
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
@@ -277,6 +301,8 @@ export default {
         editDialog: false,
         deleteDialog: false,
         dialog: false,
+        removeAPI: false,
+        createAPI: false,
         userId: "",
         user: "",
         users: [],
@@ -291,6 +317,7 @@ export default {
             { text: "pagination", value: "pagination" },
             { text: "dense", value: "dense" },
             { text: "mozaikaAlphaBet", value: "mozaikaAlphaBet" },
+            { text: "API přístup", value: "apiKey" },
             { text: "Uživatelská role ", value: "user_role" },
 
             { text: "Akce", value: "actions" }
@@ -402,7 +429,9 @@ export default {
                     surname: this.edit.surname,
                     password: this.password,
                     email: this.edit.email,
-                    userRole: this.value
+                    userRole: this.value,
+                    removeAPI: this.removeAPI,
+                    createAPI: this.createAPI,
                 })
                 .then(function(response) {
                     currentObj.status = response.data;

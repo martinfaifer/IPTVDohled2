@@ -136,6 +136,7 @@ export default {
                 });
         },
         deleteNote() {
+            let currentObj = this;
             axios
                 .post("/api/channel/message/delete", {
                     noteId: this.noteId
