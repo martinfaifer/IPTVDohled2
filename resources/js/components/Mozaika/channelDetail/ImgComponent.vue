@@ -39,7 +39,8 @@ export default {
     props: ["channelId"],
     data() {
         return {
-            channelData: []
+            channelData: [],
+            interval: false
         };
     },
 
@@ -68,6 +69,10 @@ export default {
             }.bind(this),
             1000
         );
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

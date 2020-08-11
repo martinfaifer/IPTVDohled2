@@ -165,6 +165,10 @@ export default {
                 this.speed = this.bitrate.bit_rate / 10000;
             }
         }
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

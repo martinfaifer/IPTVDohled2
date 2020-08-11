@@ -336,7 +336,8 @@ export default {
         surnameRule: [v => !!v || "příjmení je požadováno"],
         mailRule: [v => !!v || "email je požadován"],
         passwordRule: [v => !!v || "heslo je požadováno"],
-        userroleRule: [v => !!v || "vyberte uživatelské oprávnění"]
+        userroleRule: [v => !!v || "vyberte uživatelské oprávnění"],
+        interval: false
     }),
     components: {
         "alert-component": Alert
@@ -361,7 +362,7 @@ export default {
                     currentObj.userData = response.data;
                 });
             }.bind(this),
-            5000
+            10000
         );
     },
     methods: {
@@ -476,6 +477,10 @@ export default {
         status: function() {
             setTimeout(() => (this.status = false), 3000);
         }
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

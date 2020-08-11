@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\APIKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class APIKeyController extends Controller
 {
@@ -39,7 +40,7 @@ class APIKeyController extends Controller
     {
         APIKey::create([
             'userId' => $userId,
-            'apiKey' => uniqid()
+            'apiKey' => Str::random(40)
         ]);
     }
 

@@ -573,7 +573,8 @@ export default {
         channelInputAPIRule: [
             v => !!v || "vyberte kanál, který se má dohledovat"
         ],
-        namestreamRule: [v => !!v || "název streamu je požadovaný"]
+        namestreamRule: [v => !!v || "název streamu je požadovaný"],
+        interval: false
     }),
     components: {
         "alert-component": Alert
@@ -847,6 +848,9 @@ export default {
         status: function() {
             setTimeout(() => (this.status = false), 3000);
         }
+    },
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

@@ -140,7 +140,8 @@ export default {
     props: ["channelId"],
     data: () => ({
         items: [],
-        channel: []
+        channel: [],
+        interval: false
     }),
     created() {
         this.loadChannelInfo();
@@ -187,6 +188,10 @@ export default {
             }.bind(this),
             1000
         );
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

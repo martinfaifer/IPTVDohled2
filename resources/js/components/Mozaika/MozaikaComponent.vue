@@ -522,6 +522,14 @@ export default {
                 this.colorNote = "teal";
             }
         }
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.paginationInterval);
     }
 };
 </script>

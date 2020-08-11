@@ -268,7 +268,8 @@ export default {
         deviceId: "",
         status: "",
         loading: false,
-        userData: false
+        userData: false,
+        interval: false
     }),
     components: {
         "alert-component": Alert
@@ -406,6 +407,10 @@ export default {
         status: function() {
             setTimeout(() => (this.status = false), 3000);
         }
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

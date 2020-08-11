@@ -93,7 +93,8 @@ export default {
         noteDialog: false,
         note: "",
         noteId: "",
-        noteRule: [v => !!v || "pole nesmí být prázdné"]
+        noteRule: [v => !!v || "pole nesmí být prázdné"],
+        interval: false
     }),
     created() {
         this.loadNotes();
@@ -161,6 +162,10 @@ export default {
             }.bind(this),
             1000
         );
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

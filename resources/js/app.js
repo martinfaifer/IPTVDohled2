@@ -9,20 +9,21 @@ import Vuetify from 'vuetify';
 
 import VueRouter from 'vue-router';
 
-import LoginComponent from './components/LoginComponent.vue';
+
 import NavBarComponent from './components/NavBarComponent.vue';
-import ChannelComponent from './components/Channel/ChannelComponent.vue';
-import MozaikaComponent from './components/Mozaika/MozaikaComponent.vue';
-import ChannelsComponent from './components/settings/ChannelsComponent.vue';
-import ChartsComponent from './components/settings/ChartsComponent.vue';
-import DashBoardComponent from './components/settings/DashBoardComponent.vue';
-import SettingsComponent from './components/settings/SettingsComponent.vue';
-import UsersComponent from './components/settings/UsersComponent.vue';
-import AlertSettingsComponent from './components/settings/AlertsComponents/AlertSettingsComponent.vue';
-import LogComponent from './components/settings/logs/LogComponent.vue';
-import DeviceComponent from './components/settings/devices/DeviceComponent';
-import PageNotFoundComponent from './components/PageNotFoundComponent';
-import CalendarComponent from './components/calendar/CalendarComponent';
+let LoginComponent = () => import('./components/LoginComponent.vue');
+let ChannelComponent = () => import('./components/Channel/ChannelComponent.vue');
+let MozaikaComponent  = () => import ('./components/Mozaika/MozaikaComponent.vue');
+let ChannelsComponent = () => import('./components/settings/ChannelsComponent.vue');
+let ChartsComponent = () => import('./components/settings/ChartsComponent.vue');
+let DashBoardComponent = () => import( './components/settings/DashBoardComponent.vue');
+let SettingsComponent = () => import('./components/settings/SettingsComponent.vue');
+let UsersComponent = () => import('./components/settings/UsersComponent.vue');
+let AlertSettingsComponent = () => import('./components/settings/AlertsComponents/AlertSettingsComponent.vue');
+let LogComponent = () => import( './components/settings/logs/LogComponent.vue');
+let DeviceComponent = () => import( './components/settings/devices/DeviceComponent');
+let PageNotFoundComponent = () => import( './components/PageNotFoundComponent');
+let CalendarComponent = () => import( './components/calendar/CalendarComponent');
 
 
 // midleware
@@ -96,21 +97,6 @@ let routes = [
         component: PageNotFoundComponent
     },
 ];
-
-
-// Enable pusher logging - don't include this in production
-// Pusher.logToConsole = true;
-
-// var pusher = new Pusher('7eb4240a3bb1b22d6a10', {
-//     cluster: 'eu',
-//     forceTLS: false
-// });
-
-// var channel = pusher.subscribe('kanals');
-// channel.bind('SendDesktopAlert', function (data) {
-//     app.messages.push(JSON.stringify(data));
-// });
-
 
 // definice konstant
 const router = new VueRouter({

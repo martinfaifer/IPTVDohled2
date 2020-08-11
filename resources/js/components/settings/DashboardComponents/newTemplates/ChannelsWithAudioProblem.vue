@@ -55,7 +55,7 @@ export default {
             function() {
                 this.loadIptvDevices();
 
-                this.userData();
+                this.loadUser();
             }.bind(this),
             10000
         );

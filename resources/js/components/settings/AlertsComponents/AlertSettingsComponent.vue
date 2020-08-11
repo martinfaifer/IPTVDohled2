@@ -156,6 +156,7 @@ import Alert from "../../alerts/AlertComponent";
 export default {
     data() {
         return {
+            interval: false,
             search: "",
             status: [],
             mailRule: [v => !!v || "email je požadován"],
@@ -263,6 +264,10 @@ export default {
         status: function() {
             setTimeout(() => (this.status = false), 3000);
         }
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.interval);
     }
 };
 </script>

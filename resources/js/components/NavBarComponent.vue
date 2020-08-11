@@ -219,8 +219,11 @@
                                         <v-list-item-title
                                             >API klíč</v-list-item-title
                                         >
-                                        <v-list-item-subtitle class="green--text"
-                                            >{{userData.apiKey}}</v-list-item-subtitle
+                                        <v-list-item-subtitle
+                                            class="green--text"
+                                            >{{
+                                                userData.apiKey
+                                            }}</v-list-item-subtitle
                                         >
                                     </v-list-item-content>
                                 </v-list-item>
@@ -230,8 +233,9 @@
                                         <v-list-item-title
                                             >API dokumentace</v-list-item-title
                                         >
-                                        <v-list-item-subtitle> <i>Bude odkaz do dokumentace</i> </v-list-item-subtitle
-                                        >
+                                        <v-list-item-subtitle>
+                                            <i>Bude odkaz do dokumentace</i>
+                                        </v-list-item-subtitle>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
@@ -324,7 +328,8 @@ export default {
             logout: "false",
             message: "",
             snackbar: true,
-            crashedStreams: []
+            crashedStreams: [],
+            intervalAlert: false
         };
     },
     created() {
@@ -409,12 +414,20 @@ export default {
         }
     },
     mounted() {
-        this.intervalAlert = setInterval(
-            function() {
-                this.loadAlerts();
-            }.bind(this),
-            1000
-        );
+        if (this.$route.path === "/") {
+            this.intervalAlert = setInterval(
+                function() {
+                    this.loadAlerts();
+                }.bind(this),
+                1000
+            );
+        } else {
+            clearInterval(this.intervalAlert);
+        }
+    },
+
+    beforeDestroy: function() {
+        clearInterval(this.intervalAlert);
     }
 };
 </script>

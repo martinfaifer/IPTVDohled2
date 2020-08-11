@@ -128,7 +128,6 @@ export default {
         }
     },
     mounted() {
-        this.loadAlerts();
         this.intervalAlert = setInterval(
             function() {
                 this.loadAlerts();
@@ -153,6 +152,9 @@ export default {
                     });
             }
         }
+    },
+    beforeDestroy: function() {
+        clearInterval(this.intervalAlert);
     }
 };
 </script>
