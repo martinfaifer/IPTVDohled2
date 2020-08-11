@@ -52,4 +52,15 @@ class ApiChannelController extends Controller
             ];
         }
     }
+
+
+    /**
+     * fn pro zobrazení typu, apiUrl a klice potrebneho pro komunikaci
+     *
+     * @return void
+     */
+    public function showData()
+    {
+        return ApiChannel::get();
+    }
 }

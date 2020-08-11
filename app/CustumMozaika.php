@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ApiChannel extends Model
+class CustumMozaika extends Model
 {
     protected $fillable = [
-        'type', 'apiUrl', 'apiKey'
+        'userId', 'staticChannels'
     ];
 }

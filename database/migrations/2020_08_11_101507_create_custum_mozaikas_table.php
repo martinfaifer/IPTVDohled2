@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApiChannelsTable extends Migration
+class CreateCustumMozaikasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateApiChannelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('api_channels', function (Blueprint $table) {
+        Schema::create('custum_mozaikas', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->index();
-            $table->longText('apiUrl');
-            $table->longText('apiKey')->nullable();
+            $table->string('userId')->index();
+            $table->longText('staticChannels');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateApiChannelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('api_channels');
+        Schema::dropIfExists('custum_mozaikas');
     }
 }

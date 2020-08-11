@@ -1,9 +1,9 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[0],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[36],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -11,6 +11,208 @@
 __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -398,6 +600,7 @@ var NoteComponent = function NoteComponent() {
 /* harmony default export */ __webpack_exports__["default"] = (_defineProperty({
   data: function data() {
     return {
+      staticStreams: [],
       contextMenu: "prehled",
       color: "",
       colorPrehled: "teal",
@@ -433,6 +636,7 @@ var NoteComponent = function NoteComponent() {
     };
   },
   created: function created() {
+    this.loadStaticStreams();
     this.getStreams();
   },
   components: {
@@ -445,6 +649,13 @@ var NoteComponent = function NoteComponent() {
     "note-component": NoteComponent
   },
   methods: {
+    loadStaticStreams: function loadStaticStreams() {
+      var _this = this;
+
+      window.axios.get("/api/user/mozaika/custom/req").then(function (response) {
+        _this.staticStreams = response.data;
+      });
+    },
     channelInfoFunction: function channelInfoFunction() {
       var currentObj = this;
       currentObj.channelInfo = true;
@@ -457,12 +668,12 @@ var NoteComponent = function NoteComponent() {
       currentObj.contextMenu = "prehled";
     },
     getStreams: function getStreams() {
-      var _this = this;
+      var _this2 = this;
 
       window.axios.get("/api/channels/pagination?page=" + this.pagination.current).then(function (response) {
-        _this.streams = response.data.data;
-        _this.pagination.current = response.data.current_page;
-        _this.pagination.total = response.data.last_page;
+        _this2.streams = response.data.data;
+        _this2.pagination.current = response.data.current_page;
+        _this2.pagination.total = response.data.last_page;
       });
     },
     onPageChange: function onPageChange() {
@@ -471,6 +682,7 @@ var NoteComponent = function NoteComponent() {
   },
   mounted: function mounted() {
     this.interval = setInterval(function () {
+      this.loadStaticStreams();
       this.getStreams();
     }.bind(this), 10000);
     this.paginationInterval = setInterval(function () {
@@ -537,10 +749,10 @@ var NoteComponent = function NoteComponent() {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=template&id=74aac4eb&":
-/*!***************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=template&id=74aac4eb& ***!
-  \***************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=template&id=cd622fb4&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=template&id=cd622fb4& ***!
+  \****************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -568,6 +780,439 @@ var render = function() {
           _c(
             "v-row",
             { staticClass: "mx-auto mt-1 ma-1 mr-1" },
+            _vm._l(_vm.staticStreams, function(staticStream) {
+              return _c(
+                "div",
+                { key: staticStream.id },
+                [
+                  _c("v-tooltip", {
+                    attrs: { bottom: "" },
+                    scopedSlots: _vm._u(
+                      [
+                        {
+                          key: "activator",
+                          fn: function(ref) {
+                            var on = ref.on
+                            return [
+                              staticStream.Alert === "error"
+                                ? _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "mx-auto ma-0",
+                                      attrs: {
+                                        flat: "",
+                                        color: "red",
+                                        width: "260"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.channelInfoFunction(),
+                                            (_vm.channelId = staticStream.id),
+                                            (_vm.channelName =
+                                              staticStream.nazev),
+                                            (_vm.channelApi = staticStream.api),
+                                            (_vm.urlDokumentace =
+                                              staticStream.dokumentaceUrl)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-list-item",
+                                        [
+                                          _c(
+                                            "v-list-item-content",
+                                            _vm._g(
+                                              { staticClass: "text-center" },
+                                              on
+                                            ),
+                                            [
+                                              _c("v-list-item-title", [
+                                                _vm._v(
+                                                  _vm._s(staticStream.nazev)
+                                                )
+                                              ]),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  attrs: {
+                                                    color: "black",
+                                                    height: "140",
+                                                    width: "140"
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "v-img",
+                                                    {
+                                                      attrs: {
+                                                        height: "140",
+                                                        alt: staticStream.nazev
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "v-icon",
+                                                        {
+                                                          staticClass: "mt-8",
+                                                          attrs: {
+                                                            color: "red",
+                                                            large: ""
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                mdi-television-off\n                                            "
+                                                          )
+                                                        ]
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              ),
+                                              _vm._v(" "),
+                                              _c("v-list-item-subtitle")
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                : _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "mx-auto ma-1 mr-1",
+                                      attrs: {
+                                        flat: "",
+                                        color: "transparent",
+                                        width: "260"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.channelInfoFunction(),
+                                            (_vm.channelId = staticStream.id),
+                                            (_vm.channelName =
+                                              staticStream.nazev),
+                                            (_vm.channelApi = staticStream.api),
+                                            (_vm.urlDokumentace =
+                                              staticStream.dokumentaceUrl)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-list-item",
+                                        [
+                                          _c(
+                                            "v-list-item-content",
+                                            _vm._g(
+                                              { staticClass: "text-center" },
+                                              on
+                                            ),
+                                            [
+                                              _c("v-list-item-title", [
+                                                _vm._v(
+                                                  _vm._s(staticStream.nazev)
+                                                )
+                                              ]),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  attrs: {
+                                                    color: "transparent",
+                                                    height: "140",
+                                                    width: "140"
+                                                  }
+                                                },
+                                                [
+                                                  staticStream.img === "false"
+                                                    ? _c(
+                                                        "v-img",
+                                                        {
+                                                          attrs: {
+                                                            alt:
+                                                              staticStream.nazev,
+                                                            height: "140",
+                                                            contain: ""
+                                                          }
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "v-progress-circular",
+                                                            {
+                                                              attrs: {
+                                                                size: 70,
+                                                                width: 7,
+                                                                color:
+                                                                  "grey lighten-5",
+                                                                indeterminate:
+                                                                  ""
+                                                              }
+                                                            }
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    : staticStream.img ===
+                                                      "/storage/noImg.jpg"
+                                                    ? _c(
+                                                        "v-img",
+                                                        {
+                                                          attrs: {
+                                                            alt:
+                                                              staticStream.nazev,
+                                                            height: "140",
+                                                            contain: ""
+                                                          }
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "v-icon",
+                                                            {
+                                                              staticClass:
+                                                                "mt-8",
+                                                              attrs: {
+                                                                color: "orange",
+                                                                large: ""
+                                                              }
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "\n                                                mdi-television-off\n                                            "
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "v-row",
+                                                            {
+                                                              directives: [
+                                                                {
+                                                                  name: "show",
+                                                                  rawName:
+                                                                    "v-show",
+                                                                  value:
+                                                                    staticStream.audioLang !=
+                                                                    null,
+                                                                  expression:
+                                                                    "\n                                                    staticStream.audioLang != null\n                                                "
+                                                                }
+                                                              ],
+                                                              staticClass:
+                                                                "lightbox white--text fill-height",
+                                                              attrs: {
+                                                                align: "end"
+                                                              }
+                                                            },
+                                                            [
+                                                              _c("v-col", [
+                                                                _c(
+                                                                  "div",
+                                                                  {
+                                                                    staticClass:
+                                                                      "body-1 green--text"
+                                                                  },
+                                                                  [
+                                                                    _c(
+                                                                      "strong",
+                                                                      [
+                                                                        _vm._v(
+                                                                          "\n                                                            " +
+                                                                            _vm._s(
+                                                                              staticStream.audioLang
+                                                                            ) +
+                                                                            "\n                                                        "
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              ])
+                                                            ],
+                                                            1
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    : staticStream.img ===
+                                                      "/storage/radioImage.png"
+                                                    ? _c(
+                                                        "v-img",
+                                                        {
+                                                          attrs: {
+                                                            alt:
+                                                              staticStream.nazev,
+                                                            height: "140",
+                                                            contain: ""
+                                                          }
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "v-icon",
+                                                            {
+                                                              staticClass:
+                                                                "mt-8",
+                                                              attrs: {
+                                                                large: ""
+                                                              }
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "\n                                                mdi-radio\n                                            "
+                                                              )
+                                                            ]
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    : _c(
+                                                        "v-img",
+                                                        {
+                                                          attrs: {
+                                                            "lazy-src":
+                                                              staticStream.img,
+                                                            alt:
+                                                              staticStream.nazev,
+                                                            src:
+                                                              staticStream.img,
+                                                            height: "140",
+                                                            contain: ""
+                                                          },
+                                                          scopedSlots: _vm._u(
+                                                            [
+                                                              {
+                                                                key:
+                                                                  "placeholder",
+                                                                fn: function() {
+                                                                  return [
+                                                                    _c(
+                                                                      "v-row",
+                                                                      {
+                                                                        staticClass:
+                                                                          "fill-height ma-0",
+                                                                        attrs: {
+                                                                          align:
+                                                                            "center",
+                                                                          justify:
+                                                                            "center"
+                                                                        }
+                                                                      },
+                                                                      [
+                                                                        _c(
+                                                                          "v-progress-circular",
+                                                                          {
+                                                                            attrs: {
+                                                                              indeterminate:
+                                                                                "",
+                                                                              color:
+                                                                                "grey lighten-5"
+                                                                            }
+                                                                          }
+                                                                        )
+                                                                      ],
+                                                                      1
+                                                                    )
+                                                                  ]
+                                                                },
+                                                                proxy: true
+                                                              }
+                                                            ],
+                                                            null,
+                                                            true
+                                                          )
+                                                        },
+                                                        [
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "v-row",
+                                                            {
+                                                              directives: [
+                                                                {
+                                                                  name: "show",
+                                                                  rawName:
+                                                                    "v-show",
+                                                                  value:
+                                                                    staticStream.audioLang !=
+                                                                    null,
+                                                                  expression:
+                                                                    "\n                                                    staticStream.audioLang != null\n                                                "
+                                                                }
+                                                              ],
+                                                              staticClass:
+                                                                "lightbox white--text fill-height",
+                                                              attrs: {
+                                                                align: "end"
+                                                              }
+                                                            },
+                                                            [
+                                                              _c("v-col", [
+                                                                _c(
+                                                                  "div",
+                                                                  {
+                                                                    staticClass:
+                                                                      "body-1 green--text"
+                                                                  },
+                                                                  [
+                                                                    _c(
+                                                                      "strong",
+                                                                      [
+                                                                        _vm._v(
+                                                                          "\n                                                            " +
+                                                                            _vm._s(
+                                                                              staticStream.audioLang
+                                                                            ) +
+                                                                            "\n                                                        "
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              ])
+                                                            ],
+                                                            1
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                            ]
+                          }
+                        }
+                      ],
+                      null,
+                      true
+                    )
+                  })
+                ],
+                1
+              )
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _c("v-divider", { staticClass: "mr-12" }),
+          _vm._v(" "),
+          _c(
+            "v-row",
+            { staticClass: "mx-auto mt-1 ma-1 mr-1" },
             _vm._l(_vm.streams, function(stream) {
               return _c(
                 "div",
@@ -590,7 +1235,7 @@ var render = function() {
                                       attrs: {
                                         flat: "",
                                         color: "red",
-                                        width: "250"
+                                        width: "180"
                                       },
                                       on: {
                                         click: function($event) {
@@ -623,8 +1268,8 @@ var render = function() {
                                                 {
                                                   attrs: {
                                                     color: "black",
-                                                    height: "140",
-                                                    width: "140"
+                                                    height: "100",
+                                                    width: "100"
                                                   }
                                                 },
                                                 [
@@ -632,7 +1277,7 @@ var render = function() {
                                                     "v-img",
                                                     {
                                                       attrs: {
-                                                        height: "140",
+                                                        height: "100",
                                                         alt: stream.nazev
                                                       }
                                                     },
@@ -676,7 +1321,7 @@ var render = function() {
                                       attrs: {
                                         flat: "",
                                         color: "transparent",
-                                        width: "250"
+                                        width: "180"
                                       },
                                       on: {
                                         click: function($event) {
@@ -709,8 +1354,8 @@ var render = function() {
                                                 {
                                                   attrs: {
                                                     color: "transparent",
-                                                    height: "140",
-                                                    width: "140"
+                                                    height: "100",
+                                                    width: "100"
                                                   }
                                                 },
                                                 [
@@ -720,7 +1365,7 @@ var render = function() {
                                                         {
                                                           attrs: {
                                                             alt: stream.nazev,
-                                                            height: "140",
+                                                            height: "100",
                                                             contain: ""
                                                           }
                                                         },
@@ -748,7 +1393,7 @@ var render = function() {
                                                         {
                                                           attrs: {
                                                             alt: stream.nazev,
-                                                            height: "140",
+                                                            height: "100",
                                                             contain: ""
                                                           }
                                                         },
@@ -828,7 +1473,7 @@ var render = function() {
                                                         {
                                                           attrs: {
                                                             alt: stream.nazev,
-                                                            height: "140",
+                                                            height: "100",
                                                             contain: ""
                                                           }
                                                         },
@@ -859,7 +1504,7 @@ var render = function() {
                                                               stream.img,
                                                             alt: stream.nazev,
                                                             src: stream.img,
-                                                            height: "140",
+                                                            height: "100",
                                                             contain: ""
                                                           },
                                                           scopedSlots: _vm._u(
@@ -1281,17 +1926,17 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./resources/js/components/Mozaika/MozaikaComponent.vue":
-/*!**************************************************************!*\
-  !*** ./resources/js/components/Mozaika/MozaikaComponent.vue ***!
-  \**************************************************************/
+/***/ "./resources/js/components/Mozaika/UserCustomMozaika.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/Mozaika/UserCustomMozaika.vue ***!
+  \***************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _MozaikaComponent_vue_vue_type_template_id_74aac4eb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MozaikaComponent.vue?vue&type=template&id=74aac4eb& */ "./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=template&id=74aac4eb&");
-/* harmony import */ var _MozaikaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MozaikaComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _UserCustomMozaika_vue_vue_type_template_id_cd622fb4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserCustomMozaika.vue?vue&type=template&id=cd622fb4& */ "./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=template&id=cd622fb4&");
+/* harmony import */ var _UserCustomMozaika_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserCustomMozaika.vue?vue&type=script&lang=js& */ "./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -1301,9 +1946,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _MozaikaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _MozaikaComponent_vue_vue_type_template_id_74aac4eb___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _MozaikaComponent_vue_vue_type_template_id_74aac4eb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _UserCustomMozaika_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserCustomMozaika_vue_vue_type_template_id_cd622fb4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserCustomMozaika_vue_vue_type_template_id_cd622fb4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -1313,38 +1958,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/Mozaika/MozaikaComponent.vue"
+component.options.__file = "resources/js/components/Mozaika/UserCustomMozaika.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************!*\
-  !*** ./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************/
+/***/ "./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MozaikaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./MozaikaComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MozaikaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCustomMozaika_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./UserCustomMozaika.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCustomMozaika_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=template&id=74aac4eb&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=template&id=74aac4eb& ***!
-  \*********************************************************************************************/
+/***/ "./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=template&id=cd622fb4&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=template&id=cd622fb4& ***!
+  \**********************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MozaikaComponent_vue_vue_type_template_id_74aac4eb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./MozaikaComponent.vue?vue&type=template&id=74aac4eb& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/MozaikaComponent.vue?vue&type=template&id=74aac4eb&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MozaikaComponent_vue_vue_type_template_id_74aac4eb___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCustomMozaika_vue_vue_type_template_id_cd622fb4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./UserCustomMozaika.vue?vue&type=template&id=cd622fb4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Mozaika/UserCustomMozaika.vue?vue&type=template&id=cd622fb4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCustomMozaika_vue_vue_type_template_id_cd622fb4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MozaikaComponent_vue_vue_type_template_id_74aac4eb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCustomMozaika_vue_vue_type_template_id_cd622fb4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

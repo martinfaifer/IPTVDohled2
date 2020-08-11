@@ -116,147 +116,66 @@
                         </v-btn>
                         <v-toolbar-title>Nastavení uživatele</v-toolbar-title>
                     </v-toolbar>
-                    <v-card-text>
-                        <v-list three-line subheader ml-12>
-                            <v-subheader>Nastavení uživatele</v-subheader>
-                            <v-list-item>
-                                <v-row>
-                                    <v-col cols="6" sm="6" md="6">
-                                        <v-text-field
-                                            v-model="userData.email"
-                                            label="e-mail"
-                                            autofocus
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="6" sm="6" md="6">
-                                        <v-text-field
-                                            v-model="password"
-                                            label="změna hesla"
-                                            type="password"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                            </v-list-item>
-                        </v-list>
-                        <v-divider></v-divider>
-                        <v-list three-line subheader>
-                            <v-subheader>Nastavení GUI</v-subheader>
-                            <v-list-item>
-                                <v-list-item-action>
-                                    <v-col cols="12" sm="12" md="12">
-                                        <v-text-field
-                                            v-model="userData.pagination"
-                                            label="Počet polí v mozaice"
-                                            type="number"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-list-item-action>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-list-item-action>
-                                    <v-checkbox
-                                        v-model="userData.dense"
-                                    ></v-checkbox>
-                                </v-list-item-action>
-                                <v-list-item-content>
-                                    <v-list-item-title
-                                        >Kompaktní mód</v-list-item-title
-                                    >
-                                    <v-list-item-subtitle
-                                        >Zmenší se tabulky, i alerty, vhodné pro
-                                        monitory s nízkým
-                                        rozlišením</v-list-item-subtitle
-                                    >
-                                </v-list-item-content>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-list-item-action>
-                                    <v-checkbox
-                                        v-model="userData.mozaikaAlphaBet"
-                                    ></v-checkbox>
-                                </v-list-item-action>
-                                <v-list-item-content>
-                                    <v-list-item-title
-                                        >Abecední řazení kanálů v
-                                        mozaice</v-list-item-title
-                                    >
-                                    <v-list-item-subtitle
-                                        >Kanály se budou v mozaice řadit
-                                        abecedně</v-list-item-subtitle
-                                    >
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
-                        <v-divider></v-divider>
-                        <v-list three-line subheader>
-                            <v-subheader>Alerting</v-subheader>
-                            <v-list-item>
-                                <v-list-item-action>
-                                    <v-checkbox
-                                        v-model="userData.mailMotifikace"
-                                    ></v-checkbox>
-                                </v-list-item-action>
-                                <v-list-item-content>
-                                    <v-list-item-title
-                                        >Zasílání mailových
-                                        notifikací</v-list-item-title
-                                    >
-                                    <v-list-item-subtitle
-                                        >Dohled bude zasílat upozornění o
-                                        nefunkčních nebo nově funkčních kanálech
-                                        s odkazem na kanál a dobou
-                                        výpadku</v-list-item-subtitle
-                                    >
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
-                        <div v-show="userData.apiKey != false">
-                            <v-divider></v-divider>
-                            <v-list three-line subheader>
-                                <v-subheader>API</v-subheader>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title
-                                            >API klíč</v-list-item-title
-                                        >
-                                        <v-list-item-subtitle
-                                            class="green--text"
-                                            >{{
-                                                userData.apiKey
-                                            }}</v-list-item-subtitle
-                                        >
-                                    </v-list-item-content>
-                                </v-list-item>
 
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title
-                                            >API dokumentace</v-list-item-title
-                                        >
-                                        <v-list-item-subtitle>
-                                            <i>Bude odkaz do dokumentace</i>
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list>
-                        </div>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="red darken-1"
-                            @click="modalEditUser = false"
-                            text
-                            >Zavřít</v-btn
-                        >
-                        <v-btn
-                            color="green darken-1"
-                            type="submit"
-                            @click="userEdit(), (modalEditUser = false)"
-                            text
-                            >Uložit</v-btn
-                        >
-                    </v-card-actions>
+                    <!-- navigation -->
+                    <v-row>
+                        <v-toolbar color="transparent" flat dense dark>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                @click="contextMenu = 'user'"
+                                :color="colorIconUser"
+                                class="white--text"
+                                icon
+                            >
+                                <v-icon>mdi-account</v-icon>
+                            </v-btn>
+                            <v-btn
+                                @click="contextMenu = 'gui'"
+                                :color="colorIconGui"
+                                class="white--text"
+                                icon
+                            >
+                                <v-icon>mdi-television-guide</v-icon>
+                            </v-btn>
+
+                            <v-btn
+                                @click="contextMenu = 'alert'"
+                                :color="colorIconAlert"
+                                class="white--text"
+                                icon
+                            >
+                                <v-icon>mdi-comment-alert</v-icon>
+                            </v-btn>
+
+                            <v-btn
+                                @click="contextMenu = 'api'"
+                                :color="colorIconApi"
+                                class="white--text"
+                                icon
+                            >
+                                <v-icon>mdi-swap-horizontal</v-icon>
+                            </v-btn>
+
+                            <!-- mdi-message -->
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                    </v-row>
+
+                    <!-- uživatelské nasatavení -->
+                    <v-container justify="center">
+                        <user-component
+                            v-show="contextMenu === 'user'"
+                        ></user-component>
+                        <gui-component
+                            v-show="contextMenu === 'gui'"
+                        ></gui-component>
+                        <!-- <notification-component
+                                v-show="contextMenu === 'alert'"
+                            ></notification-component>
+                            <api-component
+                                v-show="contextMenu === 'api'"
+                            ></api-component> -->
+                    </v-container>
                 </v-card>
             </v-dialog>
         </v-row>
@@ -265,7 +184,6 @@
 
         <transition name="fade" mode="out-in">
             <router-view class="mt-1"> </router-view>
-            <!-- <router-view class="mt-1" /> -->
         </transition>
 
         <div class="text-center">
@@ -313,11 +231,18 @@
     </div>
 </template>
 <script>
-import Alert from "./alerts/AlertComponent";
-import FooterComponent from "./FooterComponent";
+let Alert = () => import("./alerts/AlertComponent");
+let FooterComponent = () => import("./FooterComponent");
+let UserComponent = () => import("./Navigation/UserComponent");
+let GuiComponent = () => import("./Navigation/GuiComponent");
 export default {
     data() {
         return {
+            contextMenu: "user",
+            colorIconUser: "teal",
+            colorIconGui: "",
+            colorIconAlert: "",
+            colorIconApi: "",
             todayChannelDialogNotification: false,
             mailMotifikace: false,
             rememberMe: true,
@@ -340,7 +265,9 @@ export default {
 
     components: {
         "alert-component": Alert,
-        "footer-component": FooterComponent
+        "footer-component": FooterComponent,
+        "user-component": UserComponent,
+        "gui-component": GuiComponent
     },
 
     methods: {
@@ -373,27 +300,6 @@ export default {
                 .catch(function(error) {});
         },
 
-        userEdit() {
-            let currentObj = this;
-            axios
-                .post("/api/user/edit", {
-                    userId: this.userData.id,
-                    mail: this.userData.email,
-                    password: this.password,
-                    pagination: this.userData.pagination,
-                    dense: this.userData.dense,
-                    mozaikaAlphaBet: this.userData.mozaikaAlphaBet,
-                    mailMotifikace: this.userData.mailMotifikace
-                })
-                .then(function(response) {
-                    currentObj.status = response.data;
-                    console.log(response.data);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        },
-
         chanheAlertVisibility() {
             let currentObj = this;
             axios
@@ -411,6 +317,30 @@ export default {
     watch: {
         status: function() {
             setTimeout(() => (this.status = false), 5000);
+        },
+
+        contextMenu: function() {
+            if (this.contextMenu === "user") {
+                (this.colorIconUser = "teal"),
+                    (this.colorIconGui = ""),
+                    (this.colorIconAlert = "");
+                this.colorIconApi = "";
+            } else if (this.contextMenu === "gui") {
+                (this.colorIconUser = ""),
+                    (this.colorIconGui = "teal"),
+                    (this.colorIconAlert = "");
+                this.colorIconApi = "";
+            } else if (this.contextMenu === "alert") {
+                (this.colorIconUser = ""),
+                    (this.colorIconGui = ""),
+                    (this.colorIconAlert = "teal");
+                this.colorIconApi = "";
+            } else if (this.contextMenu === "api") {
+                (this.colorIconUser = ""),
+                    (this.colorIconGui = ""),
+                    (this.colorIconAlert = "");
+                this.colorIconApi = "teal";
+            }
         }
     },
     mounted() {

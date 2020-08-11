@@ -154,48 +154,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      contextMenu: "prehled",
-      color: "",
-      colorPrehled: "teal",
-      colorChannels: "",
-      colorAccounts: "",
-      colorAlerts: "",
-      colorDevices: "",
-      colorLog: "",
       userData: false
     };
   },
   created: function created() {
-    this.watchIconColor();
     var currentObj = this;
     axios.get("/api/user/get").then(function (response) {
       currentObj.userData = response.data;
     });
-  },
-  methods: {
-    watchIconColor: function watchIconColor() {
-      if (this.$route.path === "/settings/dashboard") {
-        this.colorPrehled = "teal", this.colorChannels = "", this.colorAccounts = "", this.colorAlerts = "", this.colorLog = "", this.colorDevices = "";
-      } else if (this.$route.path === "/settings/channels") {
-        this.colorPrehled = "", this.colorChannels = "teal", this.colorAccounts = "", this.colorAlerts = "", this.colorLog = "", this.colorDevices = "";
-      } else if (this.$route.path === "/settings/users") {
-        this.colorPrehled = "", this.colorChannels = "", this.colorAccounts = "teal", this.colorAlerts = "", this.colorLog = "", this.colorDevices = "";
-      } else if (this.$route.path === "/settings/alerts") {
-        this.colorPrehled = "", this.colorChannels = "", this.colorAccounts = "", this.colorAlerts = "teal", this.colorLog = "", this.colorDevices = "";
-      } else if (this.$route.path === "/settings/logs") {
-        this.colorPrehled = "", this.colorChannels = "", this.colorAccounts = "", this.colorAlerts = "", this.colorLog = "teal", this.colorDevices = "";
-      } else {
-        this.colorDevices = "teal", this.colorPrehled = "", this.colorChannels = "", this.colorAccounts = "", this.colorAlerts = "", this.colorLog = "";
-      }
-    }
-  },
-  watch: {
-    contextMenu: function contextMenu() {
-      this.watchIconColor();
-    }
   }
 });
 
@@ -276,21 +250,22 @@ var render = function() {
                                               attrs: {
                                                 link: "",
                                                 to: "/settings/dashboard",
-                                                color: _vm.colorPrehled,
                                                 icon: ""
-                                              },
-                                              on: {
-                                                click: function($event) {
-                                                  _vm.contextMenu = "prehled"
-                                                }
                                               }
                                             },
                                             on
                                           ),
                                           [
-                                            _c("v-icon", [
-                                              _vm._v("mdi-view-dashboard")
-                                            ])
+                                            _vm.$route.path ===
+                                            "/settings/dashboard"
+                                              ? _c(
+                                                  "v-icon",
+                                                  { attrs: { color: "teal" } },
+                                                  [_vm._v("mdi-view-dashboard")]
+                                                )
+                                              : _c("v-icon", [
+                                                  _vm._v("mdi-view-dashboard")
+                                                ])
                                           ],
                                           1
                                         )
@@ -320,21 +295,26 @@ var render = function() {
                                               attrs: {
                                                 link: "",
                                                 to: "/settings/devices",
-                                                color: _vm.colorDevices,
                                                 icon: ""
-                                              },
-                                              on: {
-                                                click: function($event) {
-                                                  _vm.contextMenu = "prehled"
-                                                }
                                               }
                                             },
                                             on
                                           ),
                                           [
-                                            _c("v-icon", [
-                                              _vm._v("mdi-tablet-cellphone")
-                                            ])
+                                            _vm.$route.path ===
+                                            "/settings/devices"
+                                              ? _c(
+                                                  "v-icon",
+                                                  { attrs: { color: "teal" } },
+                                                  [
+                                                    _vm._v(
+                                                      "mdi-tablet-cellphone"
+                                                    )
+                                                  ]
+                                                )
+                                              : _c("v-icon", [
+                                                  _vm._v("mdi-tablet-cellphone")
+                                                ])
                                           ],
                                           1
                                         )
@@ -364,21 +344,26 @@ var render = function() {
                                               attrs: {
                                                 link: "",
                                                 to: "/settings/channels",
-                                                color: _vm.colorChannels,
                                                 icon: ""
-                                              },
-                                              on: {
-                                                click: function($event) {
-                                                  _vm.contextMenu = "channels"
-                                                }
                                               }
                                             },
                                             on
                                           ),
                                           [
-                                            _c("v-icon", [
-                                              _vm._v("mdi-television-guide")
-                                            ])
+                                            _vm.$route.path ===
+                                            "/settings/channels"
+                                              ? _c(
+                                                  "v-icon",
+                                                  { attrs: { color: "teal" } },
+                                                  [
+                                                    _vm._v(
+                                                      "mdi-television-guide"
+                                                    )
+                                                  ]
+                                                )
+                                              : _c("v-icon", [
+                                                  _vm._v("mdi-television-guide")
+                                                ])
                                           ],
                                           1
                                         )
@@ -390,201 +375,288 @@ var render = function() {
                               [_vm._v(" "), _c("span", [_vm._v("Kanály")])]
                             ),
                             _vm._v(" "),
-                            _vm.userData.user_role == "admin"
-                              ? _c(
-                                  "div",
-                                  [
-                                    _c(
-                                      "v-tooltip",
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.userData.user_role == "admin",
+                                    expression: "userData.user_role == 'admin'"
+                                  }
+                                ]
+                              },
+                              [
+                                _c(
+                                  "v-tooltip",
+                                  {
+                                    attrs: { bottom: "" },
+                                    scopedSlots: _vm._u([
                                       {
-                                        attrs: { bottom: "" },
-                                        scopedSlots: _vm._u(
-                                          [
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                return [
-                                                  _c(
-                                                    "v-btn",
-                                                    _vm._g(
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                {
+                                                  staticClass: "white--text",
+                                                  attrs: {
+                                                    link: "",
+                                                    to: "/settings/users",
+                                                    icon: ""
+                                                  }
+                                                },
+                                                on
+                                              ),
+                                              [
+                                                _vm.$route.path ===
+                                                "/settings/users"
+                                                  ? _c(
+                                                      "v-icon",
                                                       {
-                                                        staticClass:
-                                                          "white--text",
-                                                        attrs: {
-                                                          link: "",
-                                                          to: "/settings/users",
-                                                          color:
-                                                            _vm.colorAccounts,
-                                                          icon: ""
-                                                        },
-                                                        on: {
-                                                          click: function(
-                                                            $event
-                                                          ) {
-                                                            _vm.contextMenu =
-                                                              "accounts"
-                                                          }
-                                                        }
+                                                        attrs: { color: "teal" }
                                                       },
-                                                      on
-                                                    ),
-                                                    [
-                                                      _c("v-icon", [
+                                                      [
                                                         _vm._v(
                                                           "mdi-account-multiple"
                                                         )
-                                                      ])
-                                                    ],
-                                                    1
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ],
-                                          null,
-                                          false,
-                                          1934407730
-                                        )
-                                      },
-                                      [
-                                        _vm._v(" "),
-                                        _c("span", [_vm._v("Uživatelé")])
-                                      ]
-                                    )
-                                  ],
-                                  1
-                                )
-                              : _vm._e(),
-                            _vm._v(" "),
-                            _vm.userData.user_role == "admin"
-                              ? _c(
-                                  "div",
+                                                      ]
+                                                    )
+                                                  : _c("v-icon", [
+                                                      _vm._v(
+                                                        "mdi-account-multiple"
+                                                      )
+                                                    ])
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ])
+                                  },
                                   [
-                                    _c(
-                                      "v-tooltip",
-                                      {
-                                        attrs: { bottom: "" },
-                                        scopedSlots: _vm._u(
-                                          [
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                return [
-                                                  _c(
-                                                    "v-btn",
-                                                    _vm._g(
-                                                      {
-                                                        staticClass:
-                                                          "white--text",
-                                                        attrs: {
-                                                          link: "",
-                                                          to:
-                                                            "/settings/alerts",
-                                                          color:
-                                                            _vm.colorAlerts,
-                                                          icon: ""
-                                                        },
-                                                        on: {
-                                                          click: function(
-                                                            $event
-                                                          ) {
-                                                            _vm.contextMenu =
-                                                              "alerts"
-                                                          }
-                                                        }
-                                                      },
-                                                      on
-                                                    ),
-                                                    [
-                                                      _c("v-icon", [
-                                                        _vm._v("mdi-bell")
-                                                      ])
-                                                    ],
-                                                    1
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ],
-                                          null,
-                                          false,
-                                          2559962966
-                                        )
-                                      },
-                                      [
-                                        _vm._v(" "),
-                                        _c("span", [
-                                          _vm._v("Nastavení Alertingu")
-                                        ])
-                                      ]
-                                    )
-                                  ],
-                                  1
+                                    _vm._v(" "),
+                                    _c("span", [_vm._v("Uživatelé")])
+                                  ]
                                 )
-                              : _vm._e(),
+                              ],
+                              1
+                            ),
                             _vm._v(" "),
-                            _vm.userData.user_role == "admin"
-                              ? _c(
-                                  "div",
-                                  [
-                                    _c(
-                                      "v-tooltip",
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.userData.user_role == "admin",
+                                    expression: "userData.user_role == 'admin'"
+                                  }
+                                ]
+                              },
+                              [
+                                _c(
+                                  "v-tooltip",
+                                  {
+                                    attrs: { bottom: "" },
+                                    scopedSlots: _vm._u([
                                       {
-                                        attrs: { bottom: "" },
-                                        scopedSlots: _vm._u(
-                                          [
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                return [
-                                                  _c(
-                                                    "v-btn",
-                                                    _vm._g(
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                {
+                                                  staticClass: "white--text",
+                                                  attrs: {
+                                                    link: "",
+                                                    to: "/settings/alerts",
+                                                    icon: ""
+                                                  }
+                                                },
+                                                on
+                                              ),
+                                              [
+                                                _vm.$route.path ===
+                                                "/settings/alerts"
+                                                  ? _c(
+                                                      "v-icon",
                                                       {
-                                                        staticClass:
-                                                          "white--text",
-                                                        attrs: {
-                                                          link: "",
-                                                          to: "/settings/logs",
-                                                          color: _vm.colorLog,
-                                                          icon: ""
-                                                        },
-                                                        on: {
-                                                          click: function(
-                                                            $event
-                                                          ) {
-                                                            _vm.contextMenu =
-                                                              "log"
-                                                          }
-                                                        }
+                                                        attrs: { color: "teal" }
                                                       },
-                                                      on
-                                                    ),
-                                                    [
-                                                      _c("v-icon", [
-                                                        _vm._v("mdi-git")
-                                                      ])
-                                                    ],
-                                                    1
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ],
-                                          null,
-                                          false,
-                                          2920483809
-                                        )
-                                      },
-                                      [_vm._v(" "), _c("span", [_vm._v("Log")])]
-                                    )
-                                  ],
-                                  1
+                                                      [_vm._v("mdi-bell")]
+                                                    )
+                                                  : _c("v-icon", [
+                                                      _vm._v("mdi-bell")
+                                                    ])
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ])
+                                  },
+                                  [
+                                    _vm._v(" "),
+                                    _c("span", [_vm._v("Nastavení Alertingu")])
+                                  ]
                                 )
-                              : _vm._e(),
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.userData.user_role == "admin",
+                                    expression: "userData.user_role == 'admin'"
+                                  }
+                                ]
+                              },
+                              [
+                                _c(
+                                  "v-tooltip",
+                                  {
+                                    attrs: { bottom: "" },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                {
+                                                  staticClass: "white--text",
+                                                  attrs: {
+                                                    link: "",
+                                                    to: "/settings/logs",
+                                                    icon: ""
+                                                  }
+                                                },
+                                                on
+                                              ),
+                                              [
+                                                _vm.$route.path ===
+                                                "/settings/logs"
+                                                  ? _c(
+                                                      "v-icon",
+                                                      {
+                                                        attrs: { color: "teal" }
+                                                      },
+                                                      [_vm._v("mdi-git")]
+                                                    )
+                                                  : _c("v-icon", [
+                                                      _vm._v("mdi-git")
+                                                    ])
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ])
+                                  },
+                                  [_vm._v(" "), _c("span", [_vm._v("Log")])]
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.userData.user_role == "admin",
+                                    expression: "userData.user_role == 'admin'"
+                                  }
+                                ]
+                              },
+                              [
+                                _c(
+                                  "v-tooltip",
+                                  {
+                                    attrs: { bottom: "" },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                {
+                                                  staticClass: "white--text",
+                                                  attrs: {
+                                                    link: "",
+                                                    to: "/settings/api/users",
+                                                    icon: ""
+                                                  }
+                                                },
+                                                on
+                                              ),
+                                              [
+                                                _vm.$route.path ===
+                                                "/settings/api/users"
+                                                  ? _c(
+                                                      "v-icon",
+                                                      {
+                                                        attrs: { color: "teal" }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "mdi-swap-horizontal"
+                                                        )
+                                                      ]
+                                                    )
+                                                  : _vm.$route.path ===
+                                                    "/settings/api/iptv_doku"
+                                                  ? _c(
+                                                      "v-icon",
+                                                      {
+                                                        attrs: { color: "teal" }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "mdi-swap-horizontal"
+                                                        )
+                                                      ]
+                                                    )
+                                                  : _c("v-icon", [
+                                                      _vm._v(
+                                                        "mdi-swap-horizontal"
+                                                      )
+                                                    ])
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ])
+                                  },
+                                  [_vm._v(" "), _c("span", [_vm._v("Log")])]
+                                )
+                              ],
+                              1
+                            ),
                             _vm._v(" "),
                             _c("v-spacer")
                           ],

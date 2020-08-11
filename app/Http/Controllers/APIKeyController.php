@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\APIKey;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -54,5 +55,29 @@ class APIKeyController extends Controller
     public static function remove($userId)
     {
         APIKey::where("userId", $userId)->delete();
+    }
+
+
+    /**
+     * fn pro získání api klíču a uživatelů, kterým klíče naleží
+     *
+     * @return false
+     * @return array
+     */
+    public function getUsersAndKeys()
+    {
+        if (!APIKey::first()) {
+            // neexistuje žádný api klic, vrácime false
+            return false;
+        }
+
+        foreach (APIKey::get() as $klic) {
+            $output[] = array(
+                'email' => User::find($klic->userId)->email,
+                'apiKlic' => $klic->apiKey
+            );
+        }
+
+        return $output;
     }
 }

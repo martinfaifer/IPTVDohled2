@@ -5,6 +5,208 @@
         <!-- end test crash -->
         <!-- konec alertingu -->
         <v-container class="ml-12" fluid>
+            <!-- static channels -->
+            <v-row class="mx-auto mt-1 ma-1 mr-1">
+                <div
+                    v-for="staticStream in staticStreams"
+                    v-bind:key="staticStream.id"
+                >
+                    <!-- staticke Taby pro přehled -->
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                            <!-- Crash  -->
+                            <v-card
+                                flat
+                                color="red"
+                                v-if="staticStream.Alert === 'error'"
+                                class="mx-auto ma-0"
+                                width="260"
+                                @click="
+                                    channelInfoFunction(),
+                                        (channelId = staticStream.id),
+                                        (channelName = staticStream.nazev),
+                                        (channelApi = staticStream.api),
+                                        (urlDokumentace = staticStream.dokumentaceUrl)
+                                "
+                            >
+                                <v-list-item>
+                                    <v-list-item-content
+                                        v-on="on"
+                                        class="text-center"
+                                    >
+                                        <v-list-item-title>{{
+                                            staticStream.nazev
+                                        }}</v-list-item-title>
+                                        <v-btn
+                                            color="black"
+                                            height="140"
+                                            width="140"
+                                        >
+                                            <v-img
+                                                height="140"
+                                                :alt="staticStream.nazev"
+                                            >
+                                                <v-icon
+                                                    color="red"
+                                                    class="mt-8"
+                                                    large
+                                                >
+                                                    mdi-television-off
+                                                </v-icon>
+                                            </v-img>
+                                        </v-btn>
+                                        <v-list-item-subtitle></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+
+                            <!-- end  -->
+
+                            <v-card
+                                flat
+                                v-else
+                                color="transparent"
+                                class="mx-auto ma-1 mr-1"
+                                width="260"
+                                @click="
+                                    channelInfoFunction(),
+                                        (channelId = staticStream.id),
+                                        (channelName = staticStream.nazev),
+                                        (channelApi = staticStream.api),
+                                        (urlDokumentace = staticStream.dokumentaceUrl)
+                                "
+                            >
+                                <v-list-item>
+                                    <v-list-item-content
+                                        v-on="on"
+                                        class="text-center"
+                                    >
+                                        <v-list-item-title>{{
+                                            staticStream.nazev
+                                        }}</v-list-item-title>
+
+                                        <v-btn
+                                            color="transparent"
+                                            height="140"
+                                            width="140"
+                                        >
+                                            <v-img
+                                                v-if="staticStream.img === 'false'"
+                                                :alt="staticStream.nazev"
+                                                height="140"
+                                                contain
+                                            >
+                                                <v-progress-circular
+                                                    :size="70"
+                                                    :width="7"
+                                                    color="grey lighten-5"
+                                                    indeterminate
+                                                ></v-progress-circular>
+                                            </v-img>
+
+                                            <v-img
+                                                v-else-if="
+                                                    staticStream.img ===
+                                                        '/storage/noImg.jpg'
+                                                "
+                                                :alt="staticStream.nazev"
+                                                height="140"
+                                                contain
+                                            >
+                                                <v-icon
+                                                    color="orange"
+                                                    class="mt-8"
+                                                    large
+                                                >
+                                                    mdi-television-off
+                                                </v-icon>
+                                                <v-row
+                                                    v-show="
+                                                        staticStream.audioLang != null
+                                                    "
+                                                    align="end"
+                                                    class="lightbox white--text fill-height"
+                                                >
+                                                    <v-col>
+                                                        <div
+                                                            class="body-1 green--text"
+                                                        >
+                                                            <strong>
+                                                                {{
+                                                                    staticStream.audioLang
+                                                                }}
+                                                            </strong>
+                                                        </div>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-img>
+                                            <v-img
+                                                v-else-if="
+                                                    staticStream.img ===
+                                                        '/storage/radioImage.png'
+                                                "
+                                                :alt="staticStream.nazev"
+                                                height="140"
+                                                contain
+                                            >
+                                                <v-icon class="mt-8" large>
+                                                    mdi-radio
+                                                </v-icon>
+                                            </v-img>
+                                            <v-img
+                                                v-else
+                                                :lazy-src="staticStream.img"
+                                                :alt="staticStream.nazev"
+                                                :src="staticStream.img"
+                                                height="140"
+                                                contain
+                                            >
+                                                <!-- template pro získání animace loadingu pri lazy nacteni obrázku -->
+                                                <template v-slot:placeholder>
+                                                    <v-row
+                                                        class="fill-height ma-0"
+                                                        align="center"
+                                                        justify="center"
+                                                    >
+                                                        <v-progress-circular
+                                                            indeterminate
+                                                            color="grey lighten-5"
+                                                        ></v-progress-circular>
+                                                    </v-row>
+                                                </template>
+
+                                                <v-row
+                                                    v-show="
+                                                        staticStream.audioLang != null
+                                                    "
+                                                    align="end"
+                                                    class="lightbox white--text fill-height"
+                                                >
+                                                    <v-col>
+                                                        <div
+                                                            class="body-1 green--text"
+                                                        >
+                                                            <strong>
+                                                                {{
+                                                                    staticStream.audioLang
+                                                                }}
+                                                            </strong>
+                                                        </div>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-img>
+                                        </v-btn>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+                        </template>
+                    </v-tooltip>
+                    <!-- Konec statických tabu pro přehled -->
+                </div>
+            </v-row>
+            <v-divider class="mr-12"></v-divider>
+
+            <!-- rotujici mozaika -->
             <v-row class="mx-auto mt-1 ma-1 mr-1">
                 <div v-for="stream in streams" v-bind:key="stream.id">
                     <!-- Taby pro přehled -->
@@ -16,7 +218,7 @@
                                 color="red"
                                 v-if="stream.Alert === 'error'"
                                 class="mx-auto ma-0"
-                                width="250"
+                                width="180"
                                 @click="
                                     channelInfoFunction(),
                                         (channelId = stream.id),
@@ -35,11 +237,11 @@
                                         }}</v-list-item-title>
                                         <v-btn
                                             color="black"
-                                            height="140"
-                                            width="140"
+                                            height="100"
+                                            width="100"
                                         >
                                             <v-img
-                                                height="140"
+                                                height="100"
                                                 :alt="stream.nazev"
                                             >
                                                 <v-icon
@@ -63,7 +265,7 @@
                                 v-else
                                 color="transparent"
                                 class="mx-auto ma-1 mr-1"
-                                width="250"
+                                width="180"
                                 @click="
                                     channelInfoFunction(),
                                         (channelId = stream.id),
@@ -83,13 +285,13 @@
 
                                         <v-btn
                                             color="transparent"
-                                            height="140"
-                                            width="140"
+                                            height="100"
+                                            width="100"
                                         >
                                             <v-img
                                                 v-if="stream.img === 'false'"
                                                 :alt="stream.nazev"
-                                                height="140"
+                                                height="100"
                                                 contain
                                             >
                                                 <v-progress-circular
@@ -106,7 +308,7 @@
                                                         '/storage/noImg.jpg'
                                                 "
                                                 :alt="stream.nazev"
-                                                height="140"
+                                                height="100"
                                                 contain
                                             >
                                                 <v-icon
@@ -142,7 +344,7 @@
                                                         '/storage/radioImage.png'
                                                 "
                                                 :alt="stream.nazev"
-                                                height="140"
+                                                height="100"
                                                 contain
                                             >
                                                 <v-icon class="mt-8" large>
@@ -154,7 +356,7 @@
                                                 :lazy-src="stream.img"
                                                 :alt="stream.nazev"
                                                 :src="stream.img"
-                                                height="140"
+                                                height="100"
                                                 contain
                                             >
                                                 <!-- template pro získání animace loadingu pri lazy nacteni obrázku -->
@@ -360,11 +562,13 @@ let FFProbeComponent = () => import("./channelDetail/ChannelDetailTreeFFprobe");
 let BitrateComponent = () => import("./channelDetail/ChannelNameWithBitrate");
 let crashedStreams = () => import("./channelDetail/AlertChannelComponent");
 let ChartComponent = () => import("./channelDetail/ChannelDetailCharts");
-let ApiDokumentaceComponent = () => import("./channelDetail/ApiDokumentaceComponent");
+let ApiDokumentaceComponent = () =>
+    import("./channelDetail/ApiDokumentaceComponent");
 let NoteComponent = () => import("./channelDetail/NoteComponent");
 export default {
     data() {
         return {
+            staticStreams: [],
             contextMenu: "prehled",
             color: "",
             colorPrehled: "teal",
@@ -400,6 +604,7 @@ export default {
         };
     },
     created() {
+        this.loadStaticStreams();
         this.getStreams();
     },
     components: {
@@ -412,6 +617,12 @@ export default {
         "note-component": NoteComponent
     },
     methods: {
+        loadStaticStreams() {
+            window.axios.get("/api/user/mozaika/custom/req").then(response => {
+                this.staticStreams = response.data;
+            });
+        },
+
         channelInfoFunction() {
             let currentObj = this;
             currentObj.channelInfo = true;
@@ -440,6 +651,7 @@ export default {
     mounted() {
         this.interval = setInterval(
             function() {
+                this.loadStaticStreams();
                 this.getStreams();
             }.bind(this),
             10000

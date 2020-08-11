@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\APIKey;
+use App\CustumMozaika;
 use App\MailAlerts;
 use App\User;
 use App\UserHistory;
@@ -71,7 +72,11 @@ class UserController extends Controller
         ];
     }
 
-
+    /**
+     * fn pro získání informaci o aktualne prihlasenem uzivateli
+     *
+     * @return array
+     */
     public function getUser()
     {
         $user = Auth::user();
@@ -112,6 +117,16 @@ class UserController extends Controller
                 $apiKey = false;
             }
 
+            // overeni, zda má uzivatel nadefinovanou custom mozaiku
+            if (CustumMozaika::where('userId', $user->id)->first()) {
+                // existuje, získáme kanály
+                $customMozaika = true;
+                $staticChannels = CustumMozaikaController::get($user->id);
+            } else {
+                $customMozaika = false;
+                $staticChannels = false;
+            }
+
             return [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -124,24 +139,21 @@ class UserController extends Controller
                 'mozaikaAlphaBet' => $mozaikaAlphaBet,
                 'mailMotifikace' => $mailMotifikace,
                 'avatar' => $avatar,
-                'apiKey' => $apiKey
+                'apiKey' => $apiKey,
+                'customMozaika' => $customMozaika,
+                'staticChannels' => $staticChannels
             ];
         }
     }
 
 
     /**
-     * editace uživatele
-     * mail,
-     * heslo,
-     * aleting,
-     * pagination,
-     * razeni kanálu v mozaice
+     * fn pro editaci user Gui
      *
      * @param Request $request
      * @return void
      */
-    public function editUser(Request $request)
+    public function editUserGui(Request $request)
     {
         try {
             if ($request->dense == true) {
@@ -156,32 +168,89 @@ class UserController extends Controller
                 $mozaikaAlphaBet = "false";
             }
 
-            if ($request->mailMotifikace == true) {
-
-                if (MailAlerts::where('mail', $request->mail)->first()) {
-
-                    // mail je již zaveden
-
-                } else {
-
-                    MailAlerts::create([
-                        'mail' => $request->mail
-                    ]);
-                }
+            if ($request->customMozaika == true) {
+                // zalozeni nebo update
+                CustumMozaikaController::createOrUpdate($request->userId, $request->staticChannels);
             } else {
-                // odebrání mailu z alertu
-                // kontrola, zda vubec existuje mail k odebrani
-                if (MailAlerts::where("mail", $request->mail)->first()) {
-                    $idAlertuNaSmazani = MailAlerts::where("mail", $request->mail)->first()->id;
-                    MailAlerts::find($idAlertuNaSmazani)->delete();
-                }
+                // odebrání z db
+                CustumMozaikaController::remove($request->userId);
             }
 
+
             $update = User::find($request->userId);
-            $update->email = $request->mail;
             $update->dense = $dense;
             $update->mozaikaAlphaBet = $mozaikaAlphaBet;
             $update->pagination = $request->pagination;
+            $update->save();
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "Editace byla úspěšná",
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "Nepodařilo se z editovat uživatele, prosím obraťe se na správce",
+            ];
+        }
+    }
+
+    /**
+     * editace uživatele
+     * mail,
+     * jmeno,
+     * prijmeni,
+     * avatar -> inprogress
+     * heslo,
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function editUser(Request $request)
+    {
+        try {
+            // if ($request->dense == true) {
+            //     $dense = "true";
+            // } else {
+            //     $dense = "false";
+            // }
+
+            // if ($request->mozaikaAlphaBet == true) {
+            //     $mozaikaAlphaBet = "true";
+            // } else {
+            //     $mozaikaAlphaBet = "false";
+            // }
+
+            // if ($request->mailMotifikace == true) {
+
+            //     if (MailAlerts::where('mail', $request->mail)->first()) {
+
+            //         // mail je již zaveden
+
+            //     } else {
+
+            //         MailAlerts::create([
+            //             'mail' => $request->mail
+            //         ]);
+            //     }
+            // } else {
+            //     // odebrání mailu z alertu
+            //     // kontrola, zda vubec existuje mail k odebrani
+            //     if (MailAlerts::where("mail", $request->mail)->first()) {
+            //         $idAlertuNaSmazani = MailAlerts::where("mail", $request->mail)->first()->id;
+            //         MailAlerts::find($idAlertuNaSmazani)->delete();
+            //     }
+            // }
+
+            $update = User::find($request->userId);
+            $update->email = $request->mail;
+            $update->name = $request->name;
+            $update->surname = $request->surname;
+            // $update->dense = $dense;
+            // $update->mozaikaAlphaBet = $mozaikaAlphaBet;
+            // $update->pagination = $request->pagination;
             if (!empty($request->password)) {
                 $update->password = Hash::make($request->password);
             }

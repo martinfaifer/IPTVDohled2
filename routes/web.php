@@ -72,6 +72,7 @@ Route::post('/api/mailAlert/remove', 'MailAlertsController@remove');
 Route::post('/api/user/login', 'UserController@login');
 Route::get('/api/user/logout', 'UserController@logOut');
 Route::post('/api/user/edit', 'UserController@editUser');
+Route::post('/api/user/edit/gui', 'UserController@editUserGui');
 Route::post('/api/user/alert/visibility', 'UserController@alertVisibility');
 Route::get('/api/user/get', 'UserController@getUser');
 Route::get('/api/users/get', 'UserController@getAll');
@@ -130,4 +131,21 @@ Route::get('/api/calendar/channels', 'ChannelController@getChannelsForCalendar')
 Route::post('/api/calendar/save', 'ChannelController@save');
 Route::get('/api/calendar/todayAlerts', 'CalendarController@checkIfIsTodayAnyPlannedChannelIssue');
 Route::post('/api/calendar/channel/errors', 'ChannelErrorTimeController@getCalendarView');
-Route::post('/api/communication/caledar', 'ApiChannelController@sendCalendarData');
+
+
+/**
+ * API SETTINGS MODUL
+ */
+Route::get('/api/users/api', 'APIKeyController@getUsersAndKeys');
+Route::get('/api/channels/api/showData', 'ApiChannelController@showData');
+
+
+Route::post('/api/communication/caledar', 'ApiChannelController@sendCalendarData'); // post req pro zaslání informací z kalendáře do externího systému, formát dotazu /api/communication/caledar?api=xxxxxxxxxxx
+
+
+
+/**
+ * Custom mozaika
+ */
+Route::get('/api/user/mozaika/custom', 'CustumMozaikaController@get');
+Route::get('/api/user/mozaika/custom/req', 'CustumMozaikaController@getReq');
