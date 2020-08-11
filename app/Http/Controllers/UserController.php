@@ -155,6 +155,7 @@ class UserController extends Controller
      */
     public function editUserGui(Request $request)
     {
+
         try {
             if ($request->dense == true) {
                 $dense = "true";

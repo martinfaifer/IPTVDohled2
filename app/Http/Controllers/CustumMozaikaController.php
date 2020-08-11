@@ -20,7 +20,7 @@ class CustumMozaikaController extends Controller
     {
         if (CustumMozaika::where('userId', $userId)->first()) {
             $customMozaikaData = CustumMozaika::where('userId', $userId)->first();
-            $staticChannels = explode(",", $customMozaikaData->staticChannels);
+            $staticChannels = json_decode($customMozaikaData->staticChannels, true);
             foreach ($staticChannels as $staticChannel) {
                 foreach (Channel::where('noMonitor', "mdi-check")->where('id', $staticChannel)->get(['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']) as $channel) {
                     $channels[] = array(
@@ -54,7 +54,7 @@ class CustumMozaikaController extends Controller
         $user = Auth::user();
         if (CustumMozaika::where('userId', $user->id)->first()) {
             $customMozaikaData = CustumMozaika::where('userId', $user->id)->first();
-            $staticChannels = explode(",", $customMozaikaData->staticChannels);
+            $staticChannels = json_decode($customMozaikaData->staticChannels, true);
             foreach ($staticChannels as $staticChannel) {
                 foreach (Channel::where('noMonitor', "mdi-check")->where('id', $staticChannel)->get(['id', 'nazev', 'img', 'Alert', 'audioLang', 'api', 'dohledVolume', 'dohledBitrate', 'dokumentaceUrl']) as $channel) {
                     $channels[] = array(
@@ -91,17 +91,21 @@ class CustumMozaikaController extends Controller
             array_push($channelsId, $staticChannel["id"]);
         }
 
+        // return json_encode($channelsId, true);
+        // die;
+
+
         if (CustumMozaika::where('userId', $userId)->first()) {
             // jiz existuje, editujeme stavající template
 
             $update = CustumMozaika::find(CustumMozaika::where('userId', $userId)->first()->id);
-            $update->staticChannels = $channelsId;
+            $update->staticChannels = json_encode($channelsId, true);
             $update->save();
         } else {
             // zakladame nove pravidlo do tabulky pro custom template
             CustumMozaika::create([
                 'userId' => $userId,
-                'staticChannels' => json_encode($channelsId)
+                'staticChannels' => json_encode($channelsId, true)
             ]);
         }
     }

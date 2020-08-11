@@ -115,7 +115,7 @@ const router = new VueRouter({
     routes
 })
 const opts = {}
-
+Vuetify.config.silent = true
 const app = new Vue({
     el: '#app',
     router,

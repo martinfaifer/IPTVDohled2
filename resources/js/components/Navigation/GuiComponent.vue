@@ -10,6 +10,9 @@
             <v-row class="mt-3">
                 <v-subheader>Nastavení mozaiky</v-subheader>
             </v-row>
+            <v-row>
+                <v-subheader>Změny budou provedeny do 10s od potvrzení</v-subheader>
+            </v-row>
             <v-row class="mt-3">
                 <v-col cols="4" sm="4" md="4">
                     <v-text-field
@@ -46,7 +49,6 @@
                         multiple
                         persistent-hint
                         small-chips
-                        dense
                     ></v-combobox>
                 </v-col>
             </v-row>

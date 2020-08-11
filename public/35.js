@@ -92,6 +92,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 var Alert = function Alert() {
   return __webpack_require__.e(/*! import() */ 32).then(__webpack_require__.bind(null, /*! ../alerts/AlertComponent */ "./resources/js/components/alerts/AlertComponent.vue"));
 };
@@ -221,6 +223,16 @@ var render = function() {
           _vm._v(" "),
           _c(
             "v-row",
+            [
+              _c("v-subheader", [
+                _vm._v("Změny budou provedeny do 10s od potvrzení")
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-row",
             { staticClass: "mt-3" },
             [
               _c(
@@ -317,8 +329,7 @@ var render = function() {
                       "hide-selected": "",
                       multiple: "",
                       "persistent-hint": "",
-                      "small-chips": "",
-                      dense: ""
+                      "small-chips": ""
                     },
                     model: {
                       value: _vm.staticChannels,
