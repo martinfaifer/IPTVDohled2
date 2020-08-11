@@ -239,7 +239,7 @@
     </div>
 </template>
 <script>
-import Alert from "../../alerts/AlertComponent";
+let Alert = () => import("../../alerts/AlertComponent");
 export default {
     data: () => ({
         device: "",

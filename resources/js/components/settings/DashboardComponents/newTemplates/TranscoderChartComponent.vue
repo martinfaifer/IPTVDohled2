@@ -2,17 +2,6 @@
   <div>
     <div>
       <v-row class="mr-12">
-        <!-- <v-progress-circular
-          class="mt-2 mr-6"
-          :size="100"
-          :width="3"
-          :value="percent.percents"
-          color="primary"
-        >{{ percent.percents }} %</v-progress-circular>
-        <span class="mt-10">
-          <span class="display-1">{{percent.freeSpace}}GB /</span>
-          {{percent.allspace}}GB využití HDD
-        </span> -->
         <div v-for="transcodersData in apiData" :key="transcodersData.id">
             <div v-for="transcoderData in transcodersData.data" :key="transcoderData.id">
                 {{transcoderData.transcoder}}
