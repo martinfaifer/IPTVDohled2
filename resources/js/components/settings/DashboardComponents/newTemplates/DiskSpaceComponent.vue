@@ -74,7 +74,7 @@ export default {
             function() {
                 this.loadHdd();
             }.bind(this),
-            60000
+            3000000
         );
     },
 

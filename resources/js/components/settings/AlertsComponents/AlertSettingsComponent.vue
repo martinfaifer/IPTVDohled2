@@ -152,8 +152,13 @@
     </div>
 </template>
 <script>
-let Alert = () => import("../../alerts/AlertComponent");
+import Alert from "../../alerts/AlertComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
             interval: false,
@@ -176,32 +181,16 @@ export default {
             neMailDialog: false,
             deleteMailDialog: false,
             neMailSMSDialog: false,
-            userData: false
         };
     },
     created() {
         this.loadMailTableData();
-        this.loadUser();
     },
 
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                this.loadUser();
-            }.bind(this),
-            1000
-        );
-    },
     components: {
         "alert-component": Alert
     },
     methods: {
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
-        },
         loadMailTableData() {
             window.axios.get("/api/mailAlert/getAll").then(response => {
                 this.mailTableData = response.data;

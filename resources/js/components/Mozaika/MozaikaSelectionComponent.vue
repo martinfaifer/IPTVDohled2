@@ -5,41 +5,21 @@
     </div>
 </template>
 <script>
-let MozaikaComponent = () => import("./MozaikaComponent");
-let MozaikaCustomComponent = () => import("./UserCustomMozaika");
+import MozaikaComponent from "./MozaikaComponent";
+import MozaikaCustomComponent from "./UserCustomMozaika";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
-            userData: []
         };
-    },
-    created() {
-        this.loadUser();
     },
     components: {
         "mozaika-component": MozaikaComponent,
         "mozaikacustom-component": MozaikaCustomComponent
     },
-    methods: {
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                if (response.data.stat === "error") {
-                    currentObj.$router.push("/login");
-                } else {
-                    currentObj.userData = response.data;
-                }
-            });
-        }
-    },
-
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                this.loadUser();
-            }.bind(this),
-            10000
-        );
-    }
 };
 </script>

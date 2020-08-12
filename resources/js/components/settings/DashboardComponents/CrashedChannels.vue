@@ -22,7 +22,6 @@
 export default {
     data() {
         return {
-            userData: [],
             tableLoading: "true",
             interval: false,
             devices: [],
@@ -36,10 +35,13 @@ export default {
             ]
         };
     },
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     created() {
         this.loadDevices();
-
-        this.loadUser();
     },
 
     methods: {
@@ -52,13 +54,6 @@ export default {
                 this.devices = response.data;
                 this.tableLoading = "false";
             });
-        },
-
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
         }
     },
 
@@ -68,13 +63,6 @@ export default {
                 this.loadDevices();
             }.bind(this),
             300000
-        );
-
-        this.interval = setInterval(
-            function() {
-                this.loadUser();
-            }.bind(this),
-            10000
         );
     },
 

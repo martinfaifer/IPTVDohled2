@@ -355,14 +355,19 @@
     </div>
 </template>
 <script>
-let ImgComponent = () => import("./channelDetail/ImgComponent");
-let FFProbeComponent = () => import("./channelDetail/ChannelDetailTreeFFprobe");
-let BitrateComponent = () => import("./channelDetail/ChannelNameWithBitrate");
-let crashedStreams = () => import("./channelDetail/AlertChannelComponent");
-let ChartComponent = () => import("./channelDetail/ChannelDetailCharts");
-let ApiDokumentaceComponent = () => import("./channelDetail/ApiDokumentaceComponent");
-let NoteComponent = () => import("./channelDetail/NoteComponent");
+import ImgComponent from "./channelDetail/ImgComponent";
+import FFProbeComponent from "./channelDetail/ChannelDetailTreeFFprobe";
+import BitrateComponent from "./channelDetail/ChannelNameWithBitrate";
+import crashedStreams from "./channelDetail/AlertChannelComponent";
+import ChartComponent from "./channelDetail/ChannelDetailCharts";
+import ApiDokumentaceComponent from "./channelDetail/ApiDokumentaceComponent";
+import NoteComponent from "./channelDetail/NoteComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
             contextMenu: "prehled",
@@ -396,7 +401,6 @@ export default {
             detailInterval: false,
             items: [],
             crashedStreams: [],
-            userData: ""
         };
     },
     created() {

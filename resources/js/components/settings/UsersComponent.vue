@@ -11,6 +11,13 @@
                         ></alert-component>
                     </transition>
                     <v-data-table
+                        v-if="users === false"
+                        loading
+                        class="elevation-1"
+                    >
+                    </v-data-table>
+                    <v-data-table
+                        v-else
                         :dense="userData.dense"
                         :headers="headers"
                         :items="users"
@@ -295,8 +302,13 @@
     </div>
 </template>
 <script>
-let Alert = () => import("../alerts/AlertComponent");
+import Alert from "../alerts/AlertComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data: () => ({
         editDialog: false,
         deleteDialog: false,
@@ -305,7 +317,7 @@ export default {
         createAPI: false,
         userId: "",
         user: "",
-        users: [],
+        users: false,
         headers: [
             {
                 text: "Jméno",
@@ -331,7 +343,6 @@ export default {
         search: "",
         edit: [],
         status: "",
-        userData: false,
         nameRule: [v => !!v || "jméno je požadováno"],
         surnameRule: [v => !!v || "příjmení je požadováno"],
         mailRule: [v => !!v || "email je požadován"],
@@ -347,24 +358,8 @@ export default {
         window.axios.get("/api/users/get").then(response => {
             this.users = response.data;
         });
-
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
     },
 
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
-            }.bind(this),
-            10000
-        );
-    },
     methods: {
         closeDialog() {
             this.name = "";
@@ -432,7 +427,7 @@ export default {
                     email: this.edit.email,
                     userRole: this.value,
                     removeAPI: this.removeAPI,
-                    createAPI: this.createAPI,
+                    createAPI: this.createAPI
                 })
                 .then(function(response) {
                     currentObj.status = response.data;

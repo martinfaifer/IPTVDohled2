@@ -74,7 +74,7 @@ export default {
             function() {
                 this.loadChannels();
             }.bind(this),
-            5000
+            30000
         );
     },
 

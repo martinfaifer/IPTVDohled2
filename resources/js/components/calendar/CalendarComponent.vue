@@ -308,6 +308,11 @@
 </template>
 <script>
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data: () => ({
         date: new Date().toISOString().substr(0, 10),
         startMenu: false,
@@ -315,7 +320,6 @@ export default {
         endMenuTime: false,
         startMenuTime: false,
         focus: "",
-        userData: [],
         endTime: "",
         startTime: "",
         endDate: "",
@@ -335,7 +339,6 @@ export default {
     }),
     created() {
         this.loadCalendarData();
-        this.loadUserData();
     },
     mounted() {
         this.$refs.calendar.scrollToTime("08:00");
@@ -362,13 +365,6 @@ export default {
         },
         next() {
             this.$refs.calendar.next();
-        },
-
-        loadUserData() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
         },
 
         loadChannels() {

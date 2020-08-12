@@ -209,12 +209,13 @@
         </v-row>
         <!-- end edit dialog -->
 
-
         <!-- delete dialog -->
         <v-row justify="center">
             <v-dialog v-model="deleteDialog" persistent max-width="500">
                 <v-card>
-                    <v-card-title class="headline">Smazat zařízení?</v-card-title>
+                    <v-card-title class="headline"
+                        >Smazat zařízení?</v-card-title
+                    >
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
@@ -235,12 +236,16 @@
             </v-dialog>
         </v-row>
         <!-- end delete dialog -->
-
     </div>
 </template>
 <script>
-let Alert = () => import("../../alerts/AlertComponent");
+import Alert from "../../alerts/AlertComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data: () => ({
         device: "",
         deviceName: "",
@@ -268,7 +273,6 @@ export default {
         deviceId: "",
         status: "",
         loading: false,
-        userData: false,
         interval: false
     }),
     components: {
@@ -276,17 +280,6 @@ export default {
     },
     created() {
         this.loadDevices();
-
-        this.loadUserData();
-    },
-
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                this.loadUserData();
-            }.bind(this),
-            5000
-        );
     },
 
     methods: {
@@ -300,18 +293,10 @@ export default {
                 }
             });
         },
-
-        loadUserData() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
-        },
         closeDialogAndResetImputs() {
             this.dialog = false;
             this.editDialog = false;
-            this.deleteDialog = false,
-            this.deviceId = "";
+            (this.deleteDialog = false), (this.deviceId = "");
             this.deviceName = "";
             this.deviceIp = "";
             this.dohledType = "";
@@ -388,7 +373,7 @@ export default {
             currentObj.loading = true;
             axios
                 .post("/api/device/delete", {
-                    deviceId: this.deviceId,
+                    deviceId: this.deviceId
                 })
                 .then(function(response) {
                     currentObj.status = response.data;

@@ -11,12 +11,15 @@
                 <v-subheader>Nastavení mozaiky</v-subheader>
             </v-row>
             <v-row>
-                <v-subheader>Změny budou provedeny do 10s od potvrzení</v-subheader>
+                <v-subheader
+                    >Změny budou provedeny do 10s od potvrzení</v-subheader
+                >
             </v-row>
             <v-row class="mt-3">
                 <v-col cols="4" sm="4" md="4">
                     <v-text-field
                         v-model="userData.pagination"
+                        type="number"
                         label="počet zobrazených náhledů v mozaice"
                         autofocus
                     ></v-text-field>
@@ -44,7 +47,7 @@
                         item-text="nazev"
                         item-value="id"
                         label="Vyberte kanály"
-                        hint="Maximálně 14 kanálů pro 4K rozlišení"
+                        hint="Doporučení 7 kanálu pro 1080p a 14 kanálů pro 4K rozlišení"
                         hide-selected
                         multiple
                         persistent-hint
@@ -73,6 +76,7 @@
         <v-row>
             <v-spacer></v-spacer>
             <v-btn
+                :loading="loading"
                 color="green darken-1"
                 type="submit"
                 @click="userEdit(), (modalEditUser = false)"
@@ -84,10 +88,11 @@
 </template>
 
 <script>
-let Alert = () => import("../alerts/AlertComponent");
+import Alert from "../alerts/AlertComponent";
 export default {
     data() {
         return {
+            loading: false,
             staticChannels: [],
             channels: [],
             customMozaika: false,
@@ -99,7 +104,6 @@ export default {
             todayChannelDialogNotification: false,
             mailMotifikace: false,
             rememberMe: true,
-            userData: false,
             modalEditUser: false,
             status: [],
             password: "",
@@ -110,31 +114,33 @@ export default {
             intervalAlert: false
         };
     },
+
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
+
     created() {
-        this.loadUser();
         this.loadChannels();
+        this.checkCustomMozaika();
+        this.checkStaticChannels();
     },
 
     components: {
         "alert-component": Alert
     },
-
     methods: {
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                if (response.data.stat === "error") {
-                    currentObj.$router.push("/login");
-                } else {
-                    currentObj.userData = response.data;
-                    currentObj.customMozaika = response.data.customMozaika;
-                    if (response.data.customMozaika === true) {
-                        currentObj.customMozaika = response.data.customMozaika;
-                        currentObj.staticChannels =
-                            response.data.staticChannels;
-                    }
-                }
-            });
+        checkCustomMozaika() {
+            if (this.userData.customMozaika === true) {
+                return (this.customMozaika = this.userData.customMozaika);
+            }
+        },
+
+        checkStaticChannels() {
+            if (this.userData.customMozaika === true) {
+                return (this.staticChannels = this.userData.staticChannels);
+            }
         },
 
         loadChannels() {
@@ -144,6 +150,7 @@ export default {
             });
         },
         userEdit() {
+            this.loading = true;
             let currentObj = this;
             axios
                 .post("/api/user/edit/gui", {
@@ -156,8 +163,12 @@ export default {
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
-                    currentObj.loadUser();
-                    console.log(response.data);
+                    axios.get("/api/user/get").then(function(response) {
+                        currentObj.$store.commit("update", response.data);
+                        currentObj.checkCustomMozaika();
+                        currentObj.checkStaticChannels();
+                    });
+                    currentObj.loading = false;
                 })
                 .catch(function(error) {
                     console.log(error);

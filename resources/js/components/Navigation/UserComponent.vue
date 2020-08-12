@@ -24,6 +24,8 @@
             <v-row class="mt-6">
                 <v-col cols="6" sm="6" md="6">
                     <v-text-field
+                        readonly
+                        disabled
                         v-model="userData.email"
                         label="e-mail"
                     ></v-text-field>
@@ -51,8 +53,13 @@
 </template>
 
 <script>
-let Alert = () => import("../alerts/AlertComponent");
+import Alert from "../alerts/AlertComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
             contextMenu: "user",
@@ -63,7 +70,6 @@ export default {
             todayChannelDialogNotification: false,
             mailMotifikace: false,
             rememberMe: true,
-            userData: false,
             modalEditUser: false,
             status: [],
             password: "",
@@ -74,25 +80,12 @@ export default {
             intervalAlert: false
         };
     },
-    created() {
-        this.loadUser();
-    },
 
     components: {
         "alert-component": Alert
     },
 
     methods: {
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                if (response.data.stat === "error") {
-                    currentObj.$router.push("/login");
-                } else {
-                    currentObj.userData = response.data;
-                }
-            });
-        },
         userEdit() {
             let currentObj = this;
             axios
@@ -105,7 +98,9 @@ export default {
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
-                    currentObj.loadUser();
+                    axios.get("/api/user/get").then(function(response) {
+                        currentObj.$store.commit("update", response.data);
+                    });
                     console.log(currentObj.status);
                 })
                 .catch(function(error) {

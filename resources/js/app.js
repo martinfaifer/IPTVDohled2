@@ -6,27 +6,26 @@ import Chartkick from 'vue-chartkick'
 import Chart from 'chart.js'
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
+import { store } from './store/store';
 
 
 import NavBarComponent from './components/NavBarComponent.vue';
-let LoginComponent = () => import('./components/LoginComponent.vue');
-let ChannelComponent = () => import('./components/Channel/ChannelComponent.vue');
-// let MozaikaComponent  = () => import ('./components/Mozaika/MozaikaComponent.vue');
-let ChannelsComponent = () => import('./components/settings/ChannelsComponent.vue');
-let ChartsComponent = () => import('./components/settings/ChartsComponent.vue');
-let DashBoardComponent = () => import( './components/settings/DashBoardComponent.vue');
-let SettingsComponent = () => import('./components/settings/SettingsComponent.vue');
-let UsersComponent = () => import('./components/settings/UsersComponent.vue');
-let AlertSettingsComponent = () => import('./components/settings/AlertsComponents/AlertSettingsComponent.vue');
-let LogComponent = () => import( './components/settings/logs/LogComponent.vue');
-let DeviceComponent = () => import( './components/settings/devices/DeviceComponent');
-let PageNotFoundComponent = () => import( './components/PageNotFoundComponent');
-let CalendarComponent = () => import( './components/calendar/CalendarComponent');
-let ApiComponent = () => import('./components/settings/api/ApiComponent');
-let UserApiComponent = () => import('./components/settings/api/UserApiComponent');
-let IptvDokuComponent = () => import('./components/settings/api/IptvDokuComponent');
-// let UserCustomMozaika = () => import('./components/Mozaika/UserCustomMozaika');
-let MozaikaSelectionComponent = () => import('./components/Mozaika/MozaikaSelectionComponent');
+import LoginComponent from './components/LoginComponent.vue';
+import ChannelComponent from './components/Channel/ChannelComponent.vue';
+import ChannelsComponent from './components/settings/ChannelsComponent.vue';
+import ChartsComponent from './components/settings/ChartsComponent.vue';
+import DashBoardComponent from './components/settings/DashBoardComponent.vue';
+import SettingsComponent from './components/settings/SettingsComponent.vue';
+import UsersComponent from './components/settings/UsersComponent.vue';
+import AlertSettingsComponent from './components/settings/AlertsComponents/AlertSettingsComponent.vue';
+import LogComponent from './components/settings/logs/LogComponent.vue';
+import DeviceComponent from './components/settings/devices/DeviceComponent';
+import PageNotFoundComponent from './components/PageNotFoundComponent';
+import CalendarComponent from './components/calendar/CalendarComponent';
+import ApiComponent from'./components/settings/api/ApiComponent';
+import UserApiComponent from './components/settings/api/UserApiComponent';
+import IptvDokuComponent from './components/settings/api/IptvDokuComponent';
+import MozaikaSelectionComponent from './components/Mozaika/MozaikaSelectionComponent';
 
 Vue.use(Vuetify);
 Vue.use(VueRouter);
@@ -118,6 +117,7 @@ const opts = {}
 Vuetify.config.silent = true
 const app = new Vue({
     el: '#app',
+    store,
     router,
     vuetify: new Vuetify({
         theme: {

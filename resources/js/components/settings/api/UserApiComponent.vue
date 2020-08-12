@@ -16,7 +16,6 @@ export default {
         return {
             interval: false,
             usersData: [],
-            userData: [],
             headers: [
                 {
                     text: "email",
@@ -27,35 +26,17 @@ export default {
             ]
         };
     },
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     created() {
-        this.loadUserData();
-
         let currentObj = this;
         axios.get("/api/users/api").then(function(response) {
             currentObj.usersData = response.data;
         });
     },
-    methods: {
-        loadUserData() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
-        }
-    },
-      mounted() {
-        this.interval = setInterval(
-            function() {
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
-            }.bind(this),
-            5000
-        );
-    },
-     beforeDestroy: function() {
-        clearInterval(this.interval);
-    }
+    methods: {}
 };
 </script>

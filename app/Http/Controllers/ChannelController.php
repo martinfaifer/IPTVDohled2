@@ -137,16 +137,24 @@ class ChannelController extends Controller
             $dohled = false;
         }
 
+        $api = HelperController::checkIfIsValueZeroOrOneAndReturnTrueOrFalse($channel->api);
+        $dohledVolume = HelperController::checkIfIsValueZeroOrOneAndReturnTrueOrFalse($channel->dohledVolume);
+        $dohledBitrate = HelperController::checkIfIsValueZeroOrOneAndReturnTrueOrFalse($channel->dohledBitrate);
+        $sendAlert = HelperController::checkIfIsValueZeroOrOneAndReturnTrueOrFalse($channel->sendAlert);
+        $sendSMS = HelperController::checkIfIsValueZeroOrOneAndReturnTrueOrFalse($channel->sendSMS);
+        $vytvoritNahled = HelperController::checkIfIsValueZeroOrOneAndReturnTrueOrFalse($channel->vytvoritNahled);
+
         return [
             'nazev' => $channel->nazev,
             'url' => $channel->url,
             'dohled' => $dohled,
             'dokumentaceUrl' => $channel->dokumentaceUrl,
-            'api' => $channel->api,
-            'dohledVolume' => $channel->dohledVolume,
-            'dohledBitrate' => $channel->dohledBitrate,
-            'sendAlert' => $channel->sendAlert,
-            'vytvoritNahled' => $channel->vytvoritNahled
+            'api' => $api,
+            'dohledVolume' => $dohledVolume,
+            'dohledBitrate' => $dohledBitrate,
+            'sendAlert' => $sendAlert,
+            'sendSMS' => $sendSMS,
+            'vytvoritNahled' => $vytvoritNahled
         ];
     }
 
@@ -172,31 +180,11 @@ class ChannelController extends Controller
             $api = null;
         }
 
-        if ($request->dohledVolume == true) {
-            $dohledVolume = "1";
-        } else {
-            $dohledVolume = "0";
-        }
-
-        if ($request->dohledBitrate == true) {
-            $dohledBitrate = "1";
-        } else {
-            $dohledBitrate = "0";
-        }
-
-        if ($request->sendAlert == true) {
-            $sendAlert = "1";
-        } else {
-            $sendAlert = "0";
-        }
-
-        // createImg
-
-        if ($request->createImg == true) {
-            $vytvoritNahled = "1";
-        } else {
-            $vytvoritNahled = "0";
-        }
+        $dohledVolume = HelperController::checkIfIsValueIsTrueOrFalseAndReturnZeroOrOne($request->dohledVolume);
+        $dohledBitrate = HelperController::checkIfIsValueIsTrueOrFalseAndReturnZeroOrOne($request->dohledBitrate);
+        $sendAlert = HelperController::checkIfIsValueIsTrueOrFalseAndReturnZeroOrOne($request->sendAlert);
+        $vytvoritNahled = HelperController::checkIfIsValueIsTrueOrFalseAndReturnZeroOrOne($request->createImg);
+        $sendSMS = HelperController::checkIfIsValueIsTrueOrFalseAndReturnZeroOrOne($request->sendSMS);
 
 
         if ($request->dohled == true) {
@@ -226,6 +214,7 @@ class ChannelController extends Controller
         $update->dohledBitrate = $dohledBitrate;
         $update->api = $api;
         $update->sendAlert = $sendAlert;
+        $update->sendSMS = $sendSMS;
         $update->vytvoritNahled = $vytvoritNahled;
 
         $update->save();
@@ -302,23 +291,13 @@ class ChannelController extends Controller
     }
 
     /**
-     * fn pro zísná kanálu pro daný Worker
-     *
-     * @param [type] $id
-     * @return array
-     */
-    // public static function workersChannels($id)
-    // {
-    //     return Channel::where('worker_id', $id)->where('noMonitor', "mdi-check")->get();
-    // }
-    /**
      * fn pro získání vsech kanálů
      *
      * @return void
      */
     public function getAllChannels()
     {
-        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate', 'sendAlert', 'vytvoritNahled']);
+        return Channel::get(['id', 'nazev', 'url', 'radio', 'img', 'noMonitor', 'Alert', 'dokumentaceUrl', 'api', 'dohledVolume', 'dohledBitrate', 'sendAlert', 'vytvoritNahled', 'sendSMS']);
     }
 
     /**

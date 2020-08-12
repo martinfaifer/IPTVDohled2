@@ -32,7 +32,6 @@
 export default {
     data() {
         return {
-            userData: [],
             interval: false,
             crashed: [],
             headers: [
@@ -44,10 +43,14 @@ export default {
             ]
         };
     },
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     created() {
         // Informace, zda jsou nefunknčí streamy
         this.loadCrashedChannels();
-        this.loadUser();
     },
 
     methods: {
@@ -61,22 +64,14 @@ export default {
                 .then(response => {
                     this.crashed = response.data;
                 });
-        },
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
         }
     },
     mounted() {
         this.interval = setInterval(
             function() {
                 this.loadCrashedChannels();
-
-                this.loadUser();
             }.bind(this),
-            5000
+            30000
         );
     },
 

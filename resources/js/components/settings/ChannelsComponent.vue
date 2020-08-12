@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-let AllChannels = () => import("./ChannelsComponents/AllChannels");
+import AllChannels from "./ChannelsComponents/AllChannels";
 
 export default {
   data() {

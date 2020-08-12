@@ -36,14 +36,14 @@
   </div>
 </template>
 <script>
-let HddSpace = () => import("./DashboardComponents/newTemplates/DiskSpaceComponent");
-let CrashedChannels = () => import("./DashboardComponents/CrashedChannels");
-let CurrentCrashed = () => import("./DashboardComponents/CurrentCrashedChannels");
-let PercentMonitored = () => import("./DashboardComponents/newTemplates/ChannelPomerComponent");
-let PercentFunctionChannels = () => import("./DashboardComponents/newTemplates/ChannelsFunctionsSum");
-let VolumeProblems = () => import("./DashboardComponents/newTemplates/ChannelsWithAudioProblem");
-let VolumeChart = () => import("./DashboardComponents/newTemplates/ChannelAudio");
-let IPTVDevicesComponent = () => import("./DashboardComponents/newTemplates/IPTVDevicesComponent");
+import HddSpace from "./DashboardComponents/newTemplates/DiskSpaceComponent";
+import CrashedChannels from "./DashboardComponents/CrashedChannels";
+import CurrentCrashed from "./DashboardComponents/CurrentCrashedChannels";
+import PercentMonitored from "./DashboardComponents/newTemplates/ChannelPomerComponent";
+import PercentFunctionChannels from "./DashboardComponents/newTemplates/ChannelsFunctionsSum";
+import VolumeProblems from "./DashboardComponents/newTemplates/ChannelsWithAudioProblem";
+import VolumeChart from "./DashboardComponents/newTemplates/ChannelAudio";
+import IPTVDevicesComponent from"./DashboardComponents/newTemplates/IPTVDevicesComponent";
 
 export default {
   data() {

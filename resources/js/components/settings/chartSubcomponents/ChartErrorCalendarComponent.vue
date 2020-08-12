@@ -57,9 +57,13 @@
 </template>
 <script>
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     props: ["channelId"],
     data: () => ({
-        userData: [],
         endTime: "",
         startTime: "",
         endDate: "",
@@ -78,23 +82,16 @@ export default {
     }),
     created() {
         this.loadCalendarData();
-        this.loadUserData();
-
     },
     methods: {
         loadCalendarData() {
-            window.axios.post("api/calendar/channel/errors", {
-                channelId: this.channelId
-            }).then(response => {
-                this.events = response.data;
-            });
-        },
-
-        loadUserData() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
+            window.axios
+                .post("api/calendar/channel/errors", {
+                    channelId: this.channelId
+                })
+                .then(response => {
+                    this.events = response.data;
+                });
         },
     },
     mounted() {

@@ -40,7 +40,12 @@
                                 >
                                 <v-card-text>
                                     <!-- zobrazí se pouze pokud není napojení na api dokumentace -->
-                                    <v-row v-show="apiChannels === false || addChannelUrl != false">
+                                    <v-row
+                                        v-show="
+                                            apiChannels === false ||
+                                                addChannelUrl != false
+                                        "
+                                    >
                                         <v-col cols="12" sm="12" md="12">
                                             <v-text-field
                                                 :rules="channelInputRule"
@@ -55,7 +60,12 @@
                                         </v-col>
                                     </v-row>
                                     <!-- napojení na dohled -->
-                                    <v-row v-show="apiChannels != false || addChannelUrl === false">
+                                    <v-row
+                                        v-show="
+                                            apiChannels != false ||
+                                                addChannelUrl === false
+                                        "
+                                    >
                                         <v-col cols="12" sm="12" md="12">
                                             <v-autocomplete
                                                 v-model="channelInput"
@@ -265,6 +275,14 @@
 
             <!-- zobrazeí, zda kanál má zasílat alerting sendAlert -->
 
+            <template v-slot:item.sendSMS="{ item }">
+                <v-icon v-if="item.sendSMS != '1'" color="red"
+                    >mdi-close</v-icon
+                >
+                <v-icon v-else color="green">mdi-check</v-icon>
+            </template>
+
+            <!-- sms alert -->
             <template v-slot:item.sendAlert="{ item }">
                 <v-icon v-if="item.sendAlert != '1'" color="red"
                     >mdi-close</v-icon
@@ -424,7 +442,23 @@
                                 ></v-checkbox>
                             </v-col>
                         </v-row>
-                        <v-row v-show="editdat.vytvoritNahled != false">
+                        <v-row v-show="editdat.dohled != false">
+                            <v-col cols="12" sm="12" md="12">
+                                <v-checkbox
+                                    v-model="editdat.sendAlert"
+                                    label="Zaslat mail alert"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                        <v-row v-show="editdat.dohled != false">
+                            <v-col cols="12" sm="12" md="12">
+                                <v-checkbox
+                                    v-model="editdat.sendSMS"
+                                    label="Zaslat SMS alert"
+                                ></v-checkbox>
+                            </v-col>
+                        </v-row>
+                        <v-row v-show="editdat.dohled != false">
                             <v-col cols="12" sm="12" md="12">
                                 <v-checkbox
                                     v-model="editdat.vytvoritNahled"
@@ -517,8 +551,13 @@
     </div>
 </template>
 <script>
-let Alert = () => import("../../alerts/AlertComponent");
+import Alert from "../../alerts/AlertComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data: () => ({
         addChannelUrl: false,
         apiChannels: false,
@@ -555,6 +594,7 @@ export default {
             { text: "Dohled Bitratu", value: "dohledBitrate" },
             { text: "Dohledováno", value: "noMonitor" },
             { text: "Zaslání mail Alertů", value: "sendAlert" },
+            { text: "Zaslání SMS Alertů", value: "sendSMS" },
             { text: "Vytváření IMG", value: "vytvoritNahled" },
             { text: "Status", value: "Alert" },
             { text: "Akce", value: "actions" }
@@ -567,7 +607,6 @@ export default {
         channelName: "",
         loading: false,
         editdat: [],
-        userData: false,
         apiUrl: "",
         channelInputRule: [v => !!v || "vyplňte url požadováného streamu"],
         channelInputAPIRule: [
@@ -582,23 +621,9 @@ export default {
     created() {
         this.loadChannels();
 
-        this.loadUserData();
-
         this.loadChannelApi();
 
         this.checkIfCanUseDokumentationAPI();
-    },
-
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
-            }.bind(this),
-            5000
-        );
     },
     methods: {
         checkIfCanUseDokumentationAPI() {
@@ -614,13 +639,6 @@ export default {
         loadChannels() {
             window.axios.get("/api/channels").then(response => {
                 this.channels = response.data;
-            });
-        },
-
-        loadUserData() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
             });
         },
 
@@ -695,6 +713,7 @@ export default {
                     dohledVolume: this.editdat.dohledVolume,
                     dohledBitrate: this.editdat.dohledBitrate,
                     sendAlert: this.editdat.sendAlert,
+                    sendSMS: this.editdat.sendSMS,
                     createImg: this.editdat.vytvoritNahled
                 })
                 .then(function(response) {

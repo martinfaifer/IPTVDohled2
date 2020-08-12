@@ -22,7 +22,7 @@
         ></v-data-table>
 
         <v-data-table
-            v-if="value == 'Uživatelský Log' && userhistorie !=false"
+            v-if="value == 'Uživatelský Log' && userhistorie != false"
             :dense="userData.dense"
             fixed-header
             :loading="tableUsersLoading === 'true'"
@@ -85,11 +85,15 @@
 </template>
 <script>
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
             searchMail: "",
             searchUser: "",
-            userData: [],
             headers: [
                 {
                     text: "Uživatel",
@@ -124,21 +128,6 @@ export default {
             this.tableUsersLoading = false;
         });
 
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
-    },
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                let currentObj = this;
-                axios.get("/api/user/get").then(function(response) {
-                    currentObj.userData = response.data;
-                });
-            }.bind(this),
-            5000
-        );
     },
     watch: {
         value: function() {

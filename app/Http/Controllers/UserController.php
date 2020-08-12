@@ -212,46 +212,10 @@ class UserController extends Controller
     public function editUser(Request $request)
     {
         try {
-            // if ($request->dense == true) {
-            //     $dense = "true";
-            // } else {
-            //     $dense = "false";
-            // }
-
-            // if ($request->mozaikaAlphaBet == true) {
-            //     $mozaikaAlphaBet = "true";
-            // } else {
-            //     $mozaikaAlphaBet = "false";
-            // }
-
-            // if ($request->mailMotifikace == true) {
-
-            //     if (MailAlerts::where('mail', $request->mail)->first()) {
-
-            //         // mail je již zaveden
-
-            //     } else {
-
-            //         MailAlerts::create([
-            //             'mail' => $request->mail
-            //         ]);
-            //     }
-            // } else {
-            //     // odebrání mailu z alertu
-            //     // kontrola, zda vubec existuje mail k odebrani
-            //     if (MailAlerts::where("mail", $request->mail)->first()) {
-            //         $idAlertuNaSmazani = MailAlerts::where("mail", $request->mail)->first()->id;
-            //         MailAlerts::find($idAlertuNaSmazani)->delete();
-            //     }
-            // }
-
             $update = User::find($request->userId);
             $update->email = $request->mail;
             $update->name = $request->name;
             $update->surname = $request->surname;
-            // $update->dense = $dense;
-            // $update->mozaikaAlphaBet = $mozaikaAlphaBet;
-            // $update->pagination = $request->pagination;
             if (!empty($request->password)) {
                 $update->password = Hash::make($request->password);
             }

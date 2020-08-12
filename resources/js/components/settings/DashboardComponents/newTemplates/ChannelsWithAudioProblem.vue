@@ -16,9 +16,13 @@
 </template>
 <script>
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
-            userData: [],
             interval: false,
             crashed: [],
             headers: [
@@ -32,17 +36,9 @@ export default {
     },
     created() {
         this.loadIptvDevices();
-        this.loadUser();
     },
 
     methods: {
-        loadUser() {
-            let currentObj = this;
-            axios.get("/api/user/get").then(function(response) {
-                currentObj.userData = response.data;
-            });
-        },
-
         loadIptvDevices() {
             window.axios.get("/api/devices/crash").then(response => {
                 this.crashed = response.data;
@@ -54,8 +50,6 @@ export default {
         this.interval = setInterval(
             function() {
                 this.loadIptvDevices();
-
-                this.loadUser();
             }.bind(this),
             10000
         );

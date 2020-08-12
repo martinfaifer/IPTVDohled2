@@ -60,10 +60,6 @@
   </div>
 </template>
 <script>
-// import Image from "./ImgComponent";
-// import ChannelNameWithBitrate from "./ChannelNameWithBitrate";
-// import ChannelDetailTreeFFprobe from "./ChannelDetailTreeFFprobe";
-
 export default {
   data() {
     return {
@@ -105,11 +101,6 @@ export default {
   },
   methods: {},
 
-  //   components: {
-  //     "img-component": Image,
-  //     "channelBitrate-component": ChannelNameWithBitrate,
-  //     "ffprobeTree-component": ChannelDetailTreeFFprobe
-  //   },
   watch: {
     // Presmerování na login pokud neni prihlasen uzivatel
     bitrate: function() {

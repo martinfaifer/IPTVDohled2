@@ -114,7 +114,9 @@
                         <v-btn icon dark @click="modalEditUser = false">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
-                        <v-toolbar-title>Nastavení uživatele</v-toolbar-title>
+                        <v-toolbar-title class="body-1"
+                            >Nastavení uživatele</v-toolbar-title
+                        >
                     </v-toolbar>
 
                     <!-- navigation -->
@@ -169,12 +171,12 @@
                         <gui-component
                             v-show="contextMenu === 'gui'"
                         ></gui-component>
-                        <!-- <notification-component
-                                v-show="contextMenu === 'alert'"
-                            ></notification-component>
-                            <api-component
-                                v-show="contextMenu === 'api'"
-                            ></api-component> -->
+                        <notification-component
+                            v-show="contextMenu === 'alert'"
+                        ></notification-component>
+                        <api-component
+                            v-show="contextMenu === 'api'"
+                        ></api-component>
                     </v-container>
                 </v-card>
             </v-dialog>
@@ -203,47 +205,44 @@
             </v-snackbar>
         </div>
 
-        <v-row justify="center">
-            <v-dialog
-                v-model="todayChannelDialogNotification"
-                persistent
-                max-width="600"
+        <!-- NETWORK ALERTING -->
+
+        <div class="text-center">
+            <v-snackbar
+                v-if="networkChangeNotification === true"
+                color="error"
+                v-model="networkChangeNotification"
+                timeout="10000"
+                multi-line
             >
-                <v-card>
-                    <v-card-title class="headline"
-                        >Na dnešní den jsou plánované výpadky</v-card-title
-                    >
-                    <v-card-text>kanály</v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="green darken-1"
-                            text
-                            @click="todayChannelDialogNotification = false"
-                            >Zavřít</v-btn
-                        >
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </v-row>
+                <v-row justify="center">
+                    <strong>Nejste připojení k internetu</strong>
+                </v-row>
+            </v-snackbar>
+        </div>
+
+        <!-- END OF NETWORK ALERTINGU -->
 
         <footer-component></footer-component>
     </div>
 </template>
 <script>
-let Alert = () => import("./alerts/AlertComponent");
-let FooterComponent = () => import("./FooterComponent");
-let UserComponent = () => import("./Navigation/UserComponent");
-let GuiComponent = () => import("./Navigation/GuiComponent");
+import Alert from "./alerts/AlertComponent";
+import FooterComponent from "./FooterComponent";
+import UserComponent from "./Navigation/UserComponent";
+import GuiComponent from "./Navigation/GuiComponent";
+import NotificationComponent from "./Navigation/UserNotificationComponent";
+import ApiUserComponent from "./Navigation/ApiUserComponent";
 export default {
     data() {
         return {
+            internetConnection: true,
+            networkChangeNotification: false,
             contextMenu: "user",
             colorIconUser: "teal",
             colorIconGui: "",
             colorIconAlert: "",
             colorIconApi: "",
-            todayChannelDialogNotification: false,
             mailMotifikace: false,
             rememberMe: true,
             userData: false,
@@ -254,23 +253,47 @@ export default {
             message: "",
             snackbar: true,
             crashedStreams: [],
-            intervalAlert: false
+            intervalAlert: false,
+            interval: false,
+            intervalUser: false,
         };
     },
     created() {
+        this.consoleNotificationByAdmin();
+
         this.loadAlerts();
 
         this.loadUser();
+
+        this.checkIfIsInternetConnection();
     },
 
     components: {
         "alert-component": Alert,
         "footer-component": FooterComponent,
         "user-component": UserComponent,
-        "gui-component": GuiComponent
+        "gui-component": GuiComponent,
+        "notification-component": NotificationComponent,
+        "api-component": ApiUserComponent
     },
 
     methods: {
+        consoleNotificationByAdmin() {
+            console.log(
+                "--------------------------------------------------------------------------------"
+            );
+            console.log(
+                "WEB JE POD SPRÁVOU MARTINA FAIFERA, VEŠKERÉ KOPIE, ÚPRAVY JSOU PROTI LICENCI!!!"
+            );
+            console.log(
+                "--------------------------------------------------------------------------------"
+            );
+        },
+
+        checkIfIsInternetConnection() {
+            this.internetConnection = window.navigator.onLine;
+        },
+
         loadAlerts() {
             axios.get("/api/channels/notification").then(response => {
                 this.crashedStreams = response.data;
@@ -283,7 +306,7 @@ export default {
                 if (response.data.stat === "error") {
                     currentObj.$router.push("/login");
                 } else {
-                    currentObj.userData = response.data;
+                    currentObj.$store.state.userData = currentObj.userData = response.data;
                 }
             });
         },
@@ -308,6 +331,9 @@ export default {
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
+                    axios.get("/api/user/get").then(function(response) {
+                        currentObj.$store.commit("update", response.data);
+                    });
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -317,6 +343,14 @@ export default {
     watch: {
         status: function() {
             setTimeout(() => (this.status = false), 5000);
+        },
+
+        internetConnection: function() {
+            if (this.internetConnection === false) {
+                this.networkChangeNotification = true;
+            } else {
+                this.networkChangeNotification = false;
+            }
         },
 
         contextMenu: function() {
@@ -344,6 +378,13 @@ export default {
         }
     },
     mounted() {
+        this.interval = setInterval(
+            function() {
+                this.checkIfIsInternetConnection();
+            }.bind(this),
+            5000
+        );
+
         if (this.$route.path === "/") {
             this.intervalAlert = setInterval(
                 function() {

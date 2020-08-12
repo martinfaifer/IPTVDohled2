@@ -40,7 +40,7 @@
     </div>
 </template>
 <script>
-let Alert = () => import("./alerts/AlertComponent");
+import Alert from "./alerts/AlertComponent";
 export default {
     data() {
         return {

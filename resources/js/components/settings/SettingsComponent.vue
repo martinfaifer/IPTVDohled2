@@ -132,7 +132,7 @@
                                                 <v-icon v-else>mdi-swap-horizontal</v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>Log</span>
+                                        <span>API</span>
                                     </v-tooltip>
                                 </div>
 
@@ -150,16 +150,14 @@
 </template>
 <script>
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
-            userData: false
         };
-    },
-    created() {
-        let currentObj = this;
-        axios.get("/api/user/get").then(function(response) {
-            currentObj.userData = response.data;
-        });
     },
 };
 </script>

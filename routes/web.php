@@ -75,6 +75,7 @@ Route::post('/api/user/edit', 'UserController@editUser');
 Route::post('/api/user/edit/gui', 'UserController@editUserGui');
 Route::post('/api/user/alert/visibility', 'UserController@alertVisibility');
 Route::get('/api/user/get', 'UserController@getUser');
+Route::post('/api/user/edit/notification', 'MailAlertsController@storeOrDelete');
 Route::get('/api/users/get', 'UserController@getAll');
 Route::post('/api/user/create', 'UserController@create');
 Route::post('/api/user/remove', 'UserController@remove');
