@@ -40,7 +40,7 @@ export default {
             interval: false,
             headers: [
                 {
-                    text: "connection",
+                    text: "čekající akce",
                     align: "center",
                     value: "connection"
                 },

@@ -84,6 +84,7 @@ Route::post('/api/user/settings/edit', 'UserController@edit');
 Route::post('/api/user/getUserdata', 'UserController@getUserdata');
 
 Route::get('/api/users/history/lastTwenty', 'UserHistoryController@getLastTwentyRecords');
+Route::get('/api/user/history', 'UserHistoryController@getUserHistory');
 
 
 Route::get('/api/channel/nahled/{name}', 'ChannelController@getNahledByName');

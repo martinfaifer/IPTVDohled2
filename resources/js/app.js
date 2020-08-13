@@ -27,6 +27,8 @@ import UserApiComponent from './components/settings/api/UserApiComponent';
 import IptvDokuComponent from './components/settings/api/IptvDokuComponent';
 import MozaikaSelectionComponent from './components/Mozaika/MozaikaSelectionComponent';
 
+import ZabbixViewComponent from './components/Mozaika/zabbixViewComponent';
+
 Vue.use(Vuetify);
 Vue.use(VueRouter);
 Vue.use(Chartkick.use(Chart));
@@ -41,6 +43,10 @@ let routes = [
                 path: '',
                 component: MozaikaSelectionComponent,
             },
+            // {
+            //     path: '/zabbix',
+            //     component: ZabbixViewComponent
+            // },
             {
                 path: '/channel/:id',
                 component: ChannelComponent

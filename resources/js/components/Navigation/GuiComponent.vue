@@ -34,6 +34,14 @@
             <v-row class="mt-3">
                 <v-col cols="3" sm="3" md="3">
                     <v-switch
+                        v-model="zabbixView"
+                        label="Zobrazit pouze nefunkční kanály "
+                    ></v-switch>
+                </v-col>
+            </v-row>
+            <v-row class="mt-3">
+                <v-col cols="3" sm="3" md="3">
+                    <v-switch
                         v-model="customMozaika"
                         label="vytvoření statických kanálů v mozaice"
                     ></v-switch>
@@ -92,6 +100,7 @@ import Alert from "../alerts/AlertComponent";
 export default {
     data() {
         return {
+            zabbixView: false,
             loading: false,
             staticChannels: [],
             channels: [],
@@ -143,6 +152,13 @@ export default {
             }
         },
 
+        checkZabbixView() {
+
+            if (this.userData.zabbixView === true) {
+                return (this.zabbixView = this.userData.zabbixView);
+            }
+        },
+
         loadChannels() {
             let currentObj = this;
             axios.get("/api/calendar/channels").then(function(response) {
@@ -159,7 +175,8 @@ export default {
                     mozaikaAlphaBet: this.userData.mozaikaAlphaBet,
                     dense: this.userData.dense,
                     customMozaika: this.customMozaika,
-                    staticChannels: this.staticChannels
+                    staticChannels: this.staticChannels,
+                    zabbixView: this.zabbixView
                 })
                 .then(function(response) {
                     currentObj.status = response.data;
@@ -178,6 +195,18 @@ export default {
     watch: {
         status: function() {
             setTimeout(() => (this.status = false), 3000);
+        },
+
+        zabbixView: function() {
+            if(this.zabbixView === true) {
+                this.customMozaika = false;
+            }
+        },
+
+        customMozaika: function() {
+            if(this.customMozaika === true) {
+                this.zabbixView = false;
+            }
         }
     }
 };

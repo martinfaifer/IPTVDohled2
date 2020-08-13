@@ -41,7 +41,10 @@
                 <v-menu offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn
-                            v-show="userData.user_role === 'admin' || userData.user_role === 'editor'"
+                            v-show="
+                                userData.user_role === 'admin' ||
+                                    userData.user_role === 'editor'
+                            "
                             link
                             to="/settings/dashboard"
                             class="white--text"
@@ -64,7 +67,9 @@
                                 size="26"
                                 v-show="userData.avatar === false"
                             >
-                                <span class="white--text">{{ inicials }}</span>
+                                <span class="white--text">{{
+                                    userData.inicials
+                                }}</span>
                             </v-avatar>
                             <v-avatar
                                 size="26"
@@ -112,7 +117,7 @@
                 v-model="modalEditUser"
                 fullscreen
                 hide-overlay
-                transition="dialog-bottom-transition"
+                persistent
             >
                 <v-card>
                     <v-toolbar dark color="transparent">
@@ -264,7 +269,6 @@ export default {
             intervalDevices: false,
             loader: null,
             loading: false,
-            inicials: ""
         };
     },
     created() {
@@ -312,8 +316,6 @@ export default {
                 } else {
                     currentObj.$store.state.userData = currentObj.userData =
                         response.data;
-                    currentObj.inicials =
-                        currentObj.userData.name[0] + currentObj.userData.surname[0];
                 }
             });
         },

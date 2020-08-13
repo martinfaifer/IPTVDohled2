@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('dense')->default('false');
             $table->string('mozaikaAlphaBet')->default('false');
             $table->string('avatar')->nullable();
+            $table->string('zabbixView');
             $table->rememberToken();
             $table->timestamps();
         });

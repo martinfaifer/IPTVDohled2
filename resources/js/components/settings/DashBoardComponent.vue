@@ -57,7 +57,7 @@ import VolumeChart from "./DashboardComponents/newTemplates/ChannelAudio";
 import IPTVDevicesComponent from "./DashboardComponents/newTemplates/IPTVDevicesComponent";
 import FailedJobs from "./DashboardComponents/newTemplates/QueueComponent";
 import UsersLastChangesComponent from "./DashboardComponents/newTemplates/UsersLastChangesComponent";
-import QueueComponent from "./DashboardComponents/newTemplates/QueueComponent";
+import QueueComponent from "./DashboardComponents/newTemplates/WaitingQueuesComponent";
 
 export default {
     data() {

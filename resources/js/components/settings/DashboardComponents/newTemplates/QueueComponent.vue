@@ -20,7 +20,7 @@
                 :headers="headers"
                 class="elevation-0"
                 :items-per-page="5"
-                no-data-text="Všechna queue fungují"
+                no-data-text="Všechna queue byla odbavena"
             >
             </v-data-table>
         </div>

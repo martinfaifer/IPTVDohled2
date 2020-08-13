@@ -29,7 +29,8 @@ class UserController extends Controller
                     'dense' => $user->dense,
                     'mozaikaAlphaBet' => $user->mozaikaAlphaBet,
                     'avatar' => $user->avatar,
-                    'apiKey' => APIKeyController::getByUser($user->id)
+                    'apiKey' => APIKeyController::getByUser($user->id),
+                    'zabbixView' => $user->zabbixView
                 );
             }
 
@@ -117,6 +118,13 @@ class UserController extends Controller
                 $apiKey = false;
             }
 
+            // zabbixView
+            if ($user->zabbixView != "true") {
+                $zabbixView = false;
+            } else {
+                $zabbixView = true;
+            }
+
             // overeni, zda má uzivatel nadefinovanou custom mozaiku
             if (CustumMozaika::where('userId', $user->id)->first()) {
                 // existuje, získáme kanály
@@ -141,7 +149,9 @@ class UserController extends Controller
                 'avatar' => $avatar,
                 'apiKey' => $apiKey,
                 'customMozaika' => $customMozaika,
-                'staticChannels' => $staticChannels
+                'staticChannels' => $staticChannels,
+                'zabbixView' => $zabbixView,
+                'inicials' => $user->name[0] . $user->surname[0]
             ];
         }
     }
@@ -169,6 +179,12 @@ class UserController extends Controller
                 $mozaikaAlphaBet = "false";
             }
 
+            if ($request->zabbixView == true) {
+                $zabbixView = "true";
+            } else {
+                $zabbixView = "false";
+            }
+
             if ($request->customMozaika == true) {
                 // zalozeni nebo update
                 CustumMozaikaController::createOrUpdate($request->userId, $request->staticChannels);
@@ -182,6 +198,7 @@ class UserController extends Controller
             $update->dense = $dense;
             $update->mozaikaAlphaBet = $mozaikaAlphaBet;
             $update->pagination = $request->pagination;
+            $update->zabbixView = $zabbixView;
             $update->save();
 
             return [
