@@ -187,7 +187,7 @@ export default {
                 let currentObj = this;
 
                 axios
-                    .post("/api/channel/chart/crash/hour", {
+                    .post("/api/channel/chart/crash/day", {
                         id: this.channelId
                     })
                     .then(function(response) {

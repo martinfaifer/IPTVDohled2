@@ -159,5 +159,13 @@ export default {
         return {
         };
     },
+
+    watch: {
+        userData: function() {
+            if(this.userData.user_role === 'náhled') {
+                this.$router.push("/");
+            }
+        }
+    }
 };
 </script>

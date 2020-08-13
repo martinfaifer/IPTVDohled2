@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HardwareController extends Controller
 {
@@ -42,5 +43,40 @@ class HardwareController extends Controller
     {
         $load = sys_getloadavg();
         return round($load[0], 2);
+    }
+
+    /**
+     * fm pro zjistení zda neexistují faildnuté queue
+     *
+     * @return array
+     * @return boolean
+     */
+    public function checkFailedQueue()
+    {
+        $failedJobs = DB::select('select * from failed_jobs');
+
+        if (empty($failedJobs)) {
+            return false;
+        } else {
+            return $failedJobs;
+        }
+    }
+
+
+    /**
+     * fn pro zobrazení, která queue čekají na odbavení
+     *
+     * @return array
+     * @return boolean
+     */
+    public function queue()
+    {
+        $queue = DB::select('select * from jobs');
+
+        if (empty($queue)) {
+            return false;
+        } else {
+            return $queue;
+        }
     }
 }

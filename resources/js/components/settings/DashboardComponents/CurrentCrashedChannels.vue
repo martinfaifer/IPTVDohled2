@@ -7,7 +7,9 @@
                 :headers="headers"
                 :items="crashed"
                 item-key="name"
-                class="elevation-1"
+                class="elevation-0"
+                :items-per-page=5
+
             >
                 <template v-slot:item.nazev="{ item }">
                     <router-link
@@ -46,7 +48,7 @@ export default {
     computed: {
         userData() {
             return this.$store.state.userData;
-        }
+        },
     },
     created() {
         // Informace, zda jsou nefunknčí streamy

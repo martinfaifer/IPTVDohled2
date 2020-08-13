@@ -27,6 +27,7 @@ Route::get('/api/channels/crashed', 'ChannelController@getCrashedStreams');
 Route::get('/api/channels/crashed/forDashboard', 'ChannelController@getCrashedStreamsForDashBoard');
 Route::get('/api/channels/notification', 'ChannelController@notificationIconAlert');
 Route::post('/api/channel/chart/crash/hour', 'ChannelErrorTimeController@getLasDayData');
+Route::post('/api/channel/chart/crash/day', 'ChannelErrorTimeController@getLasDayData');
 Route::post('/api/channel/chart/crash/week', 'ChannelErrorTimeController@getLasDayWeek');
 Route::get('/api/bitrate/delteOlderThanTwoDays', 'BitrateController@delteOlderThanTwoDays');
 
@@ -81,6 +82,8 @@ Route::post('/api/user/create', 'UserController@create');
 Route::post('/api/user/remove', 'UserController@remove');
 Route::post('/api/user/settings/edit', 'UserController@edit');
 Route::post('/api/user/getUserdata', 'UserController@getUserdata');
+
+Route::get('/api/users/history/lastTwenty', 'UserHistoryController@getLastTwentyRecords');
 
 
 Route::get('/api/channel/nahled/{name}', 'ChannelController@getNahledByName');
@@ -150,3 +153,11 @@ Route::post('/api/communication/caledar', 'ApiChannelController@sendCalendarData
  */
 Route::get('/api/user/mozaika/custom', 'CustumMozaikaController@get');
 Route::get('/api/user/mozaika/custom/req', 'CustumMozaikaController@getReq');
+
+
+/**
+ * QUEUE check
+ */
+
+Route::get('/api/queue/failed', 'HardwareController@checkFailedQueue');
+Route::get('/api/queue/waiting', 'HardwareController@queue');

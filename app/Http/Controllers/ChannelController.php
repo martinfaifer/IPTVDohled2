@@ -617,26 +617,32 @@ class ChannelController extends Controller
     {
         $user = Auth::user();
         if ($user->alert == "show") {
-            if (Channel::where('Alert', "error")->first()) {
-                return Channel::where('Alert', "error")->get();
-            } else {
-                return "false";
-            }
+            return $this->getNotFunctionStreams();
         }
     }
 
     /**
-     * fn pro získání všech nefunknčích kanálů
+     * statická funckce pro získání nefunkčních streamů
      *
-     * @return void
+     * @return array
      */
-    public function getCrashedStreamsForDashBoard()
+    public static function getNotFunctionStreams()
     {
         if (Channel::where('Alert', "error")->first()) {
             return Channel::where('Alert', "error")->get();
         } else {
             return "false";
         }
+    }
+
+    /**
+     * fn pro získání všech nefunknčích kanálů v dashboardu
+     *
+     * @return void
+     */
+    public function getCrashedStreamsForDashBoard()
+    {
+        return $this->getNotFunctionStreams();
     }
 
     /**

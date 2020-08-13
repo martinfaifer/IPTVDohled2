@@ -7,7 +7,8 @@
             loading-text="Načítám data ..."
             :headers="headers"
             :items="devices"
-            class="elevation-1"
+            class="elevation-0"
+            :items-per-page=5
         >
             <template v-slot:item.status="{ item }">
                 <v-icon v-if="item.status != 'online'" color="red"

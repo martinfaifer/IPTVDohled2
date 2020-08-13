@@ -6,10 +6,11 @@
             :headers="headers"
             :items="crashed"
             item-key="name"
-            class="elevation-1"
+            class="elevation-0"
+            :items-per-page=5
         >
             <template v-slot:item.name="{ item }">
-                <span class="red--text" dark>{{ item.name }}</span>
+                <span class="red--text">{{ item.name }}</span>
             </template>
         </v-data-table>
     </div>
@@ -19,12 +20,14 @@ export default {
     computed: {
         userData() {
             return this.$store.state.userData;
+        },
+        crashed() {
+            return this.$store.state.deviceAlerts;
         }
     },
     data() {
         return {
             interval: false,
-            crashed: [],
             headers: [
                 {
                     text: "Problémová IPTV zařízení",
@@ -34,29 +37,6 @@ export default {
             ]
         };
     },
-    created() {
-        this.loadIptvDevices();
-    },
 
-    methods: {
-        loadIptvDevices() {
-            window.axios.get("/api/devices/crash").then(response => {
-                this.crashed = response.data;
-            });
-        }
-    },
-
-    mounted() {
-        this.interval = setInterval(
-            function() {
-                this.loadIptvDevices();
-            }.bind(this),
-            10000
-        );
-    },
-
-    beforeDestroy: function() {
-        clearInterval(this.interval);
-    }
 };
 </script>

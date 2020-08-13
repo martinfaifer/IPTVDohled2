@@ -1,7 +1,10 @@
 <template>
     <div class="body-1">
         <!-- test crash -->
-        <crashed-streams class="mt-12" transition="scroll-y-transition"></crashed-streams>
+        <crashed-streams
+            class="mt-12"
+            transition="scroll-y-transition"
+        ></crashed-streams>
         <!-- end test crash -->
         <!-- konec alertingu -->
         <v-container class="ml-12" fluid>
@@ -222,6 +225,9 @@
                         <v-btn icon dark @click="channelInfo = false">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
+                        <v-toolbar-title class="body-1"
+                            >Přehled kanálu</v-toolbar-title
+                        >
                     </v-toolbar>
                     <!-- content -->
                     <!-- navigation -->
@@ -400,7 +406,7 @@ export default {
             problemInterval: false,
             detailInterval: false,
             items: [],
-            crashedStreams: [],
+            crashedStreams: []
         };
     },
     created() {

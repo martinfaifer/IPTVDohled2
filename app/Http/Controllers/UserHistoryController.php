@@ -34,4 +34,14 @@ class UserHistoryController extends Controller
     {
         return UserHistory::all();
     }
+
+
+    public function getLastTwentyRecords()
+    {
+        if (UserHistory::first()) {
+            return UserHistory::orderBy('created_at', 'desc')->get()->take(20);
+        } else {
+            return false;
+        }
+    }
 }

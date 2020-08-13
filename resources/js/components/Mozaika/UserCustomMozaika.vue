@@ -1,13 +1,23 @@
 <template>
     <div class="body-1">
         <!-- test crash -->
-        <crashed-streams class="mt-12" transition="scroll-y-transition"></crashed-streams>
+        <crashed-streams
+            class="mt-12"
+            transition="scroll-y-transition"
+        ></crashed-streams>
         <!-- end test crash -->
         <!-- konec alertingu -->
         <v-container class="ml-12" fluid>
             <!-- static channels -->
             <v-row class="mx-auto mt-1 ma-1 mr-1">
+                <div v-if="staticStreams === false">
+                    <v-skeleton-loader
+                        class="mx-auto"
+                        type="text"
+                    ></v-skeleton-loader>
+                </div>
                 <div
+                    v-else
                     v-for="staticStream in staticStreams"
                     v-bind:key="staticStream.id"
                 >
@@ -26,7 +36,8 @@
                                         (channelId = staticStream.id),
                                         (channelName = staticStream.nazev),
                                         (channelApi = staticStream.api),
-                                        (urlDokumentace = staticStream.dokumentaceUrl)
+                                        (urlDokumentace =
+                                            staticStream.dokumentaceUrl)
                                 "
                             >
                                 <v-list-item>
@@ -73,7 +84,8 @@
                                         (channelId = staticStream.id),
                                         (channelName = staticStream.nazev),
                                         (channelApi = staticStream.api),
-                                        (urlDokumentace = staticStream.dokumentaceUrl)
+                                        (urlDokumentace =
+                                            staticStream.dokumentaceUrl)
                                 "
                             >
                                 <v-list-item>
@@ -91,7 +103,9 @@
                                             width="140"
                                         >
                                             <v-img
-                                                v-if="staticStream.img === 'false'"
+                                                v-if="
+                                                    staticStream.img === 'false'
+                                                "
                                                 :alt="staticStream.nazev"
                                                 height="140"
                                                 contain
@@ -122,7 +136,8 @@
                                                 </v-icon>
                                                 <v-row
                                                     v-show="
-                                                        staticStream.audioLang != null
+                                                        staticStream.audioLang !=
+                                                            null
                                                     "
                                                     align="end"
                                                     class="lightbox white--text fill-height"
@@ -177,7 +192,8 @@
 
                                                 <v-row
                                                     v-show="
-                                                        staticStream.audioLang != null
+                                                        staticStream.audioLang !=
+                                                            null
                                                     "
                                                     align="end"
                                                     class="lightbox white--text fill-height"
@@ -424,56 +440,87 @@
                         <v-btn icon dark @click="channelInfo = false">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
+                        <v-toolbar-title class="body-1"
+                            >Přehled kanálu</v-toolbar-title
+                        >
                     </v-toolbar>
                     <!-- content -->
                     <!-- navigation -->
                     <v-row>
                         <v-toolbar color="transparent" flat dense dark>
                             <v-spacer></v-spacer>
-                            <v-btn
-                                @click="contextMenu = 'prehled'"
-                                :color="colorPrehled"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-view-dashboard</v-icon>
-                            </v-btn>
-                            <v-btn
-                                v-show="channelApi === '1'"
-                                @click="contextMenu = 'api'"
-                                :color="colorApi"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-glasses</v-icon>
-                            </v-btn>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        @click="contextMenu = 'prehled'"
+                                        :color="colorPrehled"
+                                        class="white--text"
+                                        v-on="on"
+                                        icon
+                                    >
+                                        <v-icon>mdi-view-dashboard</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Přehled</span>
+                            </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-show="channelApi === '1'"
+                                        @click="contextMenu = 'api'"
+                                        :color="colorApi"
+                                        class="white--text"
+                                        v-on="on"
+                                        icon
+                                    >
+                                        <v-icon>mdi-glasses</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>API komunikace</span>
+                            </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        @click="contextMenu = 'grafy'"
+                                        :color="colorGrafs"
+                                        class="white--text"
+                                        v-on="on"
+                                        icon
+                                    >
+                                        <v-icon>mdi-chart-bar</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Grafy</span>
+                            </v-tooltip>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        @click="contextMenu = 'ffprobe'"
+                                        :color="colorFfprobe"
+                                        class="white--text"
+                                        v-on="on"
+                                        icon
+                                    >
+                                        <v-icon>mdi-loupe</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>FFProbe</span>
+                            </v-tooltip>
 
-                            <v-btn
-                                @click="contextMenu = 'grafy'"
-                                :color="colorGrafs"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-chart-bar</v-icon>
-                            </v-btn>
-
-                            <v-btn
-                                @click="contextMenu = 'ffprobe'"
-                                :color="colorFfprobe"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-loupe</v-icon>
-                            </v-btn>
-
-                            <v-btn
-                                @click="contextMenu = 'notes'"
-                                :color="colorNote"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-message</v-icon>
-                            </v-btn>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        @click="contextMenu = 'notes'"
+                                        :color="colorNote"
+                                        class="white--text"
+                                        v-on="on"
+                                        icon
+                                    >
+                                        <v-icon>mdi-message</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Poznámky</span>
+                            </v-tooltip>
 
                             <!-- mdi-message -->
                             <v-spacer></v-spacer>
@@ -572,7 +619,7 @@ export default {
     },
     data() {
         return {
-            staticStreams: [],
+            staticStreams: false,
             contextMenu: "prehled",
             color: "",
             colorPrehled: "teal",
@@ -603,7 +650,7 @@ export default {
             problemInterval: false,
             detailInterval: false,
             items: [],
-            crashedStreams: [],
+            crashedStreams: []
         };
     },
     created() {

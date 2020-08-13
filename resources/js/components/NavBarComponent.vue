@@ -41,6 +41,7 @@
                 <v-menu offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn
+                            v-show="userData.user_role === 'admin' || userData.user_role === 'editor'"
                             link
                             to="/settings/dashboard"
                             class="white--text"
@@ -59,9 +60,12 @@
                 <v-menu transition="scroll-y-transition">
                     <template v-slot:activator="{ on }">
                         <v-btn class="white--text" fab text v-on="on">
-                            <v-icon v-show="userData.avatar === false"
-                                >mdi-account-circle</v-icon
+                            <v-avatar
+                                size="26"
+                                v-show="userData.avatar === false"
                             >
+                                <span class="white--text">{{ inicials }}</span>
+                            </v-avatar>
                             <v-avatar
                                 size="26"
                                 v-show="userData.avatar != false"
@@ -89,7 +93,8 @@
             <div v-show="this.$route.path === '/'">
                 <v-btn
                     class="white--text"
-                    @click="chanheAlertVisibility()"
+                    @click="chanheAlertVisibility(), (loader = 'loading')"
+                    :loading="loading"
                     fab
                     icon
                 >
@@ -227,12 +232,12 @@
     </div>
 </template>
 <script>
-import Alert from "./alerts/AlertComponent";
 import FooterComponent from "./FooterComponent";
 import UserComponent from "./Navigation/UserComponent";
 import GuiComponent from "./Navigation/GuiComponent";
 import NotificationComponent from "./Navigation/UserNotificationComponent";
 import ApiUserComponent from "./Navigation/ApiUserComponent";
+
 export default {
     data() {
         return {
@@ -256,6 +261,10 @@ export default {
             intervalAlert: false,
             interval: false,
             intervalUser: false,
+            intervalDevices: false,
+            loader: null,
+            loading: false,
+            inicials: ""
         };
     },
     created() {
@@ -266,10 +275,11 @@ export default {
         this.loadUser();
 
         this.checkIfIsInternetConnection();
+
+        this.loadIptvDevices();
     },
 
     components: {
-        "alert-component": Alert,
         "footer-component": FooterComponent,
         "user-component": UserComponent,
         "gui-component": GuiComponent,
@@ -278,16 +288,10 @@ export default {
     },
 
     methods: {
-        consoleNotificationByAdmin() {
-            console.log(
-                "--------------------------------------------------------------------------------"
-            );
-            console.log(
-                "WEB JE POD SPRÁVOU MARTINA FAIFERA, VEŠKERÉ KOPIE, ÚPRAVY JSOU PROTI LICENCI!!!"
-            );
-            console.log(
-                "--------------------------------------------------------------------------------"
-            );
+        loadIptvDevices() {
+            window.axios.get("/api/devices/crash").then(response => {
+                this.$store.state.deviceAlerts = this.crashed = response.data;
+            });
         },
 
         checkIfIsInternetConnection() {
@@ -306,7 +310,10 @@ export default {
                 if (response.data.stat === "error") {
                     currentObj.$router.push("/login");
                 } else {
-                    currentObj.$store.state.userData = currentObj.userData = response.data;
+                    currentObj.$store.state.userData = currentObj.userData =
+                        response.data;
+                    currentObj.inicials =
+                        currentObj.userData.name[0] + currentObj.userData.surname[0];
                 }
             });
         },
@@ -338,9 +345,29 @@ export default {
                 .catch(function(error) {
                     console.log(error);
                 });
+        },
+
+        consoleNotificationByAdmin() {
+            console.log(
+                "--------------------------------------------------------------------------------"
+            );
+            console.log(
+                "WEB JE POD SPRÁVOU MARTINA FAIFERA, VEŠKERÉ KOPIE, ÚPRAVY JSOU PROTI LICENCI!!!"
+            );
+            console.log(
+                "--------------------------------------------------------------------------------"
+            );
         }
     },
     watch: {
+        loader() {
+            const l = this.loader;
+            this[l] = !this[l];
+
+            setTimeout(() => (this[l] = false), 1000);
+
+            this.loader = null;
+        },
         status: function() {
             setTimeout(() => (this.status = false), 5000);
         },
@@ -378,6 +405,13 @@ export default {
         }
     },
     mounted() {
+        this.intervalDevices = setInterval(
+            function() {
+                this.loadIptvDevices();
+            }.bind(this),
+            60000
+        );
+
         this.interval = setInterval(
             function() {
                 this.checkIfIsInternetConnection();

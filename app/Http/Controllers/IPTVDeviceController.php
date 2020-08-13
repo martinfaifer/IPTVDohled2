@@ -41,7 +41,7 @@ class IPTVDeviceController extends Controller
         if (IPTVDevice::where('status', "fail")->first()) {
             return IPTVDevice::where('status', "fail")->get(['name']);
         } else {
-            return;
+            return false;
         }
     }
 
