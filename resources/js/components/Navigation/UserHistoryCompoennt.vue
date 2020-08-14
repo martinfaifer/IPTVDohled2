@@ -72,7 +72,6 @@ export default {
         loadUserLog() {
             window.axios.get("/api/user/history").then(response => {
                 this.userLog = response.data;
-                console.log(this.userLog);
             });
         }
     }

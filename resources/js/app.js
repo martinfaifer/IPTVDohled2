@@ -26,8 +26,7 @@ import ApiComponent from'./components/settings/api/ApiComponent';
 import UserApiComponent from './components/settings/api/UserApiComponent';
 import IptvDokuComponent from './components/settings/api/IptvDokuComponent';
 import MozaikaSelectionComponent from './components/Mozaika/MozaikaSelectionComponent';
-
-import ZabbixViewComponent from './components/Mozaika/zabbixViewComponent';
+import UserComponent from './components/Navigation/UserSiteComponent';
 
 Vue.use(Vuetify);
 Vue.use(VueRouter);
@@ -43,10 +42,10 @@ let routes = [
                 path: '',
                 component: MozaikaSelectionComponent,
             },
-            // {
-            //     path: '/zabbix',
-            //     component: ZabbixViewComponent
-            // },
+            {
+                path: '/user',
+                component: UserComponent
+            },
             {
                 path: '/channel/:id',
                 component: ChannelComponent

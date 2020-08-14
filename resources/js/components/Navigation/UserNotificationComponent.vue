@@ -20,7 +20,7 @@
             </v-row>
             <v-divider></v-divider>
             <v-row class="mt-3">
-                <v-subheader>Zasílání SMS notifikací</v-subheader>
+                <v-subheader>Zasílání SMS notifikací, platí pouze pro O2</v-subheader>
             </v-row>
             <v-row class="mt-3">
                 <v-col cols="3" sm="3" md="3">

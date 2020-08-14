@@ -42,6 +42,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:sendErrorMail')->everyThreeMinutes()->runInBackground(); // odeslání mail alertu s chybovými kanály
         $schedule->command('command:sendSuccessMail')->everyThreeMinutes()->runInBackground(); // odeslání mail alertu , když je kanál již ok
         $schedule->command('command:deleteImgOlderThanOneHour')->everyTenMinutes()->runInBackground(); // odebrání obrázků starších jak 1h z file systému
+        $schedule->command('command:sendSMSError')->everyMinute()->runInBackground(); // odeslání sms error alertu po 5 min po výpadku
+        $schedule->command('command:sendSMSsuccess')->everyMinute()->runInBackground(); // odeslání sms success alertu po 5 min po návratu z výpadku
 
         // fn pro kontrolu již nedohledovaných kanalů, aby zbytecne nekde nevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
         $schedule->call(function () {

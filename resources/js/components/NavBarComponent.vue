@@ -80,7 +80,8 @@
                         </v-btn>
                     </template>
                     <v-list width="250px" class="text-center subtitle-1">
-                        <v-list-item @click="modalEditUser = true">
+                        <v-list-item link
+                            to="/user">
                             Editace <v-spacer></v-spacer
                             ><v-icon color="grey" right> mdi-settings</v-icon>
                         </v-list-item>
@@ -112,85 +113,7 @@
             <!-- end alerts -->
         </v-app-bar>
 
-        <v-row class="body-2" justify="center">
-            <v-dialog
-                v-model="modalEditUser"
-                fullscreen
-                hide-overlay
-                persistent
-            >
-                <v-card>
-                    <v-toolbar dark color="transparent">
-                        <v-btn icon dark @click="modalEditUser = false">
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                        <v-toolbar-title class="body-1"
-                            >Nastavení uživatele</v-toolbar-title
-                        >
-                    </v-toolbar>
 
-                    <!-- navigation -->
-                    <v-row>
-                        <v-toolbar color="transparent" flat dense dark>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                @click="contextMenu = 'user'"
-                                :color="colorIconUser"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-account</v-icon>
-                            </v-btn>
-                            <v-btn
-                                @click="contextMenu = 'gui'"
-                                :color="colorIconGui"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-television-guide</v-icon>
-                            </v-btn>
-
-                            <v-btn
-                                @click="contextMenu = 'alert'"
-                                :color="colorIconAlert"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-comment-alert</v-icon>
-                            </v-btn>
-
-                            <v-btn
-                                @click="contextMenu = 'api'"
-                                :color="colorIconApi"
-                                class="white--text"
-                                icon
-                            >
-                                <v-icon>mdi-swap-horizontal</v-icon>
-                            </v-btn>
-
-                            <!-- mdi-message -->
-                            <v-spacer></v-spacer>
-                        </v-toolbar>
-                    </v-row>
-
-                    <!-- uživatelské nasatavení -->
-                    <v-container justify="center">
-                        <user-component
-                            v-show="contextMenu === 'user'"
-                        ></user-component>
-                        <gui-component
-                            v-show="contextMenu === 'gui'"
-                        ></gui-component>
-                        <notification-component
-                            v-show="contextMenu === 'alert'"
-                        ></notification-component>
-                        <api-component
-                            v-show="contextMenu === 'api'"
-                        ></api-component>
-                    </v-container>
-                </v-card>
-            </v-dialog>
-        </v-row>
 
         <!-- end modal pro editaci uživatele -->
 
@@ -238,10 +161,6 @@
 </template>
 <script>
 import FooterComponent from "./FooterComponent";
-import UserComponent from "./Navigation/UserComponent";
-import GuiComponent from "./Navigation/GuiComponent";
-import NotificationComponent from "./Navigation/UserNotificationComponent";
-import ApiUserComponent from "./Navigation/ApiUserComponent";
 
 export default {
     data() {
@@ -285,10 +204,6 @@ export default {
 
     components: {
         "footer-component": FooterComponent,
-        "user-component": UserComponent,
-        "gui-component": GuiComponent,
-        "notification-component": NotificationComponent,
-        "api-component": ApiUserComponent
     },
 
     methods: {
@@ -381,30 +296,6 @@ export default {
                 this.networkChangeNotification = false;
             }
         },
-
-        contextMenu: function() {
-            if (this.contextMenu === "user") {
-                (this.colorIconUser = "teal"),
-                    (this.colorIconGui = ""),
-                    (this.colorIconAlert = "");
-                this.colorIconApi = "";
-            } else if (this.contextMenu === "gui") {
-                (this.colorIconUser = ""),
-                    (this.colorIconGui = "teal"),
-                    (this.colorIconAlert = "");
-                this.colorIconApi = "";
-            } else if (this.contextMenu === "alert") {
-                (this.colorIconUser = ""),
-                    (this.colorIconGui = ""),
-                    (this.colorIconAlert = "teal");
-                this.colorIconApi = "";
-            } else if (this.contextMenu === "api") {
-                (this.colorIconUser = ""),
-                    (this.colorIconGui = ""),
-                    (this.colorIconAlert = "");
-                this.colorIconApi = "teal";
-            }
-        }
     },
     mounted() {
         this.intervalDevices = setInterval(

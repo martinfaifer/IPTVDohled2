@@ -32,20 +32,21 @@
                         </v-list-item>
                         <v-list-item class="ml-12">
                             <v-list-item-content>
-                                <v-list-item-title class="mt-2"
-                                    >{{ userData.name }} {{ userData.surname }}
-                                    <span>
-                                        <v-icon
-                                            @click="editUserDialog = true"
-                                            small
-                                            class="mr-2"
-                                            >mdi-pencil</v-icon
-                                        >
-                                    </span>
+                                <v-list-item-title class="mt-2">
+                                    <v-subheader
+                                        >{{ userData.name }}
+                                        {{ userData.surname }}
+                                        <span>
+                                            <v-icon
+                                                @click="editUserDialog = true"
+                                                small
+                                                class="mr-2"
+                                                >mdi-pencil</v-icon
+                                            >
+                                        </span></v-subheader
+                                    >
                                 </v-list-item-title>
-                                <v-list-item-subtitle class="mt-2">{{
-                                    userData.email
-                                }}</v-list-item-subtitle>
+                                <v-list-item-subtitle class="mr-2">{{userData.email}}</v-list-item-subtitle>
                                 <v-list-item-subtitle class="mt-2"
                                     >uživatelská role :
                                     {{

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\SMS;
+use App\SMSAlert;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SMSController extends Controller
@@ -21,7 +23,7 @@ class SMSController extends Controller
         if (SMS::first()) {
             // záznam existuje
             // vyhledání zda existuje zaznam odkud se maí data odeslat ( telefon )
-            if (SMS::where('telNumberFrom', "!=", null)->first()) {
+            if (SMS::where('telNumberTo', "!=", null)->first()) {
                 // existuje telefonní cislo te ktereho se daji odesilat sms
                 // vyhledání zda je mozne nekomu zaslat SMS
 
@@ -33,21 +35,7 @@ class SMSController extends Controller
                     return false;
                 }
             } else {
-                // pokus vyhledání emailu, ze kterého se oedesle SMS
-                if (SMS::where('mailFrom', "!=", null)->first()) {
-                    // existuje , vyhledání zda je mozne nekomu zaslat SMS
-
-                    if (SMS::where('telNumberTo', "!=", null)->first()) {
-                        // je komu odeslat mail
-                        return true;
-                    } else {
-                        // není komu odeslat, vrati false
-                        return false;
-                    }
-                } else {
-
-                    return false;
-                }
+                return false;
             }
         } else {
             return false;
@@ -63,15 +51,28 @@ class SMSController extends Controller
     public static function sendSMSchannelErrorStatus()
     {
         if (self::checkIfExistAnyPosibilityToSendAert() == true) {
-            if (Channel::where('sendSMS', "1")->where('Alert', "error")->first()) {
+            // vyhledání kanálu, který umí poslat sms
+            if (Channel::where('sendSMS', "1")->where('Alert', "error")->where('updated_at', '<=', Carbon::now()->second(300))->first()) {
+
+                // získání adresy / tel number kdo má zaslat sms
+                $fromUser = SMS::where('mailFrom', "!=", null)->first();
+
                 // existuje kanál, který umí odesílat alerty formou SMS
-                foreach (Channel::where('sendSMS', "1")->where('Alert', "error")->get(['id', 'nazev']) as $channel) {
+                foreach (Channel::where('sendSMS', "1")->where('Alert', "error")->where('updated_at', '<=', Carbon::now()->second(300))->get(['id', 'nazev']) as $channel) {
                     // overeni, ze kanal jiz neexistuje ulozeny v tabulce sms alert (není jeste vytvorena)
-                    if (!$fnProOvereniKanalanu) {
+                    if (!SMSAlert::where('channelId', $channel->id)->first()) {
 
-                        // zde bude FN, která zjistí kanály, které odeslou alert
-
-                        // po odeslani ulozeni do table sms alert (není jeste vytvorena)
+                        // odeslaní mailu
+                        foreach (SMS::where('telNumberTo', "!=", null)->get(['telNumberTo']) as $userToSendData) {
+                            // formát =>  cislo@sms.cz.o2.com max 20 znaku
+                            // echo $userToSendData->telNumberTo . $fromUser->mailFrom;
+                            // die;
+                            MailController::smsAlert($channel->name, "KO", $channel->nazev . " = KO", $userToSendData->telNumberTo . $fromUser->mailFrom);
+                            // zalození do tabulky smsAlerts pro neopetovné zaslání alertu
+                            SMSAlert::create([
+                                'channelId' => $channel->id
+                            ]);
+                        }
                     }
                 }
             }
@@ -87,13 +88,113 @@ class SMSController extends Controller
     {
 
         if (self::checkIfExistAnyPosibilityToSendAert() == true) {
-            if (Channel::where('sendSMS', "1")->where('Alert', "success")->first()) {
-                // existuje kanál, který umí odesílat alerty formou SMS
+            if (Channel::where('sendSMS', "1")->where('Alert', "success")->where('updated_at', '<=', Carbon::now()->second(300))->first()) {
+                // získání adresy / tel number kdo má zaslat sms
+                $fromUser = SMS::where('mailFrom', "!=", null)->first();
 
-                // zde bude FN, která zjistí kanály, které odeslou alert
 
-                // po odeslani odebrání z table sms alert (není jeste vytvorena)
+                // overeni, ze kanal jiz neexistuje ulozeny v tabulce sms alert (není jeste vytvorena)
+                if (SMSAlert::first()) {
+
+                    foreach (SMSAlert::get() as $channel) {
+
+                        // odeslaní mailu
+                        foreach (SMS::where('telNumberTo', "!=", null)->get(['telNumberTo']) as $userToSendData) {
+
+                            $channelName = Channel::find($channel->channelId);
+
+                            MailController::smsAlert($channelName->nazev, "OK", $channelName->nazev . " = OK", $userToSendData->telNumberTo . $fromUser->mailFrom);
+                            // odebrání z tabulky po odeslání
+                            SMSAlert::find($channel->id)->delete();
+                        }
+                    }
+                }
             }
+        }
+    }
+
+
+    /**
+     * fn pro získání dat, na jaká cusla se zasilaji maily
+     *
+     * @return void
+     */
+    public function getToData()
+    {
+        if (!SMS::where('telNumberTo', "!=", null)->first()) {
+            return "fasle";
+        } else {
+
+            return SMS::where('telNumberTo', "!=", null)->get(['id', 'telNumberTo']);
+        }
+    }
+
+    /**
+     * fn pro ziskani udaje odkud se posilaji sms
+     *
+     * @return void
+     */
+    public function sendSMSfrom()
+    {
+        if (!SMS::where('mailFrom', "!=", null)->first()) {
+            return false;
+        } else {
+
+            return SMS::where('mailFrom', "!=", null)->first();
+        }
+    }
+
+
+    /**
+     * fn pro odebrání telefoního cisla na které se zasilaji alerty
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function remove(Request $request)
+    {
+        try {
+            SMS::find($request->smsId)->delete();
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "tel. číslo bylo odebráno",
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "Nepodařilo se z editovat uživatele, prosím obraťe se na správce",
+            ];
+        }
+    }
+
+
+    /**
+     * fn pro uzalozeni nove sms
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function store(Request $request)
+    {
+        try {
+
+            SMS::create([
+                'telNumberTo' => $request->sms
+            ]);
+
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "success",
+                'msg' => "tel. číslo bylo založeno",
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'isAlert' => "isAlert",
+                'stat' => "error",
+                'msg' => "Nepodařilo se z editovat uživatele, prosím obraťe se na správce",
+            ];
         }
     }
 }

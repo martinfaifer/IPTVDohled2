@@ -98,6 +98,11 @@
 <script>
 import Alert from "../alerts/AlertComponent";
 export default {
+    computed: {
+        userData() {
+            return this.$store.state.userData;
+        }
+    },
     data() {
         return {
             zabbixView: false,
@@ -124,41 +129,17 @@ export default {
         };
     },
 
-    computed: {
-        userData() {
-            return this.$store.state.userData;
-        }
-    },
-
     created() {
         this.loadChannels();
         this.checkCustomMozaika();
         this.checkStaticChannels();
+        this.checkZabbixView();
     },
 
     components: {
         "alert-component": Alert
     },
     methods: {
-        checkCustomMozaika() {
-            if (this.userData.customMozaika === true) {
-                return (this.customMozaika = this.userData.customMozaika);
-            }
-        },
-
-        checkStaticChannels() {
-            if (this.userData.customMozaika === true) {
-                return (this.staticChannels = this.userData.staticChannels);
-            }
-        },
-
-        checkZabbixView() {
-
-            if (this.userData.zabbixView === true) {
-                return (this.zabbixView = this.userData.zabbixView);
-            }
-        },
-
         loadChannels() {
             let currentObj = this;
             axios.get("/api/calendar/channels").then(function(response) {
@@ -182,14 +163,30 @@ export default {
                     currentObj.status = response.data;
                     axios.get("/api/user/get").then(function(response) {
                         currentObj.$store.commit("update", response.data);
-                        currentObj.checkCustomMozaika();
-                        currentObj.checkStaticChannels();
                     });
                     currentObj.loading = false;
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
+        },
+
+        checkCustomMozaika() {
+            if (this.userData.customMozaika === true) {
+                return (this.customMozaika = this.userData.customMozaika);
+            }
+        },
+
+        checkStaticChannels() {
+            if (this.userData.customMozaika === true) {
+                return (this.staticChannels = this.userData.staticChannels);
+            }
+        },
+
+        checkZabbixView() {
+            if (this.userData.zabbixView === true) {
+                return (this.zabbixView = this.userData.zabbixView);
+            }
         }
     },
     watch: {
@@ -198,14 +195,29 @@ export default {
         },
 
         zabbixView: function() {
-            if(this.zabbixView === true) {
+            if (this.zabbixView === true) {
                 this.customMozaika = false;
             }
         },
 
         customMozaika: function() {
-            if(this.customMozaika === true) {
+            if (this.customMozaika === true) {
                 this.zabbixView = false;
+            }
+        },
+
+        userData: function() {
+            if (this.userData.customMozaika === true) {
+                this.customMozaika = true;
+                this.staticChannels = this.userData.staticChannels
+                this.zabbixView = false;
+                this.userData.zabbixView = false;
+            } else if (this.userData.zabbixView === true) {
+                this.userData.customMozaika = false;
+                this.customMozaika = false;
+            } else {
+                 this.customMozaika = false;
+                  this.zabbixView = false;
             }
         }
     }

@@ -3,6 +3,7 @@
 use App\Channel;
 use App\ChannelErrorTime;
 use App\Events\SendDesktopAlert;
+use App\Http\Controllers\SMSController;
 use App\IPTVDevice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,11 @@ Route::get('/api/channels/functions/percent', 'ChannelController@getPercentChann
 Route::get('/api/mailAlert/getAll', 'MailAlertsController@getAll');
 Route::post('/api/mailAlert/store', 'MailAlertsController@store');
 Route::post('/api/mailAlert/remove', 'MailAlertsController@remove');
+
+Route::get('/api/smsAlert/getAll', 'SMSController@getToData');
+Route::get('/api/smsAlert/getFrom', 'SMSController@sendSMSfrom');
+Route::post('/api/smsAlert/remove', 'SMSController@remove');
+Route::post('/api/smsAlert/store', 'SMSController@store');
 
 
 Route::post('/api/user/login', 'UserController@login');
