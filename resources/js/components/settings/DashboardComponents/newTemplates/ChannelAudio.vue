@@ -67,7 +67,7 @@ export default {
             function() {
                 this.loadCpu();
             }.bind(this),
-            10000
+            1000
         );
     },
 

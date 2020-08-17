@@ -31,9 +31,9 @@ class AlertController extends Controller
 
                 // sort kanálu, které mají plánovaný výpadek a neposílají se alerty
 
-                if (Calendar::where("channelId", $data->id)->first()) {
+                if (Calendar::where("channelId", $channelToSend->id)->first()) {
 
-                    foreach (Calendar::where("channelId", $data->id)->get() as $calendardata) {
+                    foreach (Calendar::where("channelId", $channelToSend->id)->get() as $calendardata) {
                         $now = new Carbon();
                         $begintime = new Carbon($calendardata->start);
                         $endtime = new Carbon($calendardata->end);

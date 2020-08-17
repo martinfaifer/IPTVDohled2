@@ -94,6 +94,7 @@ class ImgController extends Controller
     {
         $unixTimeMinusHodina = time() - 3600;  // získání unixtimu, který je starší jak jedna hodina
         foreach (scandir((public_path('/storage/'))) as $img) {
+            echo $img;
             // kontrola jednotlivých obrázků
             if ($img === "noImg.jpg" || $img === "radioImage.png" || $img ===  "videoErr.png" || $img === "." || $img === ".." || $img === ".gitignore") {
                 // vynecháme

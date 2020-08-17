@@ -26,7 +26,7 @@ class StreamDiagnostic extends Controller
      */
     public static function ffprobe($channelUrl)
     {
-        $channelStatus = "success"; // nadefinování výchizí hodnoty
+        // $channelStatus = "success"; // nadefinování výchizí hodnoty
         $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
         // $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
 
@@ -35,6 +35,18 @@ class StreamDiagnostic extends Controller
 
         // analyzování dat zda je vystup platný
         $channelStatus = self::analyzeRecord($output, $channel->id);
+        // error
+        $channelStatus = $channelStatus ?? "error";
+
+
+        if ($channelStatus === "error") {
+            ChannelErrorTimeController::store($channel->id);
+        } else {
+
+            if (ChannelErrorTime::where('channelId', $channel->id)->where('ok_time', null)->first()) {
+                ChannelErrorTimeController::update($channel->id); // update tabulky, kdy je zaznamenáno, kdy skomcil výpadek na kanálu
+            }
+        }
 
         try {
             if ($channelStatus == "success") {
@@ -95,9 +107,6 @@ class StreamDiagnostic extends Controller
         $data = json_decode($ffprobeRecord, true); // převedení do json bez stdClass
         if (!array_key_exists("programs", $data)) {
 
-            // ulození, že kanál selhal
-            // NotFunctionChannelController::store($channelId);
-
             $output = "error";
 
             // Pokud je kanál uložen ve stavu success , tak zmena na error
@@ -107,17 +116,17 @@ class StreamDiagnostic extends Controller
                 $output = "error";
             }
 
-            CrashedChannel::create([
-                'channelId' => $channelId,
-            ]);
+            // CrashedChannel::create([
+            //     'channelId' => $channelId,
+            // ]);
 
 
             // ulození do tabulky, kde bude zaznamenáno od kdy do kdy byl výpadek
-            if (ChannelErrorTimeController::store($channelId) == true) {
-                //
-            } else {
-                return;
-            }
+            // if (ChannelErrorTimeController::store($channelId) == true) {
+            //     //
+            // } else {
+            //     return;
+            // }
         } else {
 
             $output = "success";
@@ -129,9 +138,9 @@ class StreamDiagnostic extends Controller
             // }
 
             // odebrání kanálu z fronty na odeslani alertu
-            if (ChannelErrorTime::where('channelId', $channelId)->where('ok_time', null)->first()) {
-                ChannelErrorTimeController::update($channelId); // update tabulky, kdy je zaznamenáno, kdy skomcil výpadek na kanálu
-            }
+            // if (ChannelErrorTime::where('channelId', $channelId)->where('ok_time', null)->first()) {
+            //     ChannelErrorTimeController::update($channelId); // update tabulky, kdy je zaznamenáno, kdy skomcil výpadek na kanálu
+            // }
         }
 
         return $output;
