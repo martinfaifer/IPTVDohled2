@@ -39,8 +39,8 @@ class Kernel extends ConsoleKernel
          * Prikaz pro vytvoreni nahledu, diagnostikování a získání hlasitosti ze streamu everyThreeMinutes
          */
         $schedule->command('command:ffprobe')->everyMinute()->withoutOverlapping()->runInBackground();  // balík příkazů jednak pro získání bitratu, ffproby a vytvoření náhledu
-        $schedule->command('command:sendErrorMail')->everyMinute()->runInBackground(); // odeslání mail alertu s chybovými kanály
-        $schedule->command('command:sendSuccessMail')->everyMinute()->runInBackground(); // odeslání mail alertu , když je kanál již ok
+        $schedule->command('command:sendErrorMail')->everyFiveMinutes()->runInBackground(); // odeslání mail alertu s chybovými kanály
+        $schedule->command('command:sendSuccessMail')->everyFiveMinutes()->runInBackground(); // odeslání mail alertu , když je kanál již ok
         $schedule->command('command:deleteImgOlderThanOneHour')->everyTenMinutes()->runInBackground(); // odebrání obrázků starších jak 1h z file systému
         $schedule->command('command:sendSMSError')->everyMinute()->runInBackground(); // odeslání sms error alertu po 5 min po výpadku
         $schedule->command('command:sendSMSsuccess')->everyMinute()->runInBackground(); // odeslání sms success alertu po 5 min po návratu z výpadku
