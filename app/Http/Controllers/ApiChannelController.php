@@ -6,6 +6,7 @@ use App\ApiChannel;
 use App\APIKey;
 use App\Calendar;
 use App\Channel;
+use App\Volume;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -33,6 +34,51 @@ class ApiChannelController extends Controller
         }
 
         return Channel::where('url', $request->channelUrl)->first()->img;
+    }
+
+
+    /**
+     * fn pro oveření zda kanál již je zavedený na dohledu a odeslání kladné odpopovedi ve formátu array nebo záportne ve formatu string "false"
+     *
+     * @param Request $request
+     * @return string false
+     * @return array
+     */
+    public function checkIfChannelExistAndReturnChannelDataOrFalseStatus(Request $request)
+    {
+        if (!Channel::where('url', $request->channelUrl)->first()) {
+            // nepodařilo se vyhledat kanál , return "false"
+
+            return "false";
+        }
+
+        return Channel::where('url', $request->channelUrl)->get(['id', 'Alert', 'noMonitor', 'audioLang', 'dohledVolume', 'dohledBitrate', 'vytvoritNahled', 'sendAlert', 'sendSMS', 'created_at', 'updated_at']);
+    }
+
+
+    /**
+     * fn pro overeni zda kanal existuje a následné vracení grafu o hlasitosti nebo bitrate případně string "false
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function checkIfChannelExistAndReturnChartVolumeDataOrFalseStatus(Request $request)
+    {
+        if (!Channel::where('url', $request->channelUrl)->first()) {
+            // nepodařilo se vyhledat kanál , return "false"
+
+            return "false";
+        }
+
+        $channel = Channel::where('url', $request->channelUrl)->first();
+
+        $chart = array();
+        $volumes = Volume::where('channelId', $channel->id)->orderBy('created_at', 'desc')->limit(60)->get();
+        foreach ($volumes as $volume) {
+            $chart[] = array($volume['created_at'], $volume['volume']);
+        }
+
+        return $chart;
     }
 
 
