@@ -52,7 +52,7 @@ class SMSController extends Controller
     {
         if (self::checkIfExistAnyPosibilityToSendAert() == true) {
             // vyhledání kanálu, který umí poslat sms
-            if (Channel::where('sendSMS', "1")->where('Alert', "error")->where('updated_at', '<=', Carbon::now()->second(300))->first()) {
+            if (Channel::where('sendSMS', "1")->where('Alert', "error")->where('updated_at', '<', Carbon::now()->second(300)->toDateString())->first()) {
 
                 // získání adresy / tel number kdo má zaslat sms
                 $fromUser = SMS::where('mailFrom', "!=", null)->first();

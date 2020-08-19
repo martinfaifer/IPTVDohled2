@@ -20,7 +20,7 @@ class AlertController extends Controller
      */
     public static function sendErrorMail()
     {
-        $data = Channel::where('Alert', "error")->where('sendAlert', "1")->where('updated_at', '<=', Carbon::now()->second(300))->get(['nazev', 'url', 'id']);
+        $data = Channel::where('Alert', "error")->where('sendAlert', "1")->whereDate('updated_at', '<', Carbon::now()->second(300)->toDateString())->get(['nazev', 'url', 'id']);
         if (count($data) == "0") {
             // vynecháme
             return false;
