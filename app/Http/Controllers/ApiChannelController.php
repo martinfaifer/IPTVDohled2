@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ApiChannel;
 use App\APIKey;
 use App\Calendar;
+use App\Channel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -13,6 +14,25 @@ class ApiChannelController extends Controller
     public function get()
     {
         return ApiChannel::get();
+    }
+
+
+    /**
+     * fn pro získání náhledu na kanál
+     *
+     * @param [type] $imgUrl
+     * @return void
+     */
+    public function getImg(Request $request)
+    {
+
+        if (!Channel::where('url', $request->channelUrl)->first()) {
+            // nepodařilo se vyhledat kanál , return "false"
+
+            return "false";
+        }
+
+        return Channel::where('url', $request->channelUrl)->first()->img;
     }
 
 

@@ -168,3 +168,9 @@ Route::get('/api/user/mozaika/custom/req', 'CustumMozaikaController@getReq');
 
 Route::get('/api/queue/failed', 'HardwareController@checkFailedQueue');
 Route::get('/api/queue/waiting', 'HardwareController@queue');
+
+/**
+ * fn pro zobrazení náhledu na kanál v externích app
+ */
+
+Route::get('/api/channel/get/img', 'ApiChannelController@getImg');
