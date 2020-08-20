@@ -124,7 +124,7 @@ export default {
         },
 
         loadAlerts() {
-            axios.get("/api/channels/crashed").then(response => {
+            axios.get("/api/channel/chart/crash/week").then(response => {
                 this.crashedStreams = response.data;
             });
         }

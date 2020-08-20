@@ -7,6 +7,7 @@ use App\APIKey;
 use App\Bitrate;
 use App\Calendar;
 use App\Channel;
+use App\CrashedChannel;
 use App\Volume;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -122,6 +123,30 @@ class ApiChannelController extends Controller
         } else {
             return "false";
         }
+    }
+
+    /**
+     * fn pro vzdálené odebrání kanálu z dohledu a odebrání veskerých dat o kanálu, keteré jsou ulezeny
+     *
+     * @param [request] $channelUrl
+     * @return void
+     */
+    public function remoteDeleteChannelFromDohledAndRemoveAllDataAboutChannel(Request $request)
+    {
+        $channelData = Channel::where('url', $request->channelUrl)->first();
+
+        UserHistoryController::store("api", "delete_stream", $channelData->nazev);
+
+        Channel::where('id', $channelData->id)->delete();
+        Volume::where('channelId', $channelData->id)->delete();
+        Bitrate::where('channelId', $channelData->id)->delete();
+        CrashedChannel::where('channelId', $channelData->id)->delete();
+
+        return [
+            'isAlert' => "isAlert",
+            'stat' => "success",
+            'msg' => "Stream byl úspěšně smazán!",
+        ];
     }
 
 

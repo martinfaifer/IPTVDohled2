@@ -40,9 +40,9 @@ class ChannelErrorTimeController extends Controller
     public function getLasDayData(Request $request)
     {
 
-        if (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(1))->first()) {
+        if (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '<=', Carbon::now()->subdays(1)->toDateString())->first()) {
 
-            foreach (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '>=', Carbon::now()->subdays(1))->get() as $channelReport) {
+            foreach (ChannelErrorTime::where('channelId', $request->id)->where('created_at', '<=', Carbon::now()->subdays(1))->toDateString()->get() as $channelReport) {
 
                 if ($channelReport->ok_time != null) {
 
