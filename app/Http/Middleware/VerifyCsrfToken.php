@@ -18,6 +18,7 @@ class VerifyCsrfToken extends Middleware
         '/api/communication/caledar',
         '/api/channel/get/img',
         '/api/channel/get_data_if_exist_or_return_false',
-        '/api/channel/get/volumeChart/last_60'
+        '/api/getVolumeDataFromDohledForChart',
+        '/api/getBitrateDataFromDohledForChart'
     ];
 }

@@ -169,10 +169,8 @@ Route::get('/api/user/mozaika/custom/req', 'CustumMozaikaController@getReq');
 Route::get('/api/queue/failed', 'HardwareController@checkFailedQueue');
 Route::get('/api/queue/waiting', 'HardwareController@queue');
 
-/**
- * KOMUNIKACE PO API
- */
 
-Route::get('/api/channel/get/img', 'ApiChannelController@getImg'); // získání náhledu na kanál
+Route::get('/api/channel/get/img', 'ApiChannelController@getImg');
 Route::get('/api/channel/get_data_if_exist_or_return_false', 'ApiChannelController@checkIfChannelExistAndReturnChannelDataOrFalseStatus');
-Route::get('/api/channel/get/volumeChart/last_60', 'ApiChannelController@gcheckIfChannelExistAndReturnChartVolumeDataOrFalseStatus');
+Route::get('/api/getVolumeDataFromDohledForChart', 'ApiChannelController@checkIfChannelExistAndReturnChartVolumeDataOrFalseStatus');
+Route::get('/api/getBitrateDataFromDohledForChart', 'ApiChannelController@checkIfChannelExistAndReturnChartBitrateDataOrFalseStatus');

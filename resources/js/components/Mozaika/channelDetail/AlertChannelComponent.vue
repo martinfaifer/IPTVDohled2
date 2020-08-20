@@ -110,7 +110,11 @@ export default {
         };
     },
     created() {
-        this.loadAlerts();
+        try {
+            this.loadAlerts();
+        } catch (error) {
+
+        }
     },
     methods: {
         disableChannelInfoFunction() {

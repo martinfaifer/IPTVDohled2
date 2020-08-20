@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ApiChannel;
 use App\APIKey;
+use App\Bitrate;
 use App\Calendar;
 use App\Channel;
 use App\Volume;
@@ -76,6 +77,30 @@ class ApiChannelController extends Controller
         $volumes = Volume::where('channelId', $channel->id)->orderBy('created_at', 'desc')->limit(60)->get();
         foreach ($volumes as $volume) {
             $chart[] = array($volume['created_at'], $volume['volume']);
+        }
+
+        return $chart;
+    }
+
+
+    /**
+     * fn po overeni zda kanal existuje a nasledne vraceni grafu bitrateu nebo false
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function checkIfChannelExistAndReturnChartBitrateDataOrFalseStatus(Request $request)
+    {
+        if (!Channel::where('url', $request->channelUrl)->first()) {
+            // nepodařilo se vyhledat kanál , return "false"
+
+            return "false";
+        }
+
+        $chart = array();
+        $bitrates = Bitrate::where('channelId', $request->id)->orderBy('created_at', 'desc')->limit(60)->get();
+        foreach ($bitrates as $bitrate) {
+            $chart[] = array($bitrate['created_at'], $bitrate['bitrate']);
         }
 
         return $chart;
