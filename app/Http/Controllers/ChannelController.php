@@ -17,16 +17,14 @@ class ChannelController extends Controller
 
     /**
      * fn pro ulozenno noveho kanalu
-     *  url: this.channelInput,
-        channelName: this.ffprobeOutput.nazev,
-        workerId: this.worker
-        dohledovat: this.dohledovat
+     * url: this.channelInput,
+     * channelName: this.ffprobeOutput.nazev,
+     * dohledovat: this.dohledovat
      * @param Request $request
      * @return void
      */
     public function store(Request $request)
     {
-
         if ($request->dohledovat == true) {
             $noMonitor = "mdi-check";
         } else {
@@ -69,11 +67,15 @@ class ChannelController extends Controller
             $img = "false";
         }
 
+        $api = $request->api ?? null;
+
         if ($request->api == true) {
             $api = "1";
         } else {
             $api = null;
         }
+
+        $sendSMS = $request->sendSMS ?? null;
 
         Channel::create([
             'url' => $request->url,
@@ -86,7 +88,8 @@ class ChannelController extends Controller
             'dohledVolume' => $dohledVolume,
             'dohledBitrate' => $dohledBitrate,
             'sendAlert' => $sendAlert,
-            'vytvoritNahled' => $vytvoritNahled
+            'vytvoritNahled' => $vytvoritNahled,
+            'sendSMS' => $sendSMS
         ]);
 
         return [

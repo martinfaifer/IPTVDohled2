@@ -410,7 +410,9 @@ export default {
         };
     },
     created() {
-        this.getStreams();
+        try {
+            this.getStreams();
+        } catch (error) {}
     },
     components: {
         "img-component": ImgComponent,
@@ -450,7 +452,9 @@ export default {
     mounted() {
         this.interval = setInterval(
             function() {
-                this.getStreams();
+                try {
+                    this.getStreams();
+                } catch (error) {}
             }.bind(this),
             10000
         );

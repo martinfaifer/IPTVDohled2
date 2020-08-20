@@ -112,9 +112,7 @@ export default {
     created() {
         try {
             this.loadAlerts();
-        } catch (error) {
-
-        }
+        } catch (error) {}
     },
     methods: {
         disableChannelInfoFunction() {
@@ -134,7 +132,9 @@ export default {
     mounted() {
         this.intervalAlert = setInterval(
             function() {
-                this.loadAlerts();
+                try {
+                    this.loadAlerts();
+                } catch (error) {}
             }.bind(this),
             1000
         );

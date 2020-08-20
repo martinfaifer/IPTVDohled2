@@ -40,7 +40,7 @@ Route::post('/api/testVolume', 'FFProbeDataController@getVolumeLevelFromStream')
 
 // SETTINGS->CHANNELS
 Route::post('/api/channel/ffprobe', 'ChannelController@ffprobe');
-Route::post('api/channel/create', 'ChannelController@store');
+Route::post('/api/channel/create', 'ChannelController@store');
 Route::post('/api/channel/delete', 'ChannelController@delete');
 Route::post('/api/channel/getdata', 'ChannelController@getChannelData');
 Route::post('/api/channel/edit', 'ChannelController@edit');
