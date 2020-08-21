@@ -4,40 +4,15 @@ namespace App\Http\Controllers;
 
 use App\ApiChannel;
 use App\APIKey;
-use App\Bitrate;
 use App\Calendar;
 use App\Channel;
-use App\CrashedChannel;
 use App\Volume;
+use App\Bitrate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class ApiChannelController extends Controller
 {
-    public function get()
-    {
-        return ApiChannel::get();
-    }
-
-
-    /**
-     * fn pro získání náhledu na kanál
-     *
-     * @param [type] $imgUrl
-     * @return void
-     */
-    public function getImg(Request $request)
-    {
-
-        if (!Channel::where('url', $request->channelUrl)->first()) {
-            // nepodařilo se vyhledat kanál , return "false"
-
-            return "false";
-        }
-
-        return Channel::where('url', $request->channelUrl)->first()->img;
-    }
-
 
     /**
      * fn pro oveření zda kanál již je zavedený na dohledu a odeslání kladné odpopovedi ve formátu array nebo záportne ve formatu string "false"
@@ -57,7 +32,6 @@ class ApiChannelController extends Controller
         return Channel::where('url', $request->channelUrl)->get(['id', 'Alert', 'noMonitor', 'audioLang', 'dohledVolume', 'dohledBitrate', 'vytvoritNahled', 'sendAlert', 'sendSMS', 'created_at', 'updated_at']);
     }
 
-
     /**
      * fn pro overeni zda kanal existuje a následné vracení grafu o hlasitosti nebo bitrate případně string "false
      *
@@ -71,7 +45,6 @@ class ApiChannelController extends Controller
 
             return "false";
         }
-
         $channel = Channel::where('url', $request->channelUrl)->first();
 
         $chart = array();
@@ -82,7 +55,6 @@ class ApiChannelController extends Controller
 
         return $chart;
     }
-
 
     /**
      * fn po overeni zda kanal existuje a nasledne vraceni grafu bitrateu nebo false
@@ -97,9 +69,10 @@ class ApiChannelController extends Controller
 
             return "false";
         }
+        $channel = Channel::where('url', $request->channelUrl)->first();
 
         $chart = array();
-        $bitrates = Bitrate::where('channelId', $request->id)->orderBy('created_at', 'desc')->limit(60)->get();
+        $bitrates = Bitrate::where('channelId', $channel->id)->orderBy('created_at', 'desc')->limit(60)->get();
         foreach ($bitrates as $bitrate) {
             $chart[] = array($bitrate['created_at'], $bitrate['bitrate']);
         }
@@ -107,6 +80,29 @@ class ApiChannelController extends Controller
         return $chart;
     }
 
+    public function get()
+    {
+        return ApiChannel::get();
+    }
+
+    /**
+     * fn pro získání náhledu na kanál
+     *
+     * @param [type] $imgUrl
+     * @return void
+     */
+    public function getImg(Request $request)
+    {
+
+
+        if (!Channel::where('url', $request->channelUrl)->first()) {
+            // nepodařilo se vyhledat kanál , return "false"
+
+            return "false";
+        }
+
+        return Channel::where('url', $request->channelUrl)->first()->img;
+    }
 
     /**
      * fn pro zjisteni zda je zavedene API url pro napojeni na iptv dokumentaci a získávání dat
@@ -123,30 +119,6 @@ class ApiChannelController extends Controller
         } else {
             return "false";
         }
-    }
-
-    /**
-     * fn pro vzdálené odebrání kanálu z dohledu a odebrání veskerých dat o kanálu, keteré jsou ulezeny
-     *
-     * @param [request] $channelUrl
-     * @return void
-     */
-    public function remoteDeleteChannelFromDohledAndRemoveAllDataAboutChannel(Request $request)
-    {
-        $channelData = Channel::where('url', $request->channelUrl)->first();
-
-        UserHistoryController::store("api", "delete_stream", $channelData->nazev);
-
-        Channel::where('id', $channelData->id)->delete();
-        Volume::where('channelId', $channelData->id)->delete();
-        Bitrate::where('channelId', $channelData->id)->delete();
-        CrashedChannel::where('channelId', $channelData->id)->delete();
-
-        return [
-            'isAlert' => "isAlert",
-            'stat' => "success",
-            'msg' => "Stream byl úspěšně smazán!",
-        ];
     }
 
 

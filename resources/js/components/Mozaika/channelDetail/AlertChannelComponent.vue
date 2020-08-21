@@ -124,7 +124,7 @@ export default {
         },
 
         loadAlerts() {
-            axios.get("/api/channel/chart/crash/week").then(response => {
+            axios.get("/api/channels/crashed").then(response => {
                 this.crashedStreams = response.data;
             });
         }
@@ -144,7 +144,7 @@ export default {
             if (this.channelId !== "") {
                 let currentObj = this;
                 axios
-                    .post("/api/channel/chart/crash/hour", {
+                    .post("/api/channel/chart/crash/week", {
                         id: this.channelId
                     })
                     .then(function(response) {
