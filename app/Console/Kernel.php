@@ -45,6 +45,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:sendSMSError')->everyMinute()->runInBackground(); // odeslání sms error alertu po 5 min po výpadku
         $schedule->command('command:sendSMSsuccess')->everyMinute()->runInBackground(); // odeslání sms success alertu po 5 min po návratu z výpadku
 
+        $schedule->command('command:autoRebootChannel')->everyFourMinutes()->runInBackground(); // fn pro pokus o restart nefunkčních streamů
+        $schedule->command('command:command:CheckBitrateToPossibilityChangeChannelStatus')->everyFiveMinutes()->runInBackground(); // overování zda bitrate je = 0 v poslednich 5 merenich, pokud ano zmeni se status kanalu na error
+
         // fn pro kontrolu již nedohledovaných kanalů, aby zbytecne nekde nevyseli, ale aby se zmenil jejich stav na success (nebudou videt v mozaice), a odebreali se z Volume alertu + nefuknich kanalu
         $schedule->call(function () {
             if (Channel::where('noMonitor', "mdi-close")->first()) {

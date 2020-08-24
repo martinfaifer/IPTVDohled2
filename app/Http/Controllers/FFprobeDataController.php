@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Calendar;
 use App\Channel;
 use App\Jobs\FFProbe;
+use App\Jobs\BitrateCheckForPosibilityChangeStatus;
 use App\Volume;
 use App\VolumeAlert;
 use App\VolumeException;
@@ -42,6 +43,8 @@ class FFprobeDataController extends Controller
             // } else {
 
             dispatch(new FFProbe($channel->url));
+
+            dispatch(new BitrateCheckForPosibilityChangeStatus());
             // }
         }
     }

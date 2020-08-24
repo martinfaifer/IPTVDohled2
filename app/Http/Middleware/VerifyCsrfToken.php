@@ -21,6 +21,7 @@ class VerifyCsrfToken extends Middleware
         '/api/getVolumeDataFromDohledForChart',
         '/api/getBitrateDataFromDohledForChart',
         '/api/channel/create',
-        '/api/removeChannelFromDohled'
+        '/api/removeChannelFromDohled',
+        '/api/show_channel_history'
     ];
 }

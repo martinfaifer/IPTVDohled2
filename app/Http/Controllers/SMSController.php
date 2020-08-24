@@ -58,7 +58,7 @@ class SMSController extends Controller
                 $fromUser = SMS::where('mailFrom', "!=", null)->first();
 
                 // existuje kanál, který umí odesílat alerty formou SMS
-                foreach (Channel::where('sendSMS', "1")->where('Alert', "error")->where('updated_at', '<=', Carbon::now()->second(300))->get(['id', 'nazev']) as $channel) {
+                foreach (Channel::where('sendSMS', "1")->where('Alert', "error")->where('updated_at', '<', Carbon::now()->second(300))->get(['id', 'nazev']) as $channel) {
                     // overeni, ze kanal jiz neexistuje ulozeny v tabulce sms alert (není jeste vytvorena)
                     if (!SMSAlert::where('channelId', $channel->id)->first()) {
 

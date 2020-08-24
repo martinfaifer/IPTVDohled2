@@ -13,6 +13,7 @@ use App\MailAlerts;
 use App\NotFunctionChannel;
 use App\VolumeAlert;
 use App\VolumeException;
+use Carbon\Carbon;
 use FFMpeg\FFProbe;
 use FFMpeg\FFMpeg;
 
@@ -115,32 +116,9 @@ class StreamDiagnostic extends Controller
 
                 $output = "error";
             }
-
-            // CrashedChannel::create([
-            //     'channelId' => $channelId,
-            // ]);
-
-
-            // ulození do tabulky, kde bude zaznamenáno od kdy do kdy byl výpadek
-            // if (ChannelErrorTimeController::store($channelId) == true) {
-            //     //
-            // } else {
-            //     return;
-            // }
         } else {
 
             $output = "success";
-
-            // $overeniZdaJeNutneProvadetUpdate = Channel::where('id', $channelId)->first();
-            // if ($overeniZdaJeNutneProvadetUpdate->Alert != "success") {
-
-            //     $output = "success";
-            // }
-
-            // odebrání kanálu z fronty na odeslani alertu
-            // if (ChannelErrorTime::where('channelId', $channelId)->where('ok_time', null)->first()) {
-            //     ChannelErrorTimeController::update($channelId); // update tabulky, kdy je zaznamenáno, kdy skomcil výpadek na kanálu
-            // }
         }
 
         return $output;
@@ -174,6 +152,44 @@ class StreamDiagnostic extends Controller
             ]);
         } catch (\Throwable $th) {
             // vznikla chyba, nechame zatím bez jakékoliv akce a následně by se dodělal log
+        }
+    }
+
+
+    /**
+     * fn pro overení zda kanál je funkční paklize není evidován bitrate nebo je bitrate  = 0 v posledních 5 pokusech tak se změní status kanálu na error
+     *
+     * pro provedení teto fn musí mít kanál zapnuté dohledování bitratu
+     *
+     * @return void
+     */
+    public static function changeStatusChannelIfBitrateIsZeroToErrorStatus()
+    {
+        foreach (Channel::where('dohledBitrate', "1")->get('id') as $channel) {
+            // overovaci pole
+            $arrayFroCheckANotherArray = array("0", "0", "0", "0", "0");
+            $bitrateData = Bitrate::where('channelId', $channel->id)->limit(-5)->get('bitrate');
+
+            $arrayFroCheck = array(); // pole, kam se budou vkladat hodnoty bitrate a po zpracování se smaže
+
+            // overeni ze vsechny zaznamy jsou = 0 => kanál nejspise nefunguje a zmení se status kanálu na error
+            foreach ($bitrateData as $bitrate) {
+
+                // vytvorení jednorozmerneho pole
+
+                array_push($arrayFroCheck, $bitrate->bitrate);
+            }
+
+            // oevreni zda pole je rovno 0,0,0,0
+            if ($arrayFroCheckANotherArray == $arrayFroCheck) {
+                // update zaznamu na error, jelikož kanál nejspíse nefunguje
+                $update = Channel::find($channel->id);
+                $update->Alert = "error";
+
+                $update->save();
+            }
+
+            unset($arrayFroCheck);
         }
     }
 }

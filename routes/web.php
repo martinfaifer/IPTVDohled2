@@ -175,3 +175,4 @@ Route::get('/api/channel/get_data_if_exist_or_return_false', 'ApiChannelControll
 Route::get('/api/getVolumeDataFromDohledForChart', 'ApiChannelController@checkIfChannelExistAndReturnChartVolumeDataOrFalseStatus');
 Route::get('/api/getBitrateDataFromDohledForChart', 'ApiChannelController@checkIfChannelExistAndReturnChartBitrateDataOrFalseStatus');
 Route::get('/api/removeChannelFromDohled', 'ApiChannelController@remoteDeleteChannelFromDohledAndRemoveAllDataAboutChannel');
+Route::get('/api/show_channel_history', 'ApiChannelController@getHistoryOfChannel');

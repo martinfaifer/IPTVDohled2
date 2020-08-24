@@ -8,6 +8,8 @@ use App\Calendar;
 use App\Channel;
 use App\Volume;
 use App\Bitrate;
+use App\ChannelErrorTime;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -150,5 +152,45 @@ class ApiChannelController extends Controller
     public function showData()
     {
         return ApiChannel::get();
+    }
+
+
+    /**
+     * fn pro pokus o automatický restart kanálu, který se zaslu na url dokumentace a následně dokumentace odbaví jak se má kanál restartovat na základe zařízení, které kanál odbavuje
+     *
+     * @return void
+     */
+    public static function tryToAutomaticRebootChannel()
+    {
+        if (Channel::where('Alert', "error")->where('sendAlert', "1")->whereDate('updated_at', '<', Carbon::now()->second(180)->toDateString())->first()) {
+
+            foreach (Channel::where('Alert', "error")->where('sendAlert', "1")->whereDate('updated_at', '<', Carbon::now()->second(180)->toDateString())->get(['url', 'id']) as $channel) {
+
+                $response = Http::get('http://10.255.255.58/api/channel/tryToRestartChannel', [
+                    'dohledUrl' => $channel->url,
+                ]);
+            }
+        }
+    }
+
+
+    /**
+     * zaslaní hostorie kanálu pro dokumentaci pomocí api
+     *
+     * @param Request $request->
+     * @return void
+     */
+    public function getHistoryOfChannel(Request $request)
+    {
+        if (!Channel::where('url', $request->channelUrl)->first()) {
+            // nepodařilo se vyhledat kanál , return "false"
+
+            return "false";
+        } else {
+            // ChannelErrorTime
+            $channel = Channel::where('url', $request->channelUrl)->first();
+
+            return ChannelErrorTime::where('channelId', $channel->id)->limit(10)->get();
+        }
     }
 }
