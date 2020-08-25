@@ -19,6 +19,65 @@ use FFMpeg\FFMpeg;
 
 class StreamDiagnostic extends Controller
 {
+
+    /**
+     * fn pro overení zda kanál má stejné video Id a PCR pro synchronizaci video / audio
+     *
+     * @return void
+     */
+    public static function checkPcrPidAndVideoIdIfTheSame($ffprobeRecord, $channelId)
+    {
+        $data = json_decode($ffprobeRecord, true); // převedení do json bez stdClass
+        if (!array_key_exists("programs", $data)) {
+            // neexistuje klíč programs
+
+            // Pokud je kanál uložen ve stavu success , tak zmena na error
+            $channelData = Channel::where('id', $channelId)->first();
+            if ($channelData->Alert != "error") {
+
+                return "error";
+                die;
+            }
+
+            return "error";
+            die;
+        } else {
+
+            foreach ($data["programs"] as $program) {
+                if (array_key_exists("pcr_pid", $program)) {
+                    $pcrPid = $program["pcr_pid"];
+                } else {
+                    return "error";
+                    die;
+                }
+            }
+
+            foreach ($data["programs"][0]["streams"] as $streams) {
+
+                if ($streams["codec_type"] == "video") {
+
+                    if (array_key_exists("id", $streams)) {
+                        $streamId = hexdec($streams["id"]);
+                    } else {
+                        return "error";
+                        die;
+                    }
+                }
+            }
+
+            if ($streamId == $pcrPid) {
+                return "success";
+                die;
+            } else {
+                return "error";
+                die;
+            }
+        }
+
+        // return $output;
+    }
+
+
     /**
      * fn pro získání dat z FFProby, která ma na starost získaz detailní informace o kanále + uložit veškerá data do tabulky f_f_probe_data a aktualizovat zázanm v tabulce channels
      *
@@ -31,11 +90,18 @@ class StreamDiagnostic extends Controller
         $output = shell_exec("/usr/local/bin/ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
         // $output = shell_exec("ffprobe -v quiet -print_format json -show_entries stream=bit_rate -show_programs " . $channelUrl . " -timeout 10");
 
+
         // Aktulizace nových dat v Channels
         $channel = Channel::where('url', $channelUrl)->first();
 
-        // analyzování dat zda je vystup platný
-        $channelStatus = self::analyzeRecord($output, $channel->id);
+        // pokrocilejsi analýza je závislá na povolení dohledu bitratu
+        if ($channel->dohledBitrate == "1") {
+            // overení PCR a video ID -> náhrada za analyzeRecord
+            $channelStatus = self::checkPcrPidAndVideoIdIfTheSame($output, $channel->id);
+        } else {
+            // analyzování dat zda je vystup platný
+            $channelStatus = self::analyzeRecord($output, $channel->id);
+        }
         // error
         $channelStatus = $channelStatus ?? "error";
 

@@ -205,6 +205,7 @@
             </v-row>
             <br />
             <v-pagination
+                class="md-12"
                 v-model="pagination.current"
                 :length="pagination.total"
                 circle

@@ -156,7 +156,7 @@
 
         <!-- END OF NETWORK ALERTINGU -->
 
-        <footer-component></footer-component>
+        <!-- <footer-component class="mt-6"></footer-component> -->
     </div>
 </template>
 <script>

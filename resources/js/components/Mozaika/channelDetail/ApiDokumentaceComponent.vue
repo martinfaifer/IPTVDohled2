@@ -157,6 +157,7 @@ export default {
                     id: this.channelId
                 })
                 .then(function(response) {
+                    console.log(currentObj.items);
                     currentObj.items = response.data;
                 })
                 .catch(function(error) {
