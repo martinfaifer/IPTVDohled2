@@ -25,7 +25,7 @@ class StreamDiagnostic extends Controller
      *
      * @return void
      */
-    public static function checkPcrPidAndVideoIdIfTheSame($ffprobeRecord, $channelId)
+    public static function checkPcrPidAndVideoIdIfTheSameAndCheckStartTime($ffprobeRecord, $channelId)
     {
         $data = json_decode($ffprobeRecord, true); // převedení do json bez stdClass
         if (!array_key_exists("programs", $data)) {
@@ -50,6 +50,11 @@ class StreamDiagnostic extends Controller
                     return "error";
                     die;
                 }
+
+                if (array_key_exists("start_time", $program)) {
+                    $orig_start_time = $program["start_time"];
+                    $start_time = round($program["start_time"], 0);
+                }
             }
 
             foreach ($data["programs"][0]["streams"] as $streams) {
@@ -62,10 +67,59 @@ class StreamDiagnostic extends Controller
                         return "error";
                         die;
                     }
+
+                    if (array_key_exists("start_time", $streams)) {
+                        $orig_video_start_time = $streams["start_time"];
+                        $video_start_time = round($streams["start_time"], 0);
+                        // $video_start_time = $video_start_time[0];
+                    }
+                }
+
+                if ($streams["codec_type"] == "audio") {
+
+                    if (array_key_exists("start_time", $streams)) {
+                        $orig_audio_start_time = $streams["start_time"];
+                        $audio_start_time = round($streams["start_time"], 0);
+                        // $audio_start_time = $audio_start_time[0];
+                    }
                 }
             }
 
+
+
             if ($streamId == $pcrPid) {
+
+                if (isset($start_time) && isset($video_start_time) && isset($audio_start_time)) {
+
+                    if ($start_time == $video_start_time && $start_time == $audio_start_time) {
+                        return "success";
+                        die;
+                    } else {
+
+                        $checkPrimarToVideo = intval($video_start_time) - intval($start_time);
+                        $checkPrimarToAudio = intval($audio_start_time) - intval($start_time);
+
+                        if ($checkPrimarToVideo <= 1 ||  $checkPrimarToAudio <= 1) {
+                            return "success";
+                            die;
+                        } else {
+
+                            $orig_start_time = explode(".", $orig_start_time);
+                            $orig_video_start_time = explode(".", $orig_video_start_time);
+                            $orig_audio_start_time = explode(".", $orig_audio_start_time);
+
+                            if ($orig_start_time[0] == $orig_video_start_time[0] && $orig_start_time[0] == $orig_audio_start_time[0]) {
+                                return "success";
+                                die;
+                            }
+                        }
+
+
+                        return "error";
+                        die;
+                    }
+                }
+
                 return "success";
                 die;
             } else {
@@ -96,8 +150,8 @@ class StreamDiagnostic extends Controller
 
         // pokrocilejsi analýza je závislá na povolení dohledu bitratu
         if ($channel->dohledBitrate == "1") {
-            // overení PCR a video ID -> náhrada za analyzeRecord
-            $channelStatus = self::checkPcrPidAndVideoIdIfTheSame($output, $channel->id);
+            // overení PCR a video ID -> náhrada za analyzeRecord + overení zda sedí približně šasy spusteni streamu (start_time)
+            dd($channelStatus = self::checkPcrPidAndVideoIdIfTheSameAndCheckStartTime($output, $channel->id));
         } else {
             // analyzování dat zda je vystup platný
             $channelStatus = self::analyzeRecord($output, $channel->id);
