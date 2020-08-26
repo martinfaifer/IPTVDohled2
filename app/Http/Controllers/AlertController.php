@@ -13,21 +13,20 @@ use Illuminate\Http\Request;
 class AlertController extends Controller
 {
     /**
-     * fn pro odeslání mailu po 10 min, kdy kanál crashne
+     * fn pro odeslání mailu po 5 min, kdy kanál crashne
      * do té doby nebude zaslán žádný alert
      *
-     * @return bolean
+     * @return boolean
      */
     public static function sendErrorMail()
     {
-        $data = Channel::where('Alert', "error")->where('sendAlert', "1")->whereDate('updated_at', '<', Carbon::now()->second(300)->toDateString())->get(['nazev', 'url', 'id']);
-        if (count($data) == "0") {
+        if (!Channel::where('Alert', "error")->where('sendAlert', "1")->whereDate('updated_at', '<', Carbon::now()->second(300)->toDateString())->first()) {
             // vynecháme
             return false;
         } else {
             // vratí se data, která se následne reportují
 
-            foreach ($data as $channelToSend) {
+            foreach (Channel::where('Alert', "error")->where('sendAlert', "1")->whereDate('updated_at', '<', Carbon::now()->second(300)->toDateString())->get(['nazev', 'url', 'id']) as $channelToSend) {
 
                 // sort kanálu, které mají plánovaný výpadek a neposílají se alerty
 
@@ -71,7 +70,7 @@ class AlertController extends Controller
                         // vyhledání zda kanál je komu poslat
                         if (MailAlerts::first()) {
                             // existuji minimálne jeden mail na který se poslou alerty
-                            foreach (MailAlerts::get() as  $mail) {
+                            foreach (MailAlerts::get(['mail']) as  $mail) {
 
                                 // kanal, status, prijmece
                                 try {
