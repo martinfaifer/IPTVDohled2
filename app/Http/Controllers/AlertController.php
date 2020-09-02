@@ -97,10 +97,11 @@ class AlertController extends Controller
 
             // existuje alert
             if (SendedAlert::first()) {
-                foreach (SendedAlert::get() as $sendedAlert) {
-                    $channel = Channel::where('id', $sendedAlert['channelId'])->where('sendAlert', "1")->first();
-                    if ($channel->Alert == "success") {
-                        foreach (MailAlerts::get() as  $mail) {
+                foreach (MailAlerts::get() as  $mail) {
+                    foreach (SendedAlert::get() as $sendedAlert) {
+                        $channel = Channel::where('id', $sendedAlert['channelId'])->where('sendAlert', "1")->first();
+                        if ($channel->Alert == "success") {
+
 
                             // kanal, status, prijmece
                             try {

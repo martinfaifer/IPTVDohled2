@@ -99,7 +99,7 @@ class StreamDiagnostic extends Controller
                         $checkPrimarToVideo = intval($video_start_time) - intval($start_time);
                         $checkPrimarToAudio = intval($audio_start_time) - intval($start_time);
 
-                        if ($checkPrimarToVideo <= 1 ||  $checkPrimarToAudio <= 1) {
+                        if ($checkPrimarToVideo <= 1 &&  $checkPrimarToAudio <= 1) {
                             return "success";
                             die;
                         } else {
